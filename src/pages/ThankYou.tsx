@@ -7,7 +7,7 @@ import { CheckCircle, Home, MessageCircle, ArrowRight } from "lucide-react";
 const ThankYou = () => {
   return (
     <Layout>
-      <section className="pt-24 lg:pt-32 pb-20 min-h-[80vh] flex items-center bg-gradient-to-b from-navy to-navy-light">
+      <section className="pt-24 lg:pt-32 pb-20 min-h-[80vh] flex items-center bg-gradient-to-b from-[#6B46C1] via-[#553C9A] to-[#44337A]">
         <div className="container mx-auto px-4 lg:px-8">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
