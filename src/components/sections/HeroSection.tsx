@@ -1,11 +1,15 @@
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Users, ArrowRight } from "lucide-react";
+import { Users, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import heroWedding from "@/assets/hero-celebration.jpg";
 import heroNaming from "@/assets/hero-naming.jpg";
 import heroFuneral from "@/assets/hero-funeral.jpg";
+import heroGraduation from "@/assets/hero-graduation.jpg";
+import heroBirthday from "@/assets/hero-birthday.jpg";
+import heroChurch from "@/assets/hero-church.jpg";
+import heroCorporate from "@/assets/hero-corporate.jpg";
 
 const slides = [
   {
@@ -32,6 +36,38 @@ const slides = [
     subline: "With Dignity",
     description: "Elegant digital funeral programs that celebrate life and connect mourners across the globe.",
   },
+  {
+    image: heroGraduation,
+    alt: "Graduation celebration",
+    headline: "Celebrate Your",
+    highlight: "Achievement",
+    subline: "In Grand Style",
+    description: "Share your academic success with stunning digital invitations that capture the joy of graduation.",
+  },
+  {
+    image: heroBirthday,
+    alt: "Birthday party celebration",
+    headline: "Make Your",
+    highlight: "Birthday",
+    subline: "Unforgettable",
+    description: "Create vibrant digital invitations that set the perfect tone for your birthday celebration.",
+  },
+  {
+    image: heroChurch,
+    alt: "Church event",
+    headline: "Invite Your",
+    highlight: "Congregation",
+    subline: "With Grace",
+    description: "Elegant digital invitations for church events, services, and special spiritual gatherings.",
+  },
+  {
+    image: heroCorporate,
+    alt: "Corporate event",
+    headline: "Elevate Your",
+    highlight: "Business Events",
+    subline: "Professionally",
+    description: "Professional digital invitations for conferences, launches, and corporate gatherings.",
+  },
 ];
 
 export function HeroSection() {
@@ -41,8 +77,12 @@ export function HeroSection() {
     setCurrentSlide((prev) => (prev + 1) % slides.length);
   }, []);
 
+  const prevSlide = useCallback(() => {
+    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+  }, []);
+
   useEffect(() => {
-    const interval = setInterval(nextSlide, 5000);
+    const interval = setInterval(nextSlide, 7000);
     return () => clearInterval(interval);
   }, [nextSlide]);
 
@@ -67,6 +107,22 @@ export function HeroSection() {
           <div className="absolute inset-0 bg-pattern-dots opacity-20" />
         </motion.div>
       </AnimatePresence>
+
+      {/* Carousel Arrows */}
+      <button
+        onClick={prevSlide}
+        className="absolute left-4 lg:left-8 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/20 flex items-center justify-center text-primary-foreground hover:bg-primary-foreground/20 transition-all duration-300"
+        aria-label="Previous slide"
+      >
+        <ChevronLeft className="h-6 w-6" />
+      </button>
+      <button
+        onClick={nextSlide}
+        className="absolute right-4 lg:right-8 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/20 flex items-center justify-center text-primary-foreground hover:bg-primary-foreground/20 transition-all duration-300"
+        aria-label="Next slide"
+      >
+        <ChevronRight className="h-6 w-6" />
+      </button>
 
       {/* Content */}
       <div className="relative container mx-auto px-4 lg:px-8 pt-20 lg:pt-24">
