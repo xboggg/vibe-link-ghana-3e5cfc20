@@ -115,10 +115,32 @@ export function Navbar() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="lg:hidden p-2 text-primary-foreground hover:text-secondary transition-colors"
+            className="lg:hidden p-2 text-primary-foreground hover:text-secondary transition-colors relative w-10 h-10 flex items-center justify-center"
             aria-label="Toggle menu"
           >
-            {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            <AnimatePresence mode="wait">
+              {isOpen ? (
+                <motion.div
+                  key="close"
+                  initial={{ opacity: 0, rotate: -90 }}
+                  animate={{ opacity: 1, rotate: 0 }}
+                  exit={{ opacity: 0, rotate: 90 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <X className="h-6 w-6" />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="menu"
+                  initial={{ opacity: 0, rotate: 90 }}
+                  animate={{ opacity: 1, rotate: 0 }}
+                  exit={{ opacity: 0, rotate: -90 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <Menu className="h-6 w-6" />
+                </motion.div>
+              )}
+            </AnimatePresence>
           </button>
         </div>
       </div>
@@ -130,23 +152,39 @@ export function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-[#6B46C1]/95 backdrop-blur-md border-t border-primary-foreground/10"
+            transition={{ 
+              duration: 0.3, 
+              ease: [0.4, 0, 0.2, 1],
+              opacity: { duration: 0.2 }
+            }}
+            className="lg:hidden bg-[#6B46C1]/95 backdrop-blur-md border-t border-primary-foreground/10 overflow-hidden"
           >
-            <div className="container mx-auto px-4 py-4 space-y-1">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2, delay: 0.1 }}
+              className="container mx-auto px-4 py-4 space-y-1"
+            >
               {navItems.map((item, index) => (
                 <motion.div
                   key={item.name}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.05 }}
+                  initial={{ opacity: 0, x: -30, y: -10 }}
+                  animate={{ opacity: 1, x: 0, y: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ 
+                    delay: index * 0.05,
+                    duration: 0.3,
+                    ease: [0.4, 0, 0.2, 1]
+                  }}
                 >
                   <Link
                     to={item.href}
                     className={cn(
-                      "block px-4 py-3 text-base font-medium rounded-lg transition-colors",
+                      "block px-4 py-3 text-base font-medium rounded-lg transition-all duration-200",
                       location.pathname === item.href
                         ? "text-secondary bg-primary-foreground/10"
-                        : "text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10"
+                        : "text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10 hover:translate-x-1"
                     )}
                   >
                     {item.name}
@@ -155,35 +193,45 @@ export function Navbar() {
               ))}
               {/* Mobile Social Links */}
               <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: navItems.length * 0.05 }}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ delay: navItems.length * 0.05, duration: 0.3 }}
                 className="flex items-center justify-center gap-4 pt-4"
               >
-                {socialLinks.map((social) => (
-                  <a
+                {socialLinks.map((social, index) => (
+                  <motion.a
                     key={social.name}
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-2 text-primary-foreground/70 hover:text-secondary transition-colors"
                     aria-label={social.name}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: (navItems.length + index) * 0.05 + 0.1 }}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
                   >
                     <social.icon className="h-5 w-5" />
-                  </a>
+                  </motion.a>
                 ))}
               </motion.div>
               <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: (navItems.length + 1) * 0.05 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ 
+                  delay: (navItems.length + socialLinks.length) * 0.05 + 0.1,
+                  duration: 0.3 
+                }}
                 className="pt-4"
               >
                 <Button asChild variant="gold" size="lg" className="w-full">
                   <Link to="/get-started">Get Started</Link>
                 </Button>
               </motion.div>
-            </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
