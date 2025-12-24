@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, ExternalLink } from "lucide-react";
 import { ParallaxBackground } from "@/components/ParallaxBackground";
 import { AnimatedHeading, AnimatedText } from "@/components/AnimatedHeading";
+import { OptimizedImage } from "@/components/OptimizedImage";
 
 const portfolioItems = [
   {
@@ -95,15 +96,16 @@ export function PortfolioPreviewSection() {
               <div className="relative rounded-2xl overflow-hidden bg-card border border-border hover:border-primary/30 transition-all duration-300">
                 {/* Image */}
                 <div className="relative aspect-[4/3] overflow-hidden">
-                  <img
+                  <OptimizedImage
                     src={item.image}
                     alt={item.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    containerClassName="w-full h-full"
+                    className="group-hover:scale-110 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-navy/80 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-navy/80 to-transparent pointer-events-none" />
                   
                   {/* Badge */}
-                  <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-xs font-medium">
+                  <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-xs font-medium z-10">
                     {item.type}
                   </span>
                 </div>

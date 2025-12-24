@@ -70,9 +70,18 @@ const slides = [
   },
 ];
 
+// Preload images for smoother transitions
+const preloadImages = () => {
+  slides.forEach((slide) => {
+    const img = new Image();
+    img.src = slide.image;
+  });
+};
+
 export function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [imagesLoaded, setImagesLoaded] = useState<boolean[]>(new Array(slides.length).fill(false));
 
   const nextSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev + 1) % slides.length);
@@ -83,10 +92,22 @@ export function HeroSection() {
   }, []);
 
   useEffect(() => {
+    preloadImages();
+  }, []);
+
+  useEffect(() => {
     if (isPaused) return;
     const interval = setInterval(nextSlide, 7000);
     return () => clearInterval(interval);
   }, [nextSlide, isPaused]);
+
+  const handleImageLoad = (index: number) => {
+    setImagesLoaded((prev) => {
+      const newState = [...prev];
+      newState[index] = true;
+      return newState;
+    });
+  };
 
   return (
     <section 
@@ -94,7 +115,7 @@ export function HeroSection() {
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* Background Images with Crossfade */}
+      {/* Background Images with Crossfade and Blur-up */}
       <AnimatePresence mode="wait">
         <motion.div
           key={currentSlide}
@@ -104,10 +125,27 @@ export function HeroSection() {
           transition={{ duration: 1 }}
           className="absolute inset-0"
         >
-          <img
+          {/* Placeholder blur */}
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-br from-primary/30 via-muted to-secondary/30"
+            initial={{ opacity: 1 }}
+            animate={{ opacity: imagesLoaded[currentSlide] ? 0 : 1 }}
+            transition={{ duration: 0.5 }}
+            style={{ filter: "blur(20px)" }}
+          />
+          
+          {/* Main image with blur-up effect */}
+          <motion.img
             src={slides[currentSlide].image}
             alt={slides[currentSlide].alt}
             className="w-full h-full object-cover"
+            onLoad={() => handleImageLoad(currentSlide)}
+            initial={{ filter: "blur(20px)", scale: 1.1 }}
+            animate={{ 
+              filter: imagesLoaded[currentSlide] ? "blur(0px)" : "blur(20px)",
+              scale: imagesLoaded[currentSlide] ? 1 : 1.1
+            }}
+            transition={{ duration: 0.8, ease: [0.25, 0.4, 0.25, 1] }}
           />
           <div className="absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/85 to-purple-dark/70" />
           <div className="absolute inset-0 bg-pattern-dots opacity-20" />
