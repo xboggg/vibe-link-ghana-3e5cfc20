@@ -1,22 +1,72 @@
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Users, ArrowRight } from "lucide-react";
-import heroImage from "@/assets/hero-celebration.jpg";
+import { useState, useEffect, useCallback } from "react";
+import heroWedding from "@/assets/hero-celebration.jpg";
+import heroNaming from "@/assets/hero-naming.jpg";
+import heroFuneral from "@/assets/hero-funeral.jpg";
+
+const slides = [
+  {
+    image: heroWedding,
+    alt: "Ghanaian wedding celebration",
+    headline: "Transform Your",
+    highlight: "Celebrations",
+    subline: "Into Digital Masterpieces",
+    description: "Stunning, shareable digital invitations for weddings, funerals, and every Ghanaian ceremony. One beautiful link that does it all.",
+  },
+  {
+    image: heroNaming,
+    alt: "Ghanaian naming ceremony",
+    headline: "Welcome Your",
+    highlight: "Little One",
+    subline: "In Style",
+    description: "Beautiful digital invitations for naming ceremonies and outdoorings. Share the joy with family near and far.",
+  },
+  {
+    image: heroFuneral,
+    alt: "Dignified funeral ceremony",
+    headline: "Honor Their",
+    highlight: "Legacy",
+    subline: "With Dignity",
+    description: "Elegant digital funeral programs that celebrate life and connect mourners across the globe.",
+  },
+];
 
 export function HeroSection() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const nextSlide = useCallback(() => {
+    setCurrentSlide((prev) => (prev + 1) % slides.length);
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(nextSlide, 5000);
+    return () => clearInterval(interval);
+  }, [nextSlide]);
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Image with Overlay */}
-      <div className="absolute inset-0">
-        <img
-          src={heroImage}
-          alt="Ghanaian celebration"
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/85 to-purple-dark/70" />
-        <div className="absolute inset-0 bg-pattern-dots opacity-20" />
-      </div>
+      {/* Background Images with Crossfade */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentSlide}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 1 }}
+          className="absolute inset-0"
+        >
+          <img
+            src={slides[currentSlide].image}
+            alt={slides[currentSlide].alt}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/85 to-purple-dark/70" />
+          <div className="absolute inset-0 bg-pattern-dots opacity-20" />
+        </motion.div>
+      </AnimatePresence>
 
       {/* Content */}
       <div className="relative container mx-auto px-4 lg:px-8 pt-20 lg:pt-24">
@@ -35,26 +85,25 @@ export function HeroSection() {
             </span>
           </motion.div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-primary-foreground leading-tight mb-6"
-          >
-            Transform Your{" "}
-            <span className="text-gradient-gold">Celebrations</span> Into
-            Digital Masterpieces
-          </motion.h1>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentSlide}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5 }}
+            >
+              <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-primary-foreground leading-tight mb-6">
+                {slides[currentSlide].headline}{" "}
+                <span className="text-gradient-gold">{slides[currentSlide].highlight}</span>{" "}
+                {slides[currentSlide].subline}
+              </h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-lg md:text-xl text-primary-foreground/80 leading-relaxed mb-8 max-w-2xl"
-          >
-            Stunning, shareable digital invitations for weddings, funerals, and
-            every Ghanaian ceremony. One beautiful link that does it all.
-          </motion.p>
+              <p className="text-lg md:text-xl text-primary-foreground/80 leading-relaxed mb-8 max-w-2xl">
+                {slides[currentSlide].description}
+              </p>
+            </motion.div>
+          </AnimatePresence>
 
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -95,6 +144,22 @@ export function HeroSection() {
             </div>
           </motion.div>
         </div>
+      </div>
+
+      {/* Slide Indicators */}
+      <div className="absolute bottom-24 left-1/2 -translate-x-1/2 flex gap-2">
+        {slides.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentSlide(index)}
+            className={`w-2 h-2 rounded-full transition-all duration-300 ${
+              index === currentSlide
+                ? "bg-secondary w-8"
+                : "bg-primary-foreground/40 hover:bg-primary-foreground/60"
+            }`}
+            aria-label={`Go to slide ${index + 1}`}
+          />
+        ))}
       </div>
 
       {/* Scroll Indicator */}
