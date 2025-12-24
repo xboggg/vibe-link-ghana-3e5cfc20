@@ -3,13 +3,7 @@ import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { CTASection } from "@/components/sections/CTASection";
-import { Check, X, Star, MessageCircle, HelpCircle } from "lucide-react";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { Check, X, Star, MessageCircle, Plus } from "lucide-react";
 
 const packages = [
   {
@@ -18,6 +12,7 @@ const packages = [
     description: "Best for simple, intimate events",
     popular: false,
     features: [
+      { name: "1 hero banner image", included: true },
       { name: "Pre-designed template", included: true },
       { name: "Event details section", included: true },
       { name: "Countdown timer", included: true },
@@ -38,6 +33,7 @@ const packages = [
     description: "Best for weddings, funerals, most events",
     popular: true,
     features: [
+      { name: "2 hero banner images", included: true },
       { name: "Everything in Starter", included: true },
       { name: "Custom color scheme", included: true },
       { name: "Photo gallery (10 photos)", included: true },
@@ -58,11 +54,14 @@ const packages = [
     description: "Best for premium celebrations",
     popular: false,
     features: [
+      { name: "3 hero banner images", included: true },
       { name: "Everything in Classic", included: true },
       { name: "Fully custom design", included: true },
       { name: "Unlimited photos", included: true },
       { name: "Video integration", included: true },
       { name: "MoMo contribution collection", included: true },
+      { name: "Guest Messaging Wall", included: true },
+      { name: "Post-event memorial page", included: true },
       { name: "Guest analytics dashboard", included: true },
       { name: "Custom domain option", included: true },
       { name: "1-year hosting", included: true },
@@ -76,54 +75,78 @@ const packages = [
     description: "Best for exclusive, luxury events",
     popular: false,
     features: [
+      { name: "5 hero banner images", included: true },
       { name: "Everything in Prestige", included: true },
       { name: "Multiple event pages", included: true },
       { name: "White-label (our brand removed)", included: true },
       { name: "Advanced animations", included: true },
-      { name: "Lifetime hosting", included: true },
+      { name: "2-year hosting", included: true },
       { name: "Dedicated account manager", included: true },
-      { name: "Post-event memorial page", included: true },
       { name: "Professional consultation", included: true },
     ],
   },
 ];
 
-const faqs = [
-  {
-    question: "How long does it take to create my invitation?",
-    answer: "Most invitations are ready within 24-48 hours after we receive all your details and photos. For urgent requests, we offer rush delivery for an additional fee.",
-  },
-  {
-    question: "Can I upgrade my package later?",
-    answer: "Yes! You can upgrade anytime before your invitation goes live. We'll adjust the pricing accordingly and add the new features to your existing design.",
-  },
-  {
-    question: "What payment methods do you accept?",
-    answer: "We accept Mobile Money (MTN, Vodafone, AirtelTigo), bank transfer, and cash payments in Accra. Payment is required upfront before we begin designing.",
-  },
-  {
-    question: "Is the MoMo collection fee separate?",
-    answer: "Yes, we charge a 2.5% processing fee on funds collected through MoMo. This covers payment processing, real-time dashboard access, and support. There are no hidden charges.",
-  },
-  {
-    question: "How do guests access my invitation?",
-    answer: "You get a unique link (like vibelink.gh/your-event) that you can share via WhatsApp, SMS, email, or social media. Guests simply click the link – no app download needed!",
-  },
-  {
-    question: "Can I make changes after my invitation is live?",
-    answer: "Absolutely! Depending on your package, you get 1-3 revision rounds. For Prestige and Royal packages, revisions are unlimited. Changes are usually reflected within a few hours.",
-  },
-  {
-    question: "What happens after my event ends?",
-    answer: "Your invitation stays live based on your package duration (30 days to lifetime). Many families keep funerals and memorial pages active permanently as digital tributes.",
-  },
-  {
-    question: "Do you offer refunds?",
-    answer: "We offer a full refund if we haven't started working on your design. Once work begins, we can offer partial refunds depending on how far along the project is. Contact us to discuss.",
-  },
+// Comparison table data
+const comparisonFeatures = [
+  { feature: "Hero Banner Images", starter: "1", classic: "2", prestige: "3", royal: "5" },
+  { feature: "Custom Color Scheme", starter: false, classic: true, prestige: true, royal: true },
+  { feature: "Photo Gallery", starter: false, classic: "10 photos", prestige: "Unlimited", royal: "Unlimited" },
+  { feature: "Background Music", starter: false, classic: true, prestige: true, royal: true },
+  { feature: "RSVP Tracking", starter: false, classic: true, prestige: true, royal: true },
+  { feature: "Countdown Timer", starter: true, classic: true, prestige: true, royal: true },
+  { feature: "Google Maps", starter: true, classic: true, prestige: true, royal: true },
+  { feature: "Add to Calendar", starter: false, classic: true, prestige: true, royal: true },
+  { feature: "Contact Cards", starter: false, classic: true, prestige: true, royal: true },
+  { feature: "Video Integration", starter: false, classic: false, prestige: true, royal: true },
+  { feature: "MoMo Collection", starter: false, classic: false, prestige: true, royal: true },
+  { feature: "Guest Messaging Wall", starter: false, classic: false, prestige: true, royal: true },
+  { feature: "Post-event Memorial", starter: false, classic: false, prestige: true, royal: true },
+  { feature: "Guest Analytics", starter: false, classic: false, prestige: true, royal: true },
+  { feature: "Custom Domain", starter: false, classic: false, prestige: true, royal: true },
+  { feature: "Multiple Event Pages", starter: false, classic: false, prestige: false, royal: true },
+  { feature: "White-label", starter: false, classic: false, prestige: false, royal: true },
+  { feature: "Advanced Animations", starter: false, classic: false, prestige: false, royal: true },
+  { feature: "Hosting Duration", starter: "30 days", classic: "90 days", prestige: "1 year", royal: "2 years" },
+  { feature: "Revision Rounds", starter: "1", classic: "2", prestige: "Unlimited", royal: "Unlimited" },
+  { feature: "Priority Support", starter: false, classic: false, prestige: true, royal: true },
+  { feature: "Dedicated Manager", starter: false, classic: false, prestige: false, royal: true },
+];
+
+const addOns = [
+  { name: "Rush Delivery (48 hours)", price: "GHS 300" },
+  { name: "Extra Revision Round", price: "GHS 100" },
+  { name: "Extended Hosting (6 months)", price: "GHS 150" },
+  { name: "Extended Hosting (1 year)", price: "GHS 300" },
+  { name: "Custom Domain", price: "GHS 200/yr" },
+  { name: "Video Background", price: "GHS 200" },
+  { name: "Extra Photos (+10)", price: "GHS 100" },
+  { name: "Additional Language Version", price: "GHS 150" },
+  { name: "Live Stream Embed", price: "GHS 150" },
+  { name: "Post-Event Thank You Page", price: "GHS 200" },
+  { name: "Guest Messaging Wall", price: "GHS 150" },
+  { name: "Photo Booth Frame", price: "GHS 100" },
+  { name: "Event Timeline/Program Display", price: "GHS 100" },
+  { name: "Memory Tribute Wall (funerals)", price: "GHS 200" },
+  { name: "Bilingual (English + Twi)", price: "GHS 150" },
+  { name: "Bilingual (English + French)", price: "GHS 150" },
+  { name: "Memorial Page Annual Renewal", price: "GHS 100/yr" },
+  { name: "Background Music", price: "GHS 50" },
+  { name: "RSVP Tracking", price: "GHS 100" },
 ];
 
 const Pricing = () => {
+  const renderCellValue = (value: boolean | string) => {
+    if (typeof value === "boolean") {
+      return value ? (
+        <Check className="h-5 w-5 text-accent mx-auto" />
+      ) : (
+        <X className="h-5 w-5 text-muted-foreground/50 mx-auto" />
+      );
+    }
+    return <span className="text-foreground font-medium">{value}</span>;
+  };
+
   return (
     <Layout>
       {/* Hero */}
@@ -226,6 +249,115 @@ const Pricing = () => {
         </div>
       </section>
 
+      {/* Package Comparison Table */}
+      <section className="py-20 bg-muted/50">
+        <div className="container mx-auto px-4 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+              Compare Packages
+            </h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              See exactly what's included in each package to find your perfect fit.
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="overflow-x-auto"
+          >
+            <table className="w-full min-w-[700px] border-collapse">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="text-left py-4 px-4 text-foreground font-semibold">Feature</th>
+                  <th className="text-center py-4 px-4 text-foreground font-semibold">
+                    Starter
+                    <div className="text-sm font-normal text-muted-foreground">GHS 500</div>
+                  </th>
+                  <th className="text-center py-4 px-4 text-foreground font-semibold bg-secondary/10 rounded-t-lg">
+                    Classic
+                    <div className="text-sm font-normal text-secondary">GHS 1,200</div>
+                  </th>
+                  <th className="text-center py-4 px-4 text-foreground font-semibold">
+                    Prestige
+                    <div className="text-sm font-normal text-muted-foreground">GHS 2,500</div>
+                  </th>
+                  <th className="text-center py-4 px-4 text-foreground font-semibold">
+                    Royal
+                    <div className="text-sm font-normal text-muted-foreground">GHS 5,000+</div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {comparisonFeatures.map((row, index) => (
+                  <tr
+                    key={row.feature}
+                    className={`border-b border-border/50 ${
+                      index % 2 === 0 ? "bg-card/50" : ""
+                    }`}
+                  >
+                    <td className="py-3 px-4 text-foreground text-sm">{row.feature}</td>
+                    <td className="py-3 px-4 text-center">{renderCellValue(row.starter)}</td>
+                    <td className="py-3 px-4 text-center bg-secondary/5">{renderCellValue(row.classic)}</td>
+                    <td className="py-3 px-4 text-center">{renderCellValue(row.prestige)}</td>
+                    <td className="py-3 px-4 text-center">{renderCellValue(row.royal)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Add-ons Section */}
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-4 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
+          >
+            <div className="w-16 h-16 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-6">
+              <Plus className="h-8 w-8 text-primary" />
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+              Enhance Your Invitation
+            </h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              Add extra features to make your digital invitation even more special.
+            </p>
+          </motion.div>
+
+          <div className="max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {addOns.map((addon, index) => (
+                <motion.div
+                  key={addon.name}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: index * 0.03 }}
+                  className="flex items-center justify-between p-4 rounded-xl bg-card border border-border hover:border-secondary/50 transition-colors"
+                >
+                  <span className="text-foreground font-medium text-sm">{addon.name}</span>
+                  <span className="text-secondary font-bold text-sm whitespace-nowrap ml-2">{addon.price}</span>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* MoMo Note */}
       <section className="py-12 bg-muted/50">
         <div className="container mx-auto px-4 lg:px-8">
@@ -274,76 +406,6 @@ const Pricing = () => {
                 </a>
               </Button>
             </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* FAQ Section */}
-      <section className="py-20 bg-muted/50">
-        <div className="container mx-auto px-4 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-12"
-          >
-            <div className="w-16 h-16 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-6">
-              <HelpCircle className="h-8 w-8 text-primary" />
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Frequently Asked Questions
-            </h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Got questions? We've got answers. If you don't see what you're looking for, feel free to WhatsApp us!
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="max-w-3xl mx-auto"
-          >
-            <Accordion type="single" collapsible className="space-y-4">
-              {faqs.map((faq, index) => (
-                <AccordionItem
-                  key={index}
-                  value={`item-${index}`}
-                  className="bg-card border border-border rounded-xl px-6 data-[state=open]:shadow-md transition-shadow"
-                >
-                  <AccordionTrigger className="text-left text-foreground font-medium hover:no-underline py-5">
-                    {faq.question}
-                  </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground pb-5 leading-relaxed">
-                    {faq.answer}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="text-center mt-10"
-          >
-            <p className="text-muted-foreground mb-4">
-              Still have questions?
-            </p>
-            <Button asChild variant="outline" size="lg">
-              <a
-                href="https://wa.me/233245817973"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <MessageCircle className="mr-2 h-4 w-4" />
-                Chat with Us
-              </a>
-            </Button>
           </motion.div>
         </div>
       </section>

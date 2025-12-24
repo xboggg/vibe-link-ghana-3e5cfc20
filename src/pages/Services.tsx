@@ -11,6 +11,7 @@ import {
   GraduationCap,
   Building,
   Check,
+  Plus,
 } from "lucide-react";
 
 // Import service images
@@ -136,12 +137,25 @@ const allFeatures = [
 ];
 
 const addOns = [
-  { name: "Rush delivery (48hrs)", price: "GHS 300" },
-  { name: "Custom domain", price: "GHS 200/year" },
-  { name: "Video background", price: "GHS 200" },
-  { name: "Extra photos (+10)", price: "GHS 100" },
-  { name: "Bilingual (English + Twi)", price: "GHS 250" },
-  { name: "QR code cards (50)", price: "GHS 150" },
+  { name: "Rush Delivery (48 hours)", price: "GHS 300" },
+  { name: "Extra Revision Round", price: "GHS 100" },
+  { name: "Extended Hosting (6 months)", price: "GHS 150" },
+  { name: "Extended Hosting (1 year)", price: "GHS 300" },
+  { name: "Custom Domain", price: "GHS 200/yr" },
+  { name: "Video Background", price: "GHS 200" },
+  { name: "Extra Photos (+10)", price: "GHS 100" },
+  { name: "Additional Language Version", price: "GHS 150" },
+  { name: "Live Stream Embed", price: "GHS 150" },
+  { name: "Post-Event Thank You Page", price: "GHS 200" },
+  { name: "Guest Messaging Wall", price: "GHS 150" },
+  { name: "Photo Booth Frame", price: "GHS 100" },
+  { name: "Event Timeline/Program Display", price: "GHS 100" },
+  { name: "Memory Tribute Wall (funerals)", price: "GHS 200" },
+  { name: "Bilingual (English + Twi)", price: "GHS 150" },
+  { name: "Bilingual (English + French)", price: "GHS 150" },
+  { name: "Memorial Page Annual Renewal", price: "GHS 100/yr" },
+  { name: "Background Music", price: "GHS 50" },
+  { name: "RSVP Tracking", price: "GHS 100" },
 ];
 
 const Services = () => {
@@ -317,6 +331,9 @@ const Services = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-12"
           >
+            <div className="w-16 h-16 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-6">
+              <Plus className="h-8 w-8 text-primary" />
+            </div>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
               Enhance Your Invitation
             </h2>
@@ -325,19 +342,19 @@ const Services = () => {
             </p>
           </motion.div>
 
-          <div className="max-w-2xl mx-auto">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {addOns.map((addon, index) => (
                 <motion.div
                   key={addon.name}
                   initial={{ opacity: 0, x: -20 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: index * 0.05 }}
-                  className="flex items-center justify-between p-4 rounded-xl bg-card border border-border"
+                  transition={{ duration: 0.4, delay: index * 0.03 }}
+                  className="flex items-center justify-between p-4 rounded-xl bg-card border border-border hover:border-secondary/50 transition-colors"
                 >
-                  <span className="text-foreground font-medium">{addon.name}</span>
-                  <span className="text-secondary font-bold">{addon.price}</span>
+                  <span className="text-foreground font-medium text-sm">{addon.name}</span>
+                  <span className="text-secondary font-bold text-sm whitespace-nowrap ml-2">{addon.price}</span>
                 </motion.div>
               ))}
             </div>
