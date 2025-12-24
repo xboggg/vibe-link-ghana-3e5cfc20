@@ -4,6 +4,7 @@ import { Menu, X, Sparkles, Instagram, Facebook, Twitter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const navItems = [
   { name: "Home", href: "/" },
@@ -88,8 +89,11 @@ export function Navbar() {
             ))}
           </div>
 
-          {/* Right Side: Socials + CTA */}
+          {/* Right Side: Theme Toggle + Socials + CTA */}
           <div className="hidden lg:flex items-center gap-3">
+            {/* Theme Toggle */}
+            <ThemeToggle />
+            
             {/* Social Links */}
             <div className="flex items-center gap-1 border-r border-primary-foreground/20 pr-4">
               {socialLinks.map((social) => (
@@ -191,7 +195,7 @@ export function Navbar() {
                   </Link>
                 </motion.div>
               ))}
-              {/* Mobile Social Links */}
+              {/* Mobile Social Links + Theme Toggle */}
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -199,6 +203,7 @@ export function Navbar() {
                 transition={{ delay: navItems.length * 0.05, duration: 0.3 }}
                 className="flex items-center justify-center gap-4 pt-4"
               >
+                <ThemeToggle />
                 {socialLinks.map((social, index) => (
                   <motion.a
                     key={social.name}
