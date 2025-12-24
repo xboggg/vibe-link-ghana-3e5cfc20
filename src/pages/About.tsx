@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
-import { CTASection } from "@/components/sections/CTASection";
-import { Heart, Globe, Sparkles, Shield, Users, Clock, Star, MapPin, Instagram, Facebook, Twitter, Send, MessageCircle } from "lucide-react";
+import { Heart, Globe, Sparkles, Shield, Users, Clock, Star, MessageCircle as MessageCircleIcon, Instagram, Facebook, Twitter, Send, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -15,7 +15,7 @@ const TikTokIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-const socialLinks = [
+export const socialLinks = [
   { name: "Instagram", icon: Instagram, href: "https://instagram.com/vibelink_ghana" },
   { name: "Facebook", icon: Facebook, href: "https://facebook.com/VibeLink Ghana" },
   { name: "Twitter", icon: Twitter, href: "https://twitter.com/VibeLink_GH" },
@@ -46,10 +46,29 @@ const values = [
 ];
 
 const stats = [
-  { icon: Users, value: "100+", label: "Events Created" },
-  { icon: Heart, value: "500+", label: "Happy Guests" },
-  { icon: Clock, value: "< 2hr", label: "Response Time" },
-  { icon: Star, value: "4.9★", label: "Client Rating" },
+  { value: "500+", label: "Events Created" },
+  { value: "10,000+", label: "Guests Reached" },
+  { value: "98%", label: "Satisfaction Rate" },
+  { value: "48hrs", label: "Fastest Delivery" },
+];
+
+// Why Choose VibeLink features
+const whyChooseFeatures = [
+  {
+    icon: MessageCircleIcon,
+    title: "WhatsApp-First Support",
+    description: "We're always just a message away. Get quick responses and updates via WhatsApp, the way Ghanaians prefer to communicate.",
+  },
+  {
+    icon: Users,
+    title: "Ghana-Focused Design",
+    description: "Our templates are designed specifically for Ghanaian ceremonies, respecting cultural nuances and traditions.",
+  },
+  {
+    icon: Globe,
+    title: "Diaspora-Ready",
+    description: "Your invitations work perfectly for guests anywhere in the world, with timezone support and easy sharing.",
+  },
 ];
 
 const About = () => {
@@ -85,7 +104,7 @@ const About = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleWhatsAppSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!validateForm()) {
@@ -120,10 +139,46 @@ ${formData.message.trim()}`;
     setErrors({});
   };
 
+  const handleEmailSubmit = () => {
+    if (!validateForm()) {
+      toast({
+        title: "Please fix the errors",
+        description: "Check the form fields and try again.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const subject = formData.eventType 
+      ? `Inquiry about ${formData.eventType}` 
+      : "Inquiry from VibeLink Website";
+    
+    const body = `Hi VibeLink Team,
+
+Name: ${formData.name.trim()}
+${formData.email ? `Email: ${formData.email.trim()}` : ""}
+${formData.eventType ? `Event Type: ${formData.eventType.trim()}` : ""}
+
+Message:
+${formData.message.trim()}`;
+
+    const mailtoUrl = `mailto:hello@vibelinkgh.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = mailtoUrl;
+    
+    toast({
+      title: "Opening Email",
+      description: "Complete your message in your email app!",
+    });
+
+    // Reset form
+    setFormData({ name: "", email: "", eventType: "", message: "" });
+    setErrors({});
+  };
+
   return (
     <Layout>
-      {/* Hero */}
-      <section className="pt-24 lg:pt-32 pb-16 bg-gradient-to-b from-navy to-navy-light">
+      {/* Hero - Purple Gradient */}
+      <section className="pt-24 lg:pt-32 pb-16 bg-gradient-to-b from-[#6B46C1] via-[#553C9A] to-[#44337A]">
         <div className="container mx-auto px-4 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -131,35 +186,12 @@ ${formData.message.trim()}`;
             transition={{ duration: 0.6 }}
             className="text-center max-w-3xl mx-auto"
           >
-            <span className="inline-block px-4 py-1.5 rounded-full bg-secondary/20 text-secondary text-sm font-medium mb-4">
-              About Us
-            </span>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
               About VibeLink Ghana
             </h1>
-            <p className="text-primary-foreground/80 text-lg lg:text-xl mb-8">
-              Transforming Ghanaian ceremonies, one link at a time. We're on a
-              mission to make event invitations beautiful, shareable, and
-              unforgettable.
+            <p className="text-white/80 text-lg lg:text-xl">
+              Ghana's premier digital invitation service, celebrating life's precious moments
             </p>
-            {/* Social Links */}
-            <div className="flex items-center justify-center gap-3">
-              {socialLinks.map((social, index) => (
-                <motion.a
-                  key={social.name}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 + index * 0.1 }}
-                  className="p-3 rounded-full bg-primary-foreground/10 text-primary-foreground/70 hover:bg-secondary hover:text-navy transition-all"
-                  aria-label={social.name}
-                >
-                  <social.icon className="h-5 w-5" />
-                </motion.a>
-              ))}
-            </div>
           </motion.div>
         </div>
       </section>
@@ -167,10 +199,10 @@ ${formData.message.trim()}`;
       {/* Our Story */}
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="max-w-3xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
@@ -180,42 +212,158 @@ ${formData.message.trim()}`;
               
               <div className="prose prose-lg text-muted-foreground space-y-4">
                 <p>
-                  VibeLink Ghana was born from a simple observation: Ghanaian
-                  families were struggling with the chaos of event coordination.
-                  Paper invitations got lost, WhatsApp messages were confusing,
-                  and diaspora family members often missed important details.
+                  VibeLink Ghana was born from a simple observation: Ghanaians love to
+                  celebrate, but the traditional invitation process was stuck in the past. Paper
+                  invitations were expensive, hard to distribute, and couldn't reach loved ones
+                  abroad.
                 </p>
                 
                 <p>
-                  We saw families printing hundreds of invitation cards, only to
-                  make last-minute changes that couldn't be communicated. We saw
-                  funeral committees overwhelmed with coordinating contributions.
-                  We saw beautiful ceremonies that deserved better digital
-                  representation.
+                  We set out to change that. Our mission is to be the digital front door to every
+                  Ghanaian ceremony - from joyful weddings and naming ceremonies to
+                  dignified funerals and everything in between.
                 </p>
                 
                 <p>
-                  So we created VibeLink – a platform that transforms traditional
-                  event invitations into beautiful, interactive digital
-                  experiences. One link that does everything: shares details,
-                  collects RSVPs, accepts MoMo contributions, and looks stunning
-                  on any phone.
+                  Today, we serve families across Ghana and the diaspora, helping them share
+                  their most precious moments with beautiful, interactive digital invitations that
+                  honor our traditions while embracing modern convenience.
                 </p>
-                
-                <p>
-                  Today, we're proud to serve Ghanaian families across the world,
-                  helping them celebrate weddings, honor loved ones at funerals,
-                  welcome new babies, and mark every milestone with the dignity
-                  and beauty they deserve.
-                </p>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="relative"
+            >
+              <div className="rounded-2xl overflow-hidden shadow-xl">
+                <img 
+                  src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=400&fit=crop"
+                  alt="Conference event in Ghana"
+                  className="w-full h-auto object-cover"
+                />
               </div>
             </motion.div>
           </div>
         </div>
       </section>
 
+      {/* Stats - Purple Background */}
+      <section className="py-16 bg-[#7C3AED]">
+        <div className="container mx-auto px-4 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+            {stats.map((stat, index) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+                className="text-center"
+              >
+                <div className="text-4xl md:text-5xl font-bold text-white mb-1">
+                  {stat.value}
+                </div>
+                <div className="text-white/80 text-sm">
+                  {stat.label}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Our Values */}
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-4 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+              Our Values
+            </h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              What drives us every day
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+            {values.map((value, index) => (
+              <motion.div
+                key={value.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="text-center p-6 rounded-2xl bg-card border border-border"
+              >
+                <div className="w-14 h-14 mx-auto rounded-xl bg-secondary/20 flex items-center justify-center mb-4">
+                  <value.icon className="h-7 w-7 text-secondary" />
+                </div>
+                <h3 className="text-lg font-bold text-foreground mb-2">
+                  {value.title}
+                </h3>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  {value.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Why Choose VibeLink - Replaces "Based in Accra" */}
+      <section className="py-20 bg-muted/30">
+        <div className="container mx-auto px-4 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+              Why Choose VibeLink?
+            </h2>
+            <p className="text-muted-foreground text-lg">
+              What makes us different
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            {whyChooseFeatures.map((feature, index) => (
+              <motion.div
+                key={feature.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="bg-card rounded-2xl p-8 border border-border shadow-sm hover:shadow-md transition-shadow"
+              >
+                <div className="w-14 h-14 rounded-xl bg-secondary/20 flex items-center justify-center mb-5">
+                  <feature.icon className="h-7 w-7 text-secondary" />
+                </div>
+                <h3 className="text-xl font-bold text-foreground mb-3">
+                  {feature.title}
+                </h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  {feature.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Mission & Vision */}
-      <section className="py-20 bg-muted/50">
+      <section className="py-20 bg-background">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             <motion.div
@@ -257,101 +405,41 @@ ${formData.message.trim()}`;
         </div>
       </section>
 
-      {/* Values */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4 lg:px-8">
+      {/* CTA Section - Purple Background */}
+      <section className="py-20 bg-[#7C3AED] relative overflow-hidden">
+        <div className="absolute inset-0 bg-pattern-dots opacity-10" />
+        
+        <div className="container mx-auto px-4 lg:px-8 relative">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-12"
+            className="max-w-3xl mx-auto text-center"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Our Values
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
+              Ready to Create Something Beautiful?
             </h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              The principles that guide everything we do.
+            <p className="text-white/80 text-lg mb-8">
+              Let us help you celebrate your next milestone with a stunning digital invitation.
             </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
-            {values.map((value, index) => (
-              <motion.div
-                key={value.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="text-center p-6 rounded-2xl bg-card border border-border"
-              >
-                <div className="w-14 h-14 mx-auto rounded-xl bg-primary/10 flex items-center justify-center mb-4">
-                  <value.icon className="h-7 w-7 text-primary" />
-                </div>
-                <h3 className="text-lg font-bold text-foreground mb-2">
-                  {value.title}
-                </h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">
-                  {value.description}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Stats */}
-      <section className="py-20 bg-navy">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
-            {stats.map((stat, index) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-                className="text-center"
-              >
-                <stat.icon className="h-8 w-8 text-secondary mx-auto mb-3" />
-                <div className="text-3xl md:text-4xl font-bold text-primary-foreground mb-1">
-                  {stat.value}
-                </div>
-                <div className="text-primary-foreground/70 text-sm">
-                  {stat.label}
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Location */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="max-w-2xl mx-auto text-center"
-          >
-            <div className="w-16 h-16 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-6">
-              <MapPin className="h-8 w-8 text-primary" />
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Button asChild size="lg" className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold px-8">
+                <Link to="/get-started">
+                  Get Started
+                </Link>
+              </Button>
+              <Button asChild variant="outline" size="lg" className="border-white/30 text-white hover:bg-white/10 px-8">
+                <Link to="/portfolio">
+                  View Our Work
+                </Link>
+              </Button>
             </div>
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
-              Based in Accra, Ghana
-            </h2>
-            <p className="text-muted-foreground text-lg">
-              Proudly Ghanaian, serving families worldwide. Whether you're in
-              Kumasi, London, or New York – we're here to make your celebration
-              unforgettable.
-            </p>
           </motion.div>
         </div>
       </section>
 
-      {/* Contact Form */}
+      {/* Contact Form Section */}
       <section className="py-20 bg-muted/50">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="max-w-2xl mx-auto">
@@ -363,23 +451,22 @@ ${formData.message.trim()}`;
               className="text-center mb-10"
             >
               <div className="w-16 h-16 mx-auto rounded-full bg-secondary/20 flex items-center justify-center mb-6">
-                <MessageCircle className="h-8 w-8 text-secondary" />
+                <MessageCircleIcon className="h-8 w-8 text-secondary" />
               </div>
               <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
                 Get In Touch
               </h2>
               <p className="text-muted-foreground text-lg">
                 Have a question or want to discuss your event? Send us a message
-                and we'll get back to you on WhatsApp.
+                and we'll get back to you.
               </p>
             </motion.div>
 
-            <motion.form
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              onSubmit={handleSubmit}
               className="p-8 rounded-2xl bg-card border border-border space-y-6"
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -460,16 +547,32 @@ ${formData.message.trim()}`;
                 </p>
               </div>
 
-              <Button type="submit" variant="gold" size="lg" className="w-full">
-                <Send className="h-5 w-5 mr-2" />
-                Send via WhatsApp
-              </Button>
-            </motion.form>
+              {/* Dual Send Buttons */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Button 
+                  type="button" 
+                  onClick={handleWhatsAppSubmit}
+                  size="lg" 
+                  className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground"
+                >
+                  <Send className="h-5 w-5 mr-2" />
+                  Send via WhatsApp
+                </Button>
+                <Button 
+                  type="button" 
+                  onClick={handleEmailSubmit}
+                  variant="outline"
+                  size="lg" 
+                  className="w-full border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+                >
+                  <Mail className="h-5 w-5 mr-2" />
+                  Send via Email
+                </Button>
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
-
-      <CTASection />
     </Layout>
   );
 };

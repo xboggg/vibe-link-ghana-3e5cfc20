@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Sparkles, Instagram, Facebook, Twitter, Phone, Mail, MapPin } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const quickLinks = [
   { name: "Home", href: "/" },
@@ -8,7 +9,15 @@ const quickLinks = [
   { name: "Blog", href: "/blog" },
   { name: "Pricing", href: "/pricing" },
   { name: "About", href: "/about" },
-  { name: "Get Started", href: "/get-started" },
+];
+
+const eventTypes = [
+  { name: "Weddings", href: "/services#wedding" },
+  { name: "Funerals", href: "/services#funeral" },
+  { name: "Naming Ceremonies", href: "/services#naming" },
+  { name: "Anniversaries", href: "/services#anniversary" },
+  { name: "Graduations", href: "/services#graduation" },
+  { name: "Corporate Events", href: "/services#corporate" },
 ];
 
 const socialLinks = [
@@ -55,7 +64,7 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Quick Links */}
+          {/* Quick Links with Get Started */}
           <div>
             <h4 className="text-sm font-semibold uppercase tracking-wider text-secondary mb-4">
               Quick Links
@@ -72,20 +81,36 @@ export function Footer() {
                 </li>
               ))}
             </ul>
+            {/* Get Started Button */}
+            <div className="mt-4">
+              <Button 
+                asChild 
+                size="sm"
+                className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold"
+              >
+                <Link to="/get-started">
+                  Get Started
+                </Link>
+              </Button>
+            </div>
           </div>
 
-          {/* Services */}
+          {/* Event Types - Clickable */}
           <div>
             <h4 className="text-sm font-semibold uppercase tracking-wider text-secondary mb-4">
               Event Types
             </h4>
             <ul className="space-y-2">
-              <li className="text-primary-foreground/70 text-sm">Weddings</li>
-              <li className="text-primary-foreground/70 text-sm">Funerals</li>
-              <li className="text-primary-foreground/70 text-sm">Naming Ceremonies</li>
-              <li className="text-primary-foreground/70 text-sm">Anniversaries</li>
-              <li className="text-primary-foreground/70 text-sm">Graduations</li>
-              <li className="text-primary-foreground/70 text-sm">Corporate Events</li>
+              {eventTypes.map((event) => (
+                <li key={event.name}>
+                  <Link
+                    to={event.href}
+                    className="text-primary-foreground/70 hover:text-secondary transition-colors text-sm"
+                  >
+                    {event.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 

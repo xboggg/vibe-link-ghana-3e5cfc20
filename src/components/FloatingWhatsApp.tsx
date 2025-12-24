@@ -7,16 +7,15 @@ export function FloatingWhatsApp() {
       href="https://wa.me/233245817973"
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-6 right-6 z-50 flex items-center justify-center w-14 h-14 rounded-full bg-[#25D366] text-white shadow-lg hover:shadow-xl transition-shadow"
+      className="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-3 rounded-full bg-[#25D366] text-white shadow-lg hover:shadow-xl transition-all hover:scale-105"
       initial={{ scale: 0, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       transition={{ delay: 1, type: "spring", stiffness: 200 }}
-      whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.95 }}
       aria-label="Chat on WhatsApp"
     >
-      <MessageCircle className="h-7 w-7" />
-      <span className="absolute -top-1 -right-1 w-4 h-4 bg-secondary rounded-full animate-pulse" />
+      <MessageCircle className="h-5 w-5" />
+      <span className="font-medium text-sm">Chat with us</span>
     </motion.a>
   );
 }
