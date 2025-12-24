@@ -9,60 +9,108 @@ import {
   Baby,
   Cake,
   GraduationCap,
-  Church,
   Building,
   Check,
-  ArrowRight,
 } from "lucide-react";
+
+// Import service images
+import weddingImg from "@/assets/service-wedding.jpg";
+import funeralImg from "@/assets/hero-funeral.jpg";
+import namingImg from "@/assets/hero-naming.jpg";
+import anniversaryImg from "@/assets/service-anniversary.jpg";
+import graduationImg from "@/assets/hero-graduation.jpg";
+import corporateImg from "@/assets/hero-corporate.jpg";
 
 const services = [
   {
     icon: Heart,
     title: "Wedding Invitations",
     description:
-      "Beautiful digital invitations for your traditional and white wedding ceremonies. Share your love story with the world.",
-    features: ["Photo galleries", "Love story timeline", "RSVP & meal preferences"],
+      "Beautiful digital invitations for your traditional, white wedding, or both.",
+    features: [
+      "Dual ceremony support",
+      "Love story timeline",
+      "RSVP with meal preferences",
+      "Wedding party introductions",
+      "Gift registry integration",
+    ],
     slug: "wedding",
+    image: weddingImg,
   },
   {
     icon: Users,
     title: "Funeral Programs",
     description:
-      "Dignified digital tributes honoring your loved ones. Keep family connected during difficult times.",
-    features: ["Memorial pages", "Tribute submissions", "MoMo contributions"],
+      "Dignified memorial pages that honor your loved ones with respect.",
+    features: [
+      "Tribute wall",
+      "Donation links",
+      "Program timeline",
+      "Photo memories",
+      "Memorial page forever",
+    ],
     slug: "funeral",
+    image: funeralImg,
   },
   {
     icon: Baby,
     title: "Naming Ceremonies",
     description:
-      "Celebrate your little one's arrival with a beautiful digital invitation for the outdooring.",
-    features: ["Baby photo gallery", "Gift registry links", "Family tree display"],
+      "Celebrate the arrival of new life with joyful digital invitations.",
+    features: [
+      "Baby introduction",
+      "Name meaning display",
+      "Godparents section",
+      "Photo gallery",
+      "Gift suggestions",
+    ],
     slug: "naming",
+    image: namingImg,
   },
   {
     icon: Cake,
     title: "Anniversary & Vow Renewal",
     description:
-      "Mark your milestone with an elegant digital invitation that celebrates your journey together.",
-    features: ["Memory timeline", "Photo journey", "Anniversary wishes"],
+      "Mark your milestones with elegant digital celebrations.",
+    features: [
+      "Journey timeline",
+      "Photo memories",
+      "Love quotes",
+      "Guest messaging",
+      "Celebration countdown",
+    ],
     slug: "anniversary",
+    image: anniversaryImg,
   },
   {
     icon: GraduationCap,
     title: "Graduation Celebrations",
     description:
-      "Share your academic achievement with friends and family through a stunning digital invite.",
-    features: ["Achievement showcase", "School photos", "Celebration details"],
+      "Share your academic achievements with family and friends.",
+    features: [
+      "Achievement showcase",
+      "Ceremony details",
+      "Party information",
+      "Photo gallery",
+      "Thank you messages",
+    ],
     slug: "graduation",
+    image: graduationImg,
   },
   {
     icon: Building,
     title: "Church & Corporate Events",
     description:
       "Professional digital invitations for church programs, conferences, and corporate events.",
-    features: ["Event schedule", "Speaker profiles", "Registration forms"],
+    features: [
+      "Event schedule",
+      "Speaker profiles",
+      "Registration forms",
+      "Venue information",
+      "Program agenda",
+    ],
     slug: "corporate",
+    image: corporateImg,
   },
 ];
 
@@ -103,65 +151,92 @@ const Services = () => {
             className="text-center max-w-3xl mx-auto"
           >
             <span className="inline-block px-4 py-1.5 rounded-full bg-secondary/20 text-secondary text-sm font-medium mb-4">
-              Our Services
+              Event Types We Serve
             </span>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6">
-              Premium Digital Invitations
+              Event Types We Serve
             </h1>
             <p className="text-primary-foreground/80 text-lg lg:text-xl">
-              Premium digital invitations for every Ghanaian ceremony. Beautiful,
-              shareable, and unforgettable.
+              From joyful celebrations to dignified memorials
             </p>
           </motion.div>
         </div>
       </section>
 
-      {/* Services Grid */}
-      <section className="py-20 bg-background">
+      {/* Services - Alternating Layout */}
+      <section className="py-16 lg:py-24 bg-background">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-            {services.map((service, index) => (
-              <motion.div
-                key={service.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="group p-6 lg:p-8 rounded-2xl bg-card border border-border hover:border-primary/30 hover:shadow-lg transition-all duration-300"
-              >
-                <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary transition-colors">
-                  <service.icon className="h-7 w-7 text-primary group-hover:text-primary-foreground transition-colors" />
-                </div>
-
-                <h3 className="text-xl font-bold text-foreground mb-3">
-                  {service.title}
-                </h3>
-
-                <p className="text-muted-foreground mb-4 leading-relaxed">
-                  {service.description}
-                </p>
-
-                <ul className="space-y-2 mb-6">
-                  {service.features.map((feature) => (
-                    <li key={feature} className="flex items-center gap-2 text-sm">
-                      <Check className="h-4 w-4 text-accent" />
-                      <span className="text-foreground">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <div className="flex gap-3">
-                  <Button asChild variant="outline" size="sm" className="flex-1">
-                    <Link to={`/portfolio?type=${service.slug}`}>
-                      See Examples
-                    </Link>
-                  </Button>
-                  <Button asChild variant="gold" size="sm" className="flex-1">
-                    <Link to="/get-started">Get Quote</Link>
-                  </Button>
-                </div>
-              </motion.div>
-            ))}
+          <div className="space-y-16 lg:space-y-24">
+            {services.map((service, index) => {
+              const isEven = index % 2 === 0;
+              const IconComponent = service.icon;
+              
+              return (
+                <motion.div
+                  key={service.title}
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ duration: 0.6 }}
+                  className={`grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center ${
+                    isEven ? "" : "lg:direction-rtl"
+                  }`}
+                >
+                  {/* Content */}
+                  <div className={`space-y-6 ${isEven ? "lg:order-1" : "lg:order-2"}`}>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <IconComponent className="h-5 w-5 text-primary" />
+                      </div>
+                    </div>
+                    
+                    <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground">
+                      {service.title}
+                    </h2>
+                    
+                    <p className="text-muted-foreground text-lg leading-relaxed">
+                      {service.description}
+                    </p>
+                    
+                    <ul className="space-y-3">
+                      {service.features.map((feature) => (
+                        <li key={feature} className="flex items-center gap-3">
+                          <Check className="h-5 w-5 text-accent flex-shrink-0" />
+                          <span className="text-foreground">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    
+                    <div className="flex flex-wrap gap-3 pt-2">
+                      <Button asChild variant="default" size="default">
+                        <Link to={`/portfolio?type=${service.slug}`}>
+                          See Examples
+                        </Link>
+                      </Button>
+                      <Button asChild variant="ghost" size="default">
+                        <Link to="/get-started">Get Quote</Link>
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  {/* Image */}
+                  <div className={`${isEven ? "lg:order-2" : "lg:order-1"}`}>
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      transition={{ duration: 0.3 }}
+                      className="relative rounded-2xl overflow-hidden shadow-xl aspect-[4/3]"
+                    >
+                      <img
+                        src={service.image}
+                        alt={`${service.title} - Ghana`}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                    </motion.div>
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
