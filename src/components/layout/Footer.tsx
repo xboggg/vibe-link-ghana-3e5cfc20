@@ -64,7 +64,7 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Quick Links with Get Started */}
+          {/* Quick Links */}
           <div>
             <h4 className="text-sm font-semibold uppercase tracking-wider text-secondary mb-4">
               Quick Links
@@ -81,18 +81,6 @@ export function Footer() {
                 </li>
               ))}
             </ul>
-            {/* Get Started Button */}
-            <div className="mt-4">
-              <Button 
-                asChild 
-                size="sm"
-                className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold"
-              >
-                <Link to="/get-started">
-                  Get Started
-                </Link>
-              </Button>
-            </div>
           </div>
 
           {/* Event Types - Clickable */}
@@ -145,6 +133,19 @@ export function Footer() {
                 </span>
               </li>
             </ul>
+            {/* Get Started Button */}
+            <div className="mt-5">
+              <Button 
+                asChild 
+                size="sm"
+                className="bg-gradient-to-r from-secondary to-primary hover:from-secondary/90 hover:to-primary/90 text-secondary-foreground font-semibold shadow-lg hover:shadow-xl transition-all duration-300 px-6"
+              >
+                <Link to="/get-started" className="flex items-center gap-2">
+                  <Sparkles className="h-4 w-4" />
+                  Get Started
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
       </div>

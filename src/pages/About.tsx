@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { AnimatedCounter } from "@/components/AnimatedCounter";
 
 const TikTokIcon = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
@@ -46,10 +47,10 @@ const values = [
 ];
 
 const stats = [
-  { value: "500+", label: "Events Created" },
-  { value: "10,000+", label: "Guests Reached" },
-  { value: "98%", label: "Satisfaction Rate" },
-  { value: "48hrs", label: "Fastest Delivery" },
+  { value: 500, suffix: "+", label: "Events Created" },
+  { value: 10000, suffix: "+", label: "Guests Reached" },
+  { value: 98, suffix: "%", label: "Satisfaction Rate" },
+  { value: 48, suffix: "hrs", label: "Fastest Delivery" },
 ];
 
 // Why Choose VibeLink features
@@ -265,7 +266,11 @@ ${formData.message.trim()}`;
                 className="text-center"
               >
                 <div className="text-4xl md:text-5xl font-bold text-white mb-1">
-                  {stat.value}
+                  <AnimatedCounter 
+                    end={stat.value} 
+                    suffix={stat.suffix} 
+                    duration={2000} 
+                  />
                 </div>
                 <div className="text-white/80 text-sm">
                   {stat.label}
