@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { OrderFormData, initialFormData, packages, addOns } from "@/data/orderFormData";
+import { supabase } from "@/integrations/supabase/client";
 import { EventTypeStep } from "./steps/EventTypeStep";
 import { EventDetailsStep } from "./steps/EventDetailsStep";
 import { StyleColorsStep } from "./steps/StyleColorsStep";
@@ -112,10 +113,56 @@ export const OrderFormWizard = ({ onComplete }: OrderFormWizardProps) => {
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsSubmitting(false);
-    onComplete?.(formData);
+    
+    try {
+      const selectedPkg = packages.find((p) => p.id === formData.selectedPackage);
+      const selectedAddOnsList = formData.selectedAddOns.map((addonId) => {
+        const addon = addOns.find((a) => a.id === addonId);
+        return addon ? { id: addon.id, name: addon.name, price: addon.price } : null;
+      }).filter(Boolean);
+      
+      const total = calculateTotal();
+      
+      const { error } = await supabase.from("orders").insert({
+        event_type: formData.eventType,
+        event_title: formData.eventTitle,
+        event_date: formData.eventDate ? formData.eventDate.toISOString().split("T")[0] : null,
+        event_time: formData.eventTime || null,
+        venue_name: formData.eventVenue || null,
+        venue_address: formData.eventAddress || null,
+        couple_names: formData.celebrantNames || null,
+        special_message: formData.additionalInfo || null,
+        color_palette: formData.colorPalette || null,
+        custom_colors: formData.customColors.length > 0 ? formData.customColors : null,
+        style_preferences: formData.stylePreference ? [formData.stylePreference] : null,
+        package_id: formData.selectedPackage,
+        package_name: selectedPkg?.name || "",
+        package_price: selectedPkg?.price || 0,
+        add_ons: selectedAddOnsList,
+        delivery_type: formData.deliveryUrgency,
+        preferred_delivery_date: formData.preferredDeliveryDate 
+          ? formData.preferredDeliveryDate.toISOString().split("T")[0] 
+          : null,
+        special_requests: formData.designNotes || null,
+        client_name: formData.fullName,
+        client_email: formData.email,
+        client_phone: formData.phone,
+        client_whatsapp: formData.whatsapp || null,
+        total_price: total,
+      });
+
+      if (error) {
+        console.error("Error submitting order:", error);
+        throw error;
+      }
+      
+      onComplete?.(formData);
+    } catch (error) {
+      console.error("Order submission failed:", error);
+      throw error;
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const renderStep = () => {

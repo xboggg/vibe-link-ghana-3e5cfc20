@@ -9,9 +9,12 @@ const GetStarted = () => {
   const navigate = useNavigate();
 
   const handleFormComplete = (data: OrderFormData) => {
-    console.log("Order submitted:", data);
     toast.success("Order submitted successfully! We'll contact you within 2 hours.");
     navigate("/thank-you");
+  };
+
+  const handleFormError = () => {
+    toast.error("Failed to submit order. Please try again.");
   };
 
   return (

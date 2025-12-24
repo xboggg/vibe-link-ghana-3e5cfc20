@@ -14,16 +14,164 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      orders: {
+        Row: {
+          add_ons: Json | null
+          client_email: string
+          client_name: string
+          client_phone: string
+          client_whatsapp: string | null
+          color_palette: string | null
+          couple_names: string | null
+          created_at: string
+          custom_colors: string[] | null
+          delivery_type: string
+          event_date: string | null
+          event_time: string | null
+          event_title: string
+          event_type: string
+          id: string
+          order_status: Database["public"]["Enums"]["order_status"]
+          package_id: string
+          package_name: string
+          package_price: number
+          payment_status: Database["public"]["Enums"]["payment_status"]
+          preferred_delivery_date: string | null
+          special_message: string | null
+          special_requests: string | null
+          style_preferences: string[] | null
+          total_price: number
+          updated_at: string
+          venue_address: string | null
+          venue_name: string | null
+        }
+        Insert: {
+          add_ons?: Json | null
+          client_email: string
+          client_name: string
+          client_phone: string
+          client_whatsapp?: string | null
+          color_palette?: string | null
+          couple_names?: string | null
+          created_at?: string
+          custom_colors?: string[] | null
+          delivery_type?: string
+          event_date?: string | null
+          event_time?: string | null
+          event_title: string
+          event_type: string
+          id?: string
+          order_status?: Database["public"]["Enums"]["order_status"]
+          package_id: string
+          package_name: string
+          package_price: number
+          payment_status?: Database["public"]["Enums"]["payment_status"]
+          preferred_delivery_date?: string | null
+          special_message?: string | null
+          special_requests?: string | null
+          style_preferences?: string[] | null
+          total_price: number
+          updated_at?: string
+          venue_address?: string | null
+          venue_name?: string | null
+        }
+        Update: {
+          add_ons?: Json | null
+          client_email?: string
+          client_name?: string
+          client_phone?: string
+          client_whatsapp?: string | null
+          color_palette?: string | null
+          couple_names?: string | null
+          created_at?: string
+          custom_colors?: string[] | null
+          delivery_type?: string
+          event_date?: string | null
+          event_time?: string | null
+          event_title?: string
+          event_type?: string
+          id?: string
+          order_status?: Database["public"]["Enums"]["order_status"]
+          package_id?: string
+          package_name?: string
+          package_price?: number
+          payment_status?: Database["public"]["Enums"]["payment_status"]
+          preferred_delivery_date?: string | null
+          special_message?: string | null
+          special_requests?: string | null
+          style_preferences?: string[] | null
+          total_price?: number
+          updated_at?: string
+          venue_address?: string | null
+          venue_name?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
+      order_status:
+        | "pending"
+        | "in_progress"
+        | "draft_ready"
+        | "revision"
+        | "completed"
+        | "cancelled"
+      payment_status: "pending" | "deposit_paid" | "fully_paid"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +298,17 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+      order_status: [
+        "pending",
+        "in_progress",
+        "draft_ready",
+        "revision",
+        "completed",
+        "cancelled",
+      ],
+      payment_status: ["pending", "deposit_paid", "fully_paid"],
+    },
   },
 } as const

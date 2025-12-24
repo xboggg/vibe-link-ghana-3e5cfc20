@@ -17,6 +17,8 @@ import ThankYou from "./pages/ThankYou";
 import Blog from "./pages/Blog";
 import BlogDetail from "./pages/BlogDetail";
 import NotFound from "./pages/NotFound";
+import Admin from "./pages/Admin";
+import AdminAuth from "./pages/AdminAuth";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +42,8 @@ const App = () => (
             <Route path="/thank-you" element={<ThankYou />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogDetail />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/admin/auth" element={<AdminAuth />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
