@@ -1,0 +1,252 @@
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Check } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { OrderFormData, initialFormData, packages, addOns } from "@/data/orderFormData";
+import { EventTypeStep } from "./steps/EventTypeStep";
+import { EventDetailsStep } from "./steps/EventDetailsStep";
+import { StyleColorsStep } from "./steps/StyleColorsStep";
+import { PackageStep } from "./steps/PackageStep";
+import { AddOnsStep } from "./steps/AddOnsStep";
+import { TimelineStep } from "./steps/TimelineStep";
+import { ContactStep } from "./steps/ContactStep";
+import { OrderSummary } from "./OrderSummary";
+import { PriceCalculator } from "./PriceCalculator";
+
+const steps = [
+  { id: 1, name: "Event Type", shortName: "Event" },
+  { id: 2, name: "Event Details", shortName: "Details" },
+  { id: 3, name: "Style & Colors", shortName: "Style" },
+  { id: 4, name: "Package", shortName: "Package" },
+  { id: 5, name: "Add-ons", shortName: "Add-ons" },
+  { id: 6, name: "Timeline", shortName: "Timeline" },
+  { id: 7, name: "Contact & Submit", shortName: "Submit" },
+];
+
+interface OrderFormWizardProps {
+  onComplete?: (data: OrderFormData) => void;
+}
+
+export const OrderFormWizard = ({ onComplete }: OrderFormWizardProps) => {
+  const [currentStep, setCurrentStep] = useState(1);
+  const [formData, setFormData] = useState<OrderFormData>(initialFormData);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const updateFormData = (updates: Partial<OrderFormData>) => {
+    setFormData((prev) => ({ ...prev, ...updates }));
+  };
+
+  const nextStep = () => {
+    if (currentStep < steps.length) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const prevStep = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const goToStep = (step: number) => {
+    if (step <= currentStep || canGoToStep(step)) {
+      setCurrentStep(step);
+    }
+  };
+
+  const canGoToStep = (step: number): boolean => {
+    // Allow going to any previous step or current step
+    if (step <= currentStep) return true;
+    // Otherwise check if all previous steps are complete
+    for (let i = 1; i < step; i++) {
+      if (!isStepComplete(i)) return false;
+    }
+    return true;
+  };
+
+  const isStepComplete = (step: number): boolean => {
+    switch (step) {
+      case 1:
+        return !!formData.eventType;
+      case 2:
+        return !!formData.eventTitle && !!formData.eventDate && !!formData.eventVenue;
+      case 3:
+        return !!formData.colorPalette && !!formData.stylePreference;
+      case 4:
+        return !!formData.selectedPackage;
+      case 5:
+        return true; // Add-ons are optional
+      case 6:
+        return true; // Timeline has defaults
+      case 7:
+        return !!formData.fullName && !!formData.phone;
+      default:
+        return false;
+    }
+  };
+
+  const calculateTotal = () => {
+    let total = 0;
+    
+    // Package price
+    const selectedPkg = packages.find((p) => p.id === formData.selectedPackage);
+    if (selectedPkg) {
+      total += selectedPkg.price;
+    }
+    
+    // Add-ons prices
+    formData.selectedAddOns.forEach((addonId) => {
+      const addon = addOns.find((a) => a.id === addonId);
+      if (addon) {
+        total += addon.price;
+      }
+    });
+    
+    // Rush delivery
+    if (formData.deliveryUrgency === "rush" && !formData.selectedAddOns.includes("rush")) {
+      total += 300;
+    }
+    
+    return total;
+  };
+
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    // Simulate form submission
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    setIsSubmitting(false);
+    onComplete?.(formData);
+  };
+
+  const renderStep = () => {
+    const props = {
+      formData,
+      updateFormData,
+      onNext: nextStep,
+      onPrev: prevStep,
+    };
+
+    switch (currentStep) {
+      case 1:
+        return <EventTypeStep {...props} />;
+      case 2:
+        return <EventDetailsStep {...props} />;
+      case 3:
+        return <StyleColorsStep {...props} />;
+      case 4:
+        return <PackageStep {...props} />;
+      case 5:
+        return <AddOnsStep {...props} />;
+      case 6:
+        return <TimelineStep {...props} />;
+      case 7:
+        return (
+          <ContactStep
+            {...props}
+            onSubmit={handleSubmit}
+            isSubmitting={isSubmitting}
+            total={calculateTotal()}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      {/* Main Form Area */}
+      <div className="lg:col-span-2 space-y-6">
+        {/* Progress Steps */}
+        <div className="bg-card rounded-2xl border border-border p-4 lg:p-6">
+          <div className="flex items-center justify-between overflow-x-auto pb-2">
+            {steps.map((step, index) => (
+              <div
+                key={step.id}
+                className="flex items-center flex-shrink-0"
+              >
+                <button
+                  onClick={() => goToStep(step.id)}
+                  disabled={!canGoToStep(step.id)}
+                  className={cn(
+                    "flex flex-col items-center gap-1 transition-all",
+                    canGoToStep(step.id) ? "cursor-pointer" : "cursor-not-allowed opacity-50"
+                  )}
+                >
+                  <div
+                    className={cn(
+                      "w-8 h-8 lg:w-10 lg:h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all",
+                      currentStep === step.id
+                        ? "bg-primary text-primary-foreground ring-4 ring-primary/20"
+                        : isStepComplete(step.id)
+                        ? "bg-accent text-accent-foreground"
+                        : "bg-muted text-muted-foreground"
+                    )}
+                  >
+                    {isStepComplete(step.id) && currentStep !== step.id ? (
+                      <Check className="h-4 w-4 lg:h-5 lg:w-5" />
+                    ) : (
+                      step.id
+                    )}
+                  </div>
+                  <span
+                    className={cn(
+                      "text-xs font-medium hidden sm:block",
+                      currentStep === step.id
+                        ? "text-primary"
+                        : "text-muted-foreground"
+                    )}
+                  >
+                    {step.shortName}
+                  </span>
+                </button>
+                {index < steps.length - 1 && (
+                  <div
+                    className={cn(
+                      "w-6 lg:w-12 h-0.5 mx-1 lg:mx-2 flex-shrink-0",
+                      isStepComplete(step.id)
+                        ? "bg-accent"
+                        : "bg-border"
+                    )}
+                  />
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Step Content */}
+        <div className="bg-card rounded-2xl border border-border overflow-hidden">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentStep}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.3 }}
+              className="p-6 lg:p-8"
+            >
+              {renderStep()}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </div>
+
+      {/* Sidebar - Price Calculator & Summary */}
+      <div className="lg:col-span-1">
+        <div className="sticky top-24 space-y-6">
+          <PriceCalculator
+            formData={formData}
+            currentStep={currentStep}
+          />
+          {currentStep >= 4 && (
+            <OrderSummary
+              formData={formData}
+              total={calculateTotal()}
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
