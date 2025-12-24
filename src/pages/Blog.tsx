@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { CTASection } from "@/components/sections/CTASection";
-import { Clock, ArrowRight, BookOpen } from "lucide-react";
+import { Clock, ArrowRight, BookOpen, Search, X } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 const categories = ["All", "Event Planning", "Traditions", "Tips & Guides", "Inspiration"];
 
@@ -111,11 +112,29 @@ export const blogPosts = [
 
 const Blog = () => {
   const [activeCategory, setActiveCategory] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredPosts =
-    activeCategory === "All"
-      ? blogPosts
-      : blogPosts.filter((post) => post.category === activeCategory);
+  const filteredPosts = useMemo(() => {
+    let posts = blogPosts;
+    
+    // Filter by search query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      posts = posts.filter(
+        (post) =>
+          post.title.toLowerCase().includes(query) ||
+          post.excerpt.toLowerCase().includes(query) ||
+          post.category.toLowerCase().includes(query)
+      );
+    }
+    
+    // Filter by category
+    if (activeCategory !== "All") {
+      posts = posts.filter((post) => post.category === activeCategory);
+    }
+    
+    return posts;
+  }, [searchQuery, activeCategory]);
 
   const featuredPosts = blogPosts.filter((post) => post.featured);
 
@@ -193,9 +212,32 @@ const Blog = () => {
         </div>
       </section>
 
-      {/* Filter Tabs */}
+      {/* Search & Filter */}
       <section className="py-8 bg-muted/50 border-y border-border">
         <div className="container mx-auto px-4 lg:px-8">
+          {/* Search Bar */}
+          <div className="max-w-md mx-auto mb-6">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Search articles..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 pr-10 bg-background"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+          </div>
+          
+          {/* Category Tabs */}
           <div className="flex flex-wrap justify-center gap-2">
             {categories.map((category) => (
               <button
@@ -226,8 +268,26 @@ const Blog = () => {
             </span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredPosts.map((post, index) => (
+          {filteredPosts.length === 0 ? (
+            <div className="text-center py-12">
+              <Search className="h-12 w-12 text-muted-foreground/50 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-foreground mb-2">No articles found</h3>
+              <p className="text-muted-foreground">
+                Try adjusting your search or filter to find what you're looking for.
+              </p>
+              <button
+                onClick={() => {
+                  setSearchQuery("");
+                  setActiveCategory("All");
+                }}
+                className="mt-4 text-primary font-medium hover:underline"
+              >
+                Clear filters
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredPosts.map((post, index) => (
               <motion.article
                 key={post.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -271,8 +331,9 @@ const Blog = () => {
                   </div>
                 </Link>
               </motion.article>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
