@@ -1,12 +1,45 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
-import { MessageCircle as MessageCircleIcon, Send, Mail, MapPin, Phone, Clock } from "lucide-react";
+import { MessageCircle as MessageCircleIcon, Send, Mail, MapPin, Phone, Clock, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+
+const faqs = [
+  {
+    question: "How long does it take to create my digital invitation?",
+    answer: "Most invitations are ready within 24-48 hours after you provide all the necessary details. For urgent requests, we offer expedited service that can deliver within 12 hours.",
+  },
+  {
+    question: "Can I make changes after my invitation is created?",
+    answer: "Yes! We offer unlimited revisions during the design phase. Once your invitation is live, you can request up to 3 minor changes at no extra cost.",
+  },
+  {
+    question: "How do guests access my digital invitation?",
+    answer: "Your invitation comes with a unique link that you can share via WhatsApp, SMS, email, or social media. Guests simply click the link to view all event details on any device.",
+  },
+  {
+    question: "Do you offer invitations for diaspora families?",
+    answer: "Absolutely! Our invitations are designed with diaspora families in mind. They include timezone conversions, international sharing options, and work perfectly on any device worldwide.",
+  },
+  {
+    question: "What payment methods do you accept?",
+    answer: "We accept Mobile Money (MTN, Vodafone, AirtelTigo), bank transfers, and international payments via card for our diaspora clients.",
+  },
+  {
+    question: "Can I collect contributions through the invitation?",
+    answer: "Yes! We can integrate Mobile Money collection directly into your invitation, making it easy for guests to contribute and for you to track all donations transparently.",
+  },
+];
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -311,6 +344,54 @@ ${formData.message.trim()}`;
               </div>
             </motion.div>
           </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-4 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
+          >
+            <div className="w-16 h-16 mx-auto rounded-full bg-secondary/20 flex items-center justify-center mb-6">
+              <HelpCircle className="h-8 w-8 text-secondary" />
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              Find answers to common questions about our services
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="max-w-3xl mx-auto"
+          >
+            <Accordion type="single" collapsible className="space-y-4">
+              {faqs.map((faq, index) => (
+                <AccordionItem 
+                  key={index} 
+                  value={`item-${index}`}
+                  className="bg-card border border-border rounded-xl px-6 data-[state=open]:shadow-md transition-shadow"
+                >
+                  <AccordionTrigger className="text-left text-foreground font-medium hover:no-underline py-5">
+                    {faq.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground pb-5">
+                    {faq.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </motion.div>
         </div>
       </section>
     </Layout>
