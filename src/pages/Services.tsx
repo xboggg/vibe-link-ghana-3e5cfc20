@@ -36,6 +36,7 @@ const services = [
     ],
     slug: "wedding",
     image: weddingImg,
+    stats: { created: "500+", satisfaction: "98%", label: "Weddings Created" },
   },
   {
     icon: Users,
@@ -51,6 +52,7 @@ const services = [
     ],
     slug: "funeral",
     image: funeralImg,
+    stats: { created: "200+", satisfaction: "100%", label: "Families Served" },
   },
   {
     icon: Baby,
@@ -66,6 +68,7 @@ const services = [
     ],
     slug: "naming",
     image: namingImg,
+    stats: { created: "300+", satisfaction: "99%", label: "Babies Welcomed" },
   },
   {
     icon: Cake,
@@ -81,6 +84,7 @@ const services = [
     ],
     slug: "anniversary",
     image: anniversaryImg,
+    stats: { created: "150+", satisfaction: "97%", label: "Milestones Celebrated" },
   },
   {
     icon: GraduationCap,
@@ -96,6 +100,7 @@ const services = [
     ],
     slug: "graduation",
     image: graduationImg,
+    stats: { created: "400+", satisfaction: "99%", label: "Graduates Honored" },
   },
   {
     icon: Building,
@@ -111,6 +116,7 @@ const services = [
     ],
     slug: "corporate",
     image: corporateImg,
+    stats: { created: "250+", satisfaction: "98%", label: "Events Hosted" },
   },
 ];
 
@@ -219,19 +225,40 @@ const Services = () => {
                     </div>
                   </div>
                   
-                  {/* Image */}
+                  {/* Image with Hover Stats */}
                   <div className={`${isEven ? "lg:order-2" : "lg:order-1"}`}>
                     <motion.div
                       whileHover={{ scale: 1.02 }}
                       transition={{ duration: 0.3 }}
-                      className="relative rounded-2xl overflow-hidden shadow-xl aspect-[4/3]"
+                      className="group relative rounded-2xl overflow-hidden shadow-xl aspect-[4/3] cursor-pointer"
                     >
                       <img
                         src={service.image}
                         alt={`${service.title} - Ghana`}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                      {/* Default gradient */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent transition-opacity duration-300 group-hover:opacity-0" />
+                      
+                      {/* Hover overlay with stats */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/70 to-primary/50 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center p-6">
+                        <motion.div
+                          initial={{ opacity: 0, y: 20 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          className="text-center text-primary-foreground"
+                        >
+                          <div className="text-5xl md:text-6xl font-bold mb-2">
+                            {service.stats.created}
+                          </div>
+                          <div className="text-lg font-medium mb-4 opacity-90">
+                            {service.stats.label}
+                          </div>
+                          <div className="flex items-center justify-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2">
+                            <span className="text-sm">Client Satisfaction:</span>
+                            <span className="text-lg font-bold">{service.stats.satisfaction}</span>
+                          </div>
+                        </motion.div>
+                      </div>
                     </motion.div>
                   </div>
                 </motion.div>
