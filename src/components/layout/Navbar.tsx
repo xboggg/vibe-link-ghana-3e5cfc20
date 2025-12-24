@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { useTheme } from "next-themes";
 
 const navItems = [
   { name: "Home", href: "/" },
@@ -33,6 +34,8 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -49,13 +52,22 @@ export function Navbar() {
 
   const isHomePage = location.pathname === "/";
 
+  // Determine navbar background based on scroll, page, and theme
+  const getNavbarClasses = () => {
+    if (isScrolled || !isHomePage) {
+      if (isDark) {
+        return "bg-background/95 backdrop-blur-md shadow-lg border-b border-border/50";
+      }
+      return "bg-[#6B46C1]/95 backdrop-blur-md shadow-lg";
+    }
+    return "bg-transparent";
+  };
+
   return (
     <nav
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        isScrolled || !isHomePage
-          ? "bg-[#6B46C1]/95 backdrop-blur-md shadow-lg"
-          : "bg-transparent"
+        getNavbarClasses()
       )}
     >
       <div className="container mx-auto px-4 lg:px-8">
@@ -161,7 +173,12 @@ export function Navbar() {
               ease: [0.4, 0, 0.2, 1],
               opacity: { duration: 0.2 }
             }}
-            className="lg:hidden bg-[#6B46C1]/95 backdrop-blur-md border-t border-primary-foreground/10 overflow-hidden"
+            className={cn(
+              "lg:hidden backdrop-blur-md border-t overflow-hidden",
+              isDark 
+                ? "bg-background/95 border-border/50" 
+                : "bg-[#6B46C1]/95 border-primary-foreground/10"
+            )}
           >
             <motion.div 
               initial={{ opacity: 0 }}
