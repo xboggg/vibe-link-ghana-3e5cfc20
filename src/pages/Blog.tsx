@@ -5,6 +5,17 @@ import { Layout } from "@/components/layout/Layout";
 import { CTASection } from "@/components/sections/CTASection";
 import { Clock, ArrowRight, BookOpen, Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+  PaginationEllipsis,
+} from "@/components/ui/pagination";
+
+const POSTS_PER_PAGE = 6;
 
 const categories = ["All", "Event Planning", "Traditions", "Tips & Guides", "Inspiration"];
 
@@ -113,6 +124,7 @@ export const blogPosts = [
 const Blog = () => {
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   const filteredPosts = useMemo(() => {
     let posts = blogPosts;
@@ -136,7 +148,56 @@ const Blog = () => {
     return posts;
   }, [searchQuery, activeCategory]);
 
+  // Reset to page 1 when filters change
+  useMemo(() => {
+    setCurrentPage(1);
+  }, [searchQuery, activeCategory]);
+
+  const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
+  
+  const paginatedPosts = useMemo(() => {
+    const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
+    return filteredPosts.slice(startIndex, startIndex + POSTS_PER_PAGE);
+  }, [filteredPosts, currentPage]);
+
   const featuredPosts = blogPosts.filter((post) => post.featured);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    // Scroll to the articles section
+    document.getElementById("articles-section")?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const getPageNumbers = () => {
+    const pages: (number | "ellipsis")[] = [];
+    
+    if (totalPages <= 5) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      pages.push(1);
+      
+      if (currentPage > 3) {
+        pages.push("ellipsis");
+      }
+      
+      const start = Math.max(2, currentPage - 1);
+      const end = Math.min(totalPages - 1, currentPage + 1);
+      
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+      
+      if (currentPage < totalPages - 2) {
+        pages.push("ellipsis");
+      }
+      
+      pages.push(totalPages);
+    }
+    
+    return pages;
+  };
 
   return (
     <Layout>
@@ -257,7 +318,7 @@ const Blog = () => {
       </section>
 
       {/* All Posts Grid */}
-      <section className="py-16 bg-background">
+      <section id="articles-section" className="py-16 bg-background">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-2xl font-bold text-foreground">
@@ -286,53 +347,94 @@ const Blog = () => {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredPosts.map((post, index) => (
-              <motion.article
-                key={post.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.05 }}
-                className="group rounded-2xl bg-card border border-border overflow-hidden hover:border-primary/30 hover:shadow-lg transition-all duration-300"
-              >
-                <Link to={`/blog/${post.slug}`}>
-                  <div className="aspect-[16/10] overflow-hidden">
-                    <img
-                      src={post.image}
-                      alt={post.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                  </div>
-                  <div className="p-5">
-                    <div className="flex items-center gap-3 mb-3">
-                      <span className="px-2 py-1 rounded bg-muted text-muted-foreground text-xs font-medium">
-                        {post.category}
-                      </span>
-                      <span className="flex items-center gap-1 text-muted-foreground text-xs">
-                        <Clock className="h-3 w-3" />
-                        {post.readTime}
-                      </span>
-                    </div>
-                    <h3 className="text-lg font-bold text-foreground mb-2 group-hover:text-primary transition-colors line-clamp-2">
-                      {post.title}
-                    </h3>
-                    <p className="text-muted-foreground text-sm line-clamp-2 mb-4">
-                      {post.excerpt}
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground text-xs">
-                        {post.date}
-                      </span>
-                      <span className="text-primary text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
-                        Read more
-                        <ArrowRight className="h-4 w-4" />
-                      </span>
-                    </div>
-                  </div>
-                </Link>
-              </motion.article>
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {paginatedPosts.map((post, index) => (
+                  <motion.article
+                    key={post.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.05 }}
+                    className="group rounded-2xl bg-card border border-border overflow-hidden hover:border-primary/30 hover:shadow-lg transition-all duration-300"
+                  >
+                    <Link to={`/blog/${post.slug}`}>
+                      <div className="aspect-[16/10] overflow-hidden">
+                        <img
+                          src={post.image}
+                          alt={post.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                      </div>
+                      <div className="p-5">
+                        <div className="flex items-center gap-3 mb-3">
+                          <span className="px-2 py-1 rounded bg-muted text-muted-foreground text-xs font-medium">
+                            {post.category}
+                          </span>
+                          <span className="flex items-center gap-1 text-muted-foreground text-xs">
+                            <Clock className="h-3 w-3" />
+                            {post.readTime}
+                          </span>
+                        </div>
+                        <h3 className="text-lg font-bold text-foreground mb-2 group-hover:text-primary transition-colors line-clamp-2">
+                          {post.title}
+                        </h3>
+                        <p className="text-muted-foreground text-sm line-clamp-2 mb-4">
+                          {post.excerpt}
+                        </p>
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground text-xs">
+                            {post.date}
+                          </span>
+                          <span className="text-primary text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
+                            Read more
+                            <ArrowRight className="h-4 w-4" />
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+                  </motion.article>
+                ))}
+              </div>
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="mt-12">
+                  <Pagination>
+                    <PaginationContent>
+                      <PaginationItem>
+                        <PaginationPrevious
+                          onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+                          className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                        />
+                      </PaginationItem>
+                      
+                      {getPageNumbers().map((page, index) => (
+                        <PaginationItem key={index}>
+                          {page === "ellipsis" ? (
+                            <PaginationEllipsis />
+                          ) : (
+                            <PaginationLink
+                              onClick={() => handlePageChange(page)}
+                              isActive={currentPage === page}
+                              className="cursor-pointer"
+                            >
+                              {page}
+                            </PaginationLink>
+                          )}
+                        </PaginationItem>
+                      ))}
+                      
+                      <PaginationItem>
+                        <PaginationNext
+                          onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+                          className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                        />
+                      </PaginationItem>
+                    </PaginationContent>
+                  </Pagination>
+                </div>
+              )}
+            </>
           )}
         </div>
       </section>
