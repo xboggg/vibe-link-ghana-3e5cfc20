@@ -130,7 +130,7 @@ export function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-navy/95 backdrop-blur-md border-t border-primary-foreground/10"
+            className="lg:hidden bg-[#6B46C1]/95 backdrop-blur-md border-t border-primary-foreground/10"
           >
             <div className="container mx-auto px-4 py-4 space-y-1">
               {navItems.map((item, index) => (
