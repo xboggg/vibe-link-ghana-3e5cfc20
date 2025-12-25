@@ -22,12 +22,15 @@ export type Database = {
           created_at: string
           excerpt: string
           featured: boolean
+          focus_keyword: string | null
           id: string
           image_url: string
+          meta_description: string | null
           published: boolean
           published_at: string | null
           read_time: string
           slug: string
+          tags: string[] | null
           title: string
           updated_at: string
         }
@@ -38,12 +41,15 @@ export type Database = {
           created_at?: string
           excerpt: string
           featured?: boolean
+          focus_keyword?: string | null
           id?: string
           image_url: string
+          meta_description?: string | null
           published?: boolean
           published_at?: string | null
           read_time?: string
           slug: string
+          tags?: string[] | null
           title: string
           updated_at?: string
         }
@@ -54,12 +60,15 @@ export type Database = {
           created_at?: string
           excerpt?: string
           featured?: boolean
+          focus_keyword?: string | null
           id?: string
           image_url?: string
+          meta_description?: string | null
           published?: boolean
           published_at?: string | null
           read_time?: string
           slug?: string
+          tags?: string[] | null
           title?: string
           updated_at?: string
         }

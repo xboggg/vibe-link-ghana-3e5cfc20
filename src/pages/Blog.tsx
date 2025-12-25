@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { CTASection } from "@/components/sections/CTASection";
-import { Clock, ArrowRight, BookOpen, Search, X, ChevronDown, Loader2 } from "lucide-react";
+import { Clock, ArrowRight, BookOpen, Search, X, ChevronDown, Loader2, Tag } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import SEO from "@/components/SEO";
@@ -12,7 +12,19 @@ import { format } from "date-fns";
 
 const POSTS_PER_LOAD = 6;
 
-const categories = ["All", "Event Planning", "Traditions", "Tips & Guides", "Inspiration"];
+const categories = [
+  "All",
+  "Wedding",
+  "Funeral & Memorial",
+  "Anniversaries",
+  "Church",
+  "Community",
+  "Ghanaian Culture",
+  "Event Planning",
+  "Naming Ceremonies",
+  "Inspirations",
+  "Tips & Guides"
+];
 
 interface BlogPost {
   id: string;
@@ -25,6 +37,7 @@ interface BlogPost {
   featured: boolean;
   published_at: string | null;
   created_at: string;
+  tags: string[];
 }
 
 // Keep for backwards compatibility - will be used as fallback
@@ -55,6 +68,7 @@ export const blogPosts = [
 
 const Blog = () => {
   const [activeCategory, setActiveCategory] = useState("All");
+  const [activeTag, setActiveTag] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
@@ -68,7 +82,7 @@ const Blog = () => {
     try {
       const { data, error } = await supabase
         .from('blog_posts')
-        .select('id, slug, title, excerpt, category, image_url, read_time, featured, published_at, created_at')
+        .select('id, slug, title, excerpt, category, image_url, read_time, featured, published_at, created_at, tags')
         .eq('published', true)
         .order('published_at', { ascending: false });
 
@@ -81,6 +95,15 @@ const Blog = () => {
     }
   };
 
+  // Get all unique tags from posts
+  const allTags = useMemo(() => {
+    const tags = new Set<string>();
+    posts.forEach(post => {
+      (post.tags || []).forEach(tag => tags.add(tag));
+    });
+    return Array.from(tags).sort();
+  }, [posts]);
+
   const filteredPosts = useMemo(() => {
     let filtered = posts;
     
@@ -91,7 +114,8 @@ const Blog = () => {
         (post) =>
           post.title.toLowerCase().includes(query) ||
           post.excerpt.toLowerCase().includes(query) ||
-          post.category.toLowerCase().includes(query)
+          post.category.toLowerCase().includes(query) ||
+          (post.tags || []).some(tag => tag.toLowerCase().includes(query))
       );
     }
     
@@ -99,14 +123,19 @@ const Blog = () => {
     if (activeCategory !== "All") {
       filtered = filtered.filter((post) => post.category === activeCategory);
     }
+
+    // Filter by tag
+    if (activeTag) {
+      filtered = filtered.filter((post) => (post.tags || []).includes(activeTag));
+    }
     
     return filtered;
-  }, [posts, searchQuery, activeCategory]);
+  }, [posts, searchQuery, activeCategory, activeTag]);
 
   // Reset visible count when filters change
   useEffect(() => {
     setVisibleCount(POSTS_PER_LOAD);
-  }, [searchQuery, activeCategory]);
+  }, [searchQuery, activeCategory, activeTag]);
 
   const visiblePosts = useMemo(() => {
     return filteredPosts.slice(0, visibleCount);
@@ -238,11 +267,14 @@ const Blog = () => {
           </div>
           
           {/* Category Tabs */}
-          <div className="flex flex-wrap justify-center gap-2">
+          <div className="flex flex-wrap justify-center gap-2 mb-4">
             {categories.map((category) => (
               <button
                 key={category}
-                onClick={() => setActiveCategory(category)}
+                onClick={() => {
+                  setActiveCategory(category);
+                  setActiveTag(null);
+                }}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                   activeCategory === category
                     ? "bg-primary text-primary-foreground"
@@ -253,6 +285,35 @@ const Blog = () => {
               </button>
             ))}
           </div>
+
+          {/* Tags Filter */}
+          {allTags.length > 0 && (
+            <div className="flex flex-wrap justify-center gap-2 items-center">
+              <Tag className="h-4 w-4 text-muted-foreground" />
+              {allTags.slice(0, 10).map((tag) => (
+                <button
+                  key={tag}
+                  onClick={() => setActiveTag(activeTag === tag ? null : tag)}
+                  className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
+                    activeTag === tag
+                      ? "bg-secondary text-secondary-foreground"
+                      : "bg-muted text-muted-foreground hover:bg-muted/80"
+                  }`}
+                >
+                  {tag}
+                </button>
+              ))}
+              {activeTag && (
+                <button
+                  onClick={() => setActiveTag(null)}
+                  className="ml-2 text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
+                >
+                  <X className="h-3 w-3" />
+                  Clear tag
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </section>
 
@@ -279,6 +340,7 @@ const Blog = () => {
                 onClick={() => {
                   setSearchQuery("");
                   setActiveCategory("All");
+                  setActiveTag(null);
                 }}
                 className="mt-4 text-primary font-medium hover:underline"
               >
@@ -314,6 +376,19 @@ const Blog = () => {
                             {post.read_time}
                           </span>
                         </div>
+                        {/* Tags */}
+                        {post.tags && post.tags.length > 0 && (
+                          <div className="flex flex-wrap gap-1 mb-2">
+                            {post.tags.slice(0, 3).map(tag => (
+                              <span 
+                                key={tag}
+                                className="px-1.5 py-0.5 rounded-sm bg-secondary/10 text-secondary text-[9px] md:text-[10px]"
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        )}
                         <h3 className="text-base md:text-lg font-bold text-foreground mb-1.5 md:mb-2 group-hover:text-primary transition-colors line-clamp-2">
                           {post.title}
                         </h3>

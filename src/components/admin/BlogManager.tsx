@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { toast } from 'sonner';
 import { 
   Plus, Pencil, Trash2, Eye, EyeOff, Star, RefreshCw, 
-  Calendar, Clock, ExternalLink, Search, Upload, Image
+  Calendar, Clock, ExternalLink, Search, Upload, Image, Tag, X
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { RichTextEditor } from './RichTextEditor';
@@ -32,6 +32,9 @@ interface BlogPost {
   created_at: string;
   updated_at: string;
   published_at: string | null;
+  meta_description: string | null;
+  focus_keyword: string | null;
+  tags: string[];
 }
 
 const categories = [
@@ -47,6 +50,21 @@ const categories = [
   'Tips & Guides'
 ];
 
+const suggestedTags = [
+  'Ghanaian Weddings',
+  'Traditional Ceremonies',
+  'Event Design',
+  'Funeral Programs',
+  'Church Events',
+  'Anniversary Ideas',
+  'Naming Ceremony',
+  'Kente',
+  'DIY Tips',
+  'Budget Friendly',
+  'Luxury Events',
+  'Cultural Heritage'
+];
+
 const emptyPost: Partial<BlogPost> = {
   title: '',
   slug: '',
@@ -57,7 +75,10 @@ const emptyPost: Partial<BlogPost> = {
   read_time: '5 min read',
   featured: false,
   published: false,
-  author_name: 'JC Creative Studios'
+  author_name: 'JC Creative Studios',
+  meta_description: '',
+  focus_keyword: '',
+  tags: []
 };
 
 export function BlogManager() {
@@ -69,6 +90,7 @@ export function BlogManager() {
   const [editingPost, setEditingPost] = useState<Partial<BlogPost> | null>(null);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [tagInput, setTagInput] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -174,7 +196,10 @@ export function BlogManager() {
         published: editingPost.published || false,
         author_name: editingPost.author_name || 'JC Creative Studios',
         slug: editingPost.slug || generateSlug(editingPost.title!),
-        published_at: editingPost.published ? (editingPost.published_at || new Date().toISOString()) : null
+        published_at: editingPost.published ? (editingPost.published_at || new Date().toISOString()) : null,
+        meta_description: editingPost.meta_description || null,
+        focus_keyword: editingPost.focus_keyword || null,
+        tags: editingPost.tags || []
       };
 
       if (editingPost.id) {
@@ -409,6 +434,117 @@ export function BlogManager() {
                   content={editingPost?.content || ''}
                   onChange={(content) => setEditingPost(prev => ({ ...prev, content }))}
                 />
+              </div>
+
+              {/* Tags Section */}
+              <div className="space-y-2">
+                <Label className="flex items-center gap-2">
+                  <Tag className="h-4 w-4" />
+                  Tags
+                </Label>
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {(editingPost?.tags || []).map((tag, index) => (
+                    <Badge key={index} variant="secondary" className="flex items-center gap-1">
+                      {tag}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newTags = [...(editingPost?.tags || [])];
+                          newTags.splice(index, 1);
+                          setEditingPost(prev => ({ ...prev, tags: newTags }));
+                        }}
+                        className="hover:text-destructive"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+                <div className="flex gap-2">
+                  <Input
+                    value={tagInput}
+                    onChange={(e) => setTagInput(e.target.value)}
+                    placeholder="Add a tag..."
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && tagInput.trim()) {
+                        e.preventDefault();
+                        if (!editingPost?.tags?.includes(tagInput.trim())) {
+                          setEditingPost(prev => ({
+                            ...prev,
+                            tags: [...(prev?.tags || []), tagInput.trim()]
+                          }));
+                        }
+                        setTagInput('');
+                      }
+                    }}
+                    className="flex-1"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      if (tagInput.trim() && !editingPost?.tags?.includes(tagInput.trim())) {
+                        setEditingPost(prev => ({
+                          ...prev,
+                          tags: [...(prev?.tags || []), tagInput.trim()]
+                        }));
+                        setTagInput('');
+                      }
+                    }}
+                  >
+                    Add
+                  </Button>
+                </div>
+                <div className="flex flex-wrap gap-1 mt-2">
+                  <span className="text-xs text-muted-foreground mr-1">Suggestions:</span>
+                  {suggestedTags.filter(t => !editingPost?.tags?.includes(t)).slice(0, 6).map(tag => (
+                    <button
+                      key={tag}
+                      type="button"
+                      onClick={() => {
+                        setEditingPost(prev => ({
+                          ...prev,
+                          tags: [...(prev?.tags || []), tag]
+                        }));
+                      }}
+                      className="text-xs px-2 py-0.5 bg-muted rounded hover:bg-muted/80 transition-colors"
+                    >
+                      + {tag}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* SEO Section */}
+              <div className="space-y-4 pt-4 border-t">
+                <h4 className="font-medium flex items-center gap-2">
+                  <Search className="h-4 w-4" />
+                  SEO Settings
+                </h4>
+                <div className="space-y-2">
+                  <Label>Focus Keyword</Label>
+                  <Input
+                    value={editingPost?.focus_keyword || ''}
+                    onChange={(e) => setEditingPost(prev => ({ ...prev, focus_keyword: e.target.value }))}
+                    placeholder="e.g., Ghanaian wedding programs"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    The main keyword you want this post to rank for
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <Label>Meta Description</Label>
+                  <Textarea
+                    value={editingPost?.meta_description || ''}
+                    onChange={(e) => setEditingPost(prev => ({ ...prev, meta_description: e.target.value }))}
+                    placeholder="A brief description for search engines (max 160 characters)..."
+                    rows={2}
+                    maxLength={160}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    {(editingPost?.meta_description || '').length}/160 characters
+                  </p>
+                </div>
               </div>
 
               {/* Toggles */}
