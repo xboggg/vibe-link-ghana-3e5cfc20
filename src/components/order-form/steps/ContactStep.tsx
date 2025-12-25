@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,6 +14,10 @@ import {
 } from "@/components/ui/select";
 import { format } from "date-fns";
 import { contactSchema } from "@/lib/validationSchemas";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+
+const RECAPTCHA_SITE_KEY = "6LeyPjYsAAAAALAgAstDDCFZ8LLcRCvKNijR815Z";
 
 interface ContactStepProps {
   formData: OrderFormData;
@@ -33,6 +38,9 @@ export const ContactStep = ({
   total,
 }: ContactStepProps) => {
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
   
   const selectedEvent = eventTypes.find((e) => e.id === formData.eventType);
   const selectedPackage = packages.find((p) => p.id === formData.selectedPackage);
@@ -40,7 +48,7 @@ export const ContactStep = ({
   const selectedStyle = stylePreferences.find((s) => s.id === formData.stylePreference);
   const selectedAddOnsList = formData.selectedAddOns.map((id) => addOns.find((a) => a.id === id)).filter(Boolean);
 
-  const validateAndSubmit = () => {
+  const validateAndSubmit = async () => {
     const result = contactSchema.safeParse({
       fullName: formData.fullName,
       email: formData.email || "",
@@ -60,11 +68,38 @@ export const ContactStep = ({
       return;
     }
 
-    setErrors({});
-    onSubmit();
+    if (!captchaToken) {
+      toast.error("Please complete the CAPTCHA verification");
+      return;
+    }
+
+    setIsVerifying(true);
+    try {
+      // Verify captcha on server
+      const { data, error } = await supabase.functions.invoke("verify-captcha", {
+        body: { token: captchaToken },
+      });
+
+      if (error || !data?.success) {
+        toast.error("CAPTCHA verification failed. Please try again.");
+        recaptchaRef.current?.reset();
+        setCaptchaToken(null);
+        return;
+      }
+
+      setErrors({});
+      onSubmit();
+    } catch (error) {
+      console.error("Captcha verification error:", error);
+      toast.error("Verification failed. Please try again.");
+      recaptchaRef.current?.reset();
+      setCaptchaToken(null);
+    } finally {
+      setIsVerifying(false);
+    }
   };
 
-  const isValid = formData.fullName && formData.phone;
+  const isValid = formData.fullName && formData.phone && captchaToken;
 
   const clearError = (field: string) => {
     setErrors((prev) => ({ ...prev, [field]: "" }));
@@ -188,6 +223,21 @@ export const ContactStep = ({
             </SelectContent>
           </Select>
         </div>
+
+        {/* reCAPTCHA */}
+        <div className="flex flex-col items-center gap-2">
+          <ReCAPTCHA
+            ref={recaptchaRef}
+            sitekey={RECAPTCHA_SITE_KEY}
+            onChange={(token) => setCaptchaToken(token)}
+            onExpired={() => setCaptchaToken(null)}
+          />
+          {!captchaToken && (
+            <p className="text-xs text-muted-foreground">
+              Please verify you're not a robot
+            </p>
+          )}
+        </div>
       </div>
 
       {/* Order Summary */}
@@ -273,15 +323,15 @@ export const ContactStep = ({
         </Button>
         <Button
           onClick={validateAndSubmit}
-          disabled={!isValid || isSubmitting}
+          disabled={!isValid || isSubmitting || isVerifying}
           size="lg"
           variant="gold"
           className="gap-2 min-w-[180px]"
         >
-          {isSubmitting ? (
+          {isSubmitting || isVerifying ? (
             <>
               <Loader2 className="h-4 w-4 animate-spin" />
-              Submitting...
+              {isVerifying ? "Verifying..." : "Submitting..."}
             </>
           ) : (
             <>
