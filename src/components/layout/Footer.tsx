@@ -55,7 +55,7 @@ export function Footer() {
             <p className="text-primary-foreground/70 text-sm leading-relaxed mb-4">
               Your Event. Our Vibe. Transform your Ghanaian celebrations into stunning, shareable digital invitations.
             </p>
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center gap-3">
               {socialLinks.map((social) => (
                 <a
                   key={social.name}
@@ -68,17 +68,17 @@ export function Footer() {
                   <social.icon className="h-4 w-4" />
                 </a>
               ))}
-              {/* Newsletter Button */}
-              <a
-                href="https://vibelinkgh.com/newsletter"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary/20 hover:bg-secondary text-secondary hover:text-secondary-foreground transition-all duration-300 text-sm font-medium"
-              >
-                <Send className="h-4 w-4" />
-                Newsletter
-              </a>
             </div>
+            {/* Newsletter Button - directly under social icons */}
+            <a
+              href="https://vibelinkgh.com/newsletter"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary/20 hover:bg-secondary text-secondary hover:text-secondary-foreground transition-all duration-300 text-sm font-medium mt-4"
+            >
+              <Send className="h-4 w-4" />
+              Newsletter
+            </a>
           </div>
 
           {/* Quick Links */}
