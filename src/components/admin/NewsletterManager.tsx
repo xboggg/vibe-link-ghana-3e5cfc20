@@ -9,9 +9,100 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Trash2, Search, Mail, Users, Download, ToggleLeft, ToggleRight, Send, Loader2, Paperclip, X } from "lucide-react";
+import { Trash2, Search, Mail, Users, Download, ToggleLeft, ToggleRight, Send, Loader2, Paperclip, X, FileText, Megaphone, Gift, CalendarDays } from "lucide-react";
 import { format } from "date-fns";
 import { RichTextEditor } from "./RichTextEditor";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+interface EmailTemplate {
+  id: string;
+  name: string;
+  icon: React.ReactNode;
+  subject: string;
+  content: string;
+}
+
+const EMAIL_TEMPLATES: EmailTemplate[] = [
+  {
+    id: "blank",
+    name: "Blank",
+    icon: <FileText className="h-4 w-4" />,
+    subject: "",
+    content: "",
+  },
+  {
+    id: "announcement",
+    name: "Announcement",
+    icon: <Megaphone className="h-4 w-4" />,
+    subject: "Exciting News from VibeLink Ghana!",
+    content: `<h2>Big News! 🎉</h2>
+<p>Dear Valued Subscriber,</p>
+<p>We have some exciting news to share with you!</p>
+<p>[Your announcement here]</p>
+<p>We're thrilled to bring you this update and can't wait for you to experience what's coming.</p>
+<p>Stay tuned for more updates!</p>
+<p>Best regards,<br/>The VibeLink Ghana Team</p>`,
+  },
+  {
+    id: "promotion",
+    name: "Promotion",
+    icon: <Gift className="h-4 w-4" />,
+    subject: "Special Offer Just for You! 🎁",
+    content: `<h2>Exclusive Offer! 🎁</h2>
+<p>Dear Subscriber,</p>
+<p>We have a special promotion that we think you'll love!</p>
+<h3>Limited Time Offer</h3>
+<p><strong>[Describe your promotion here]</strong></p>
+<ul>
+<li>Discount: [X]% OFF</li>
+<li>Valid until: [Date]</li>
+<li>Use code: [PROMO_CODE]</li>
+</ul>
+<p>Don't miss out on this amazing opportunity!</p>
+<p><a href="#">Shop Now</a></p>
+<p>Best regards,<br/>The VibeLink Ghana Team</p>`,
+  },
+  {
+    id: "event-update",
+    name: "Event Update",
+    icon: <CalendarDays className="h-4 w-4" />,
+    subject: "Upcoming Event You Won't Want to Miss! 📅",
+    content: `<h2>You're Invited! 📅</h2>
+<p>Dear Subscriber,</p>
+<p>We're excited to announce an upcoming event!</p>
+<h3>Event Details</h3>
+<ul>
+<li><strong>What:</strong> [Event Name]</li>
+<li><strong>When:</strong> [Date & Time]</li>
+<li><strong>Where:</strong> [Location/Virtual Link]</li>
+</ul>
+<p>[Additional event description]</p>
+<p>We'd love to see you there!</p>
+<p><a href="#">Register Now</a></p>
+<p>Best regards,<br/>The VibeLink Ghana Team</p>`,
+  },
+  {
+    id: "newsletter",
+    name: "Monthly Newsletter",
+    icon: <Mail className="h-4 w-4" />,
+    subject: "Your Monthly Update from VibeLink Ghana 📬",
+    content: `<h2>Monthly Newsletter 📬</h2>
+<p>Dear Subscriber,</p>
+<p>Here's what's been happening at VibeLink Ghana this month!</p>
+<h3>Highlights</h3>
+<ul>
+<li>[Highlight 1]</li>
+<li>[Highlight 2]</li>
+<li>[Highlight 3]</li>
+</ul>
+<h3>Featured Work</h3>
+<p>[Describe recent projects or achievements]</p>
+<h3>What's Coming</h3>
+<p>[Tease upcoming features or events]</p>
+<p>Thank you for being part of our community!</p>
+<p>Best regards,<br/>The VibeLink Ghana Team</p>`,
+  },
+];
 
 interface Subscriber {
   id: string;
@@ -27,7 +118,17 @@ export function NewsletterManager() {
   const [subject, setSubject] = useState("");
   const [content, setContent] = useState("");
   const [attachments, setAttachments] = useState<File[]>([]);
+  const [selectedTemplate, setSelectedTemplate] = useState<string>("blank");
   const queryClient = useQueryClient();
+
+  const handleTemplateChange = (templateId: string) => {
+    const template = EMAIL_TEMPLATES.find(t => t.id === templateId);
+    if (template) {
+      setSelectedTemplate(templateId);
+      setSubject(template.subject);
+      setContent(template.content);
+    }
+  };
 
   const { data: subscribers = [], isLoading } = useQuery({
     queryKey: ['newsletter-subscribers'],
@@ -178,6 +279,29 @@ export function NewsletterManager() {
                 <DialogTitle>Compose Newsletter</DialogTitle>
               </DialogHeader>
               <div className="space-y-4 py-4">
+                {/* Template Selector */}
+                <div className="space-y-2">
+                  <Label>Choose a Template</Label>
+                  <Select value={selectedTemplate} onValueChange={handleTemplateChange}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a template..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {EMAIL_TEMPLATES.map((template) => (
+                        <SelectItem key={template.id} value={template.id}>
+                          <div className="flex items-center gap-2">
+                            {template.icon}
+                            <span>{template.name}</span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-muted-foreground">
+                    Select a template to start with pre-filled content, or choose "Blank" to start fresh.
+                  </p>
+                </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="subject">Subject</Label>
                   <Input

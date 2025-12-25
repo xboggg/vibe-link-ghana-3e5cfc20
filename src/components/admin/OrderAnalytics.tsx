@@ -29,9 +29,15 @@ import {
   Clock,
   CheckCircle,
   XCircle,
-  Loader2
+  Loader2,
+  Download,
+  FileText,
+  FileSpreadsheet
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { toast } from "sonner";
 
 interface Order {
   id: string;
@@ -201,6 +207,167 @@ export const OrderAnalytics = () => {
     orders: dayOfWeekStats[index] || 0,
   }));
 
+  // Export to CSV
+  const exportToCSV = () => {
+    const headers = ['Order ID', 'Client Name', 'Email', 'Event Type', 'Package', 'Total Price', 'Order Status', 'Payment Status', 'Created At', 'Event Date'];
+    const rows = orders.map(o => [
+      o.id,
+      o.client_name,
+      o.client_email,
+      o.event_type,
+      o.package_name,
+      o.total_price,
+      o.order_status,
+      o.payment_status,
+      format(new Date(o.created_at), 'yyyy-MM-dd HH:mm'),
+      o.event_date ? format(new Date(o.event_date), 'yyyy-MM-dd') : 'N/A'
+    ]);
+    
+    const csvContent = [headers, ...rows].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `order-analytics-${format(new Date(), 'yyyy-MM-dd')}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success("Order data exported to CSV");
+  };
+
+  // Export summary to CSV
+  const exportSummaryToCSV = () => {
+    const summaryData = [
+      ['Order Analytics Summary Report'],
+      ['Generated on', format(new Date(), 'MMMM d, yyyy HH:mm')],
+      ['Date Range', dateRange === 'all' ? 'All Time' : `Last ${dateRange.replace('d', ' Days')}`],
+      [''],
+      ['KEY METRICS'],
+      ['Total Orders', totalOrders],
+      ['Total Revenue', `GHS ${totalRevenue.toLocaleString()}`],
+      ['Average Order Value', `GHS ${avgOrderValue.toFixed(2)}`],
+      ['Completed Orders', completedOrders],
+      ['Pending Orders', pendingOrders],
+      ['Completion Rate', `${totalOrders > 0 ? Math.round((completedOrders / totalOrders) * 100) : 0}%`],
+      [''],
+      ['PAYMENT STATUS'],
+      ['Fully Paid', fullyPaidOrders],
+      ['Deposit Paid', depositPaidOrders],
+      ['Pending Payment', pendingPaymentOrders],
+      [''],
+      ['TOP CUSTOMERS'],
+      ['Name', 'Email', 'Orders', 'Revenue'],
+      ...topCustomers.map(c => [c.name, c.email, c.orders, `GHS ${c.revenue.toLocaleString()}`]),
+      [''],
+      ['ORDERS BY EVENT TYPE'],
+      ['Event Type', 'Count'],
+      ...eventTypePieData.map(e => [e.name, e.value]),
+      [''],
+      ['PACKAGE PERFORMANCE'],
+      ['Package', 'Orders', 'Revenue'],
+      ...packageData.map(p => [p.name, p.count, `GHS ${p.revenue.toLocaleString()}`]),
+    ];
+    
+    const csvContent = summaryData.map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `order-analytics-summary-${format(new Date(), 'yyyy-MM-dd')}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success("Summary report exported to CSV");
+  };
+
+  // Export to PDF (using HTML print)
+  const exportToPDF = () => {
+    const printContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Order Analytics Report</title>
+        <style>
+          body { font-family: Arial, sans-serif; padding: 40px; color: #333; }
+          h1 { color: #1a1a1a; border-bottom: 2px solid #D4AF37; padding-bottom: 10px; }
+          h2 { color: #555; margin-top: 30px; }
+          table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+          th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+          th { background-color: #f5f5f5; font-weight: bold; }
+          .metric-box { display: inline-block; width: 22%; margin: 1%; padding: 15px; background: #f9f9f9; border-radius: 8px; text-align: center; }
+          .metric-value { font-size: 24px; font-weight: bold; color: #D4AF37; }
+          .metric-label { font-size: 12px; color: #666; }
+          .generated { color: #888; font-size: 12px; margin-top: 40px; }
+        </style>
+      </head>
+      <body>
+        <h1>VibeLink Ghana - Order Analytics Report</h1>
+        <p><strong>Date Range:</strong> ${dateRange === 'all' ? 'All Time' : `Last ${dateRange.replace('d', ' Days')}`}</p>
+        
+        <h2>Key Metrics</h2>
+        <div style="margin: 20px 0;">
+          <div class="metric-box">
+            <div class="metric-value">${totalOrders}</div>
+            <div class="metric-label">Total Orders</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-value">₵${totalRevenue.toLocaleString()}</div>
+            <div class="metric-label">Total Revenue</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-value">₵${avgOrderValue.toFixed(0)}</div>
+            <div class="metric-label">Avg Order Value</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-value">${totalOrders > 0 ? Math.round((completedOrders / totalOrders) * 100) : 0}%</div>
+            <div class="metric-label">Completion Rate</div>
+          </div>
+        </div>
+
+        <h2>Payment Status</h2>
+        <table>
+          <tr><th>Status</th><th>Count</th></tr>
+          <tr><td>Fully Paid</td><td>${fullyPaidOrders}</td></tr>
+          <tr><td>Deposit Paid</td><td>${depositPaidOrders}</td></tr>
+          <tr><td>Pending</td><td>${pendingPaymentOrders}</td></tr>
+        </table>
+
+        <h2>Top Customers</h2>
+        <table>
+          <tr><th>#</th><th>Name</th><th>Email</th><th>Orders</th><th>Revenue</th></tr>
+          ${topCustomers.map((c, i) => `<tr><td>${i + 1}</td><td>${c.name}</td><td>${c.email}</td><td>${c.orders}</td><td>₵${c.revenue.toLocaleString()}</td></tr>`).join('')}
+        </table>
+
+        <h2>Orders by Event Type</h2>
+        <table>
+          <tr><th>Event Type</th><th>Count</th></tr>
+          ${eventTypePieData.map(e => `<tr><td>${e.name}</td><td>${e.value}</td></tr>`).join('')}
+        </table>
+
+        <h2>Package Performance</h2>
+        <table>
+          <tr><th>#</th><th>Package</th><th>Orders</th><th>Revenue</th></tr>
+          ${packageData.map((p, i) => `<tr><td>${i + 1}</td><td>${p.name}</td><td>${p.count}</td><td>₵${p.revenue.toLocaleString()}</td></tr>`).join('')}
+        </table>
+
+        <p class="generated">Report generated on ${format(new Date(), 'MMMM d, yyyy')} at ${format(new Date(), 'HH:mm')}</p>
+      </body>
+      </html>
+    `;
+
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(printContent);
+      printWindow.document.close();
+      printWindow.focus();
+      setTimeout(() => {
+        printWindow.print();
+        printWindow.close();
+      }, 250);
+      toast.success("PDF report opened for printing");
+    } else {
+      toast.error("Please allow popups to export PDF");
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -211,15 +378,40 @@ export const OrderAnalytics = () => {
 
   return (
     <div className="space-y-6">
-      {/* Date Range Tabs */}
-      <Tabs value={dateRange} onValueChange={(v) => setDateRange(v as typeof dateRange)}>
-        <TabsList>
-          <TabsTrigger value="7d">Last 7 Days</TabsTrigger>
-          <TabsTrigger value="30d">Last 30 Days</TabsTrigger>
-          <TabsTrigger value="90d">Last 90 Days</TabsTrigger>
-          <TabsTrigger value="all">All Time</TabsTrigger>
-        </TabsList>
-      </Tabs>
+      {/* Header with Date Range and Export */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <Tabs value={dateRange} onValueChange={(v) => setDateRange(v as typeof dateRange)}>
+          <TabsList>
+            <TabsTrigger value="7d">Last 7 Days</TabsTrigger>
+            <TabsTrigger value="30d">Last 30 Days</TabsTrigger>
+            <TabsTrigger value="90d">Last 90 Days</TabsTrigger>
+            <TabsTrigger value="all">All Time</TabsTrigger>
+          </TabsList>
+        </Tabs>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="gap-2">
+              <Download className="h-4 w-4" />
+              Export Report
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={exportToCSV} className="gap-2">
+              <FileSpreadsheet className="h-4 w-4" />
+              Export All Orders (CSV)
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={exportSummaryToCSV} className="gap-2">
+              <FileSpreadsheet className="h-4 w-4" />
+              Export Summary (CSV)
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={exportToPDF} className="gap-2">
+              <FileText className="h-4 w-4" />
+              Export Report (PDF)
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
 
       {/* Key Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
