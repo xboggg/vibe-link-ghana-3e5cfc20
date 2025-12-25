@@ -29,3 +29,9 @@ verify_jwt = false
 
 [functions.send-newsletter]
 verify_jwt = false
+
+[functions.track-newsletter]
+verify_jwt = false
+
+[functions.send-scheduled-newsletters]
+verify_jwt = false
