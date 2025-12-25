@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Sparkles, Instagram, Facebook, Twitter } from "lucide-react";
+import { Menu, X, Sparkles, Instagram, Facebook, Twitter, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -15,7 +15,6 @@ const navItems = [
   { name: "Pricing", href: "/pricing" },
   { name: "About", href: "/about" },
   { name: "Contact Us", href: "/contact" },
-  { name: "Track Order", href: "/track-order" },
 ];
 
 const TikTokIcon = () => (
@@ -122,6 +121,14 @@ export function Navbar() {
                 </a>
               ))}
             </div>
+
+            {/* Track Order Button */}
+            <Button asChild variant="outline" size="sm" className="border-secondary/50 text-primary-foreground hover:bg-secondary/20 hover:border-secondary">
+              <Link to="/track-order" className="flex items-center gap-2">
+                <Package className="h-4 w-4" />
+                Track Order
+              </Link>
+            </Button>
 
             {/* CTA Button */}
             <Button asChild variant="nav" size="default">
@@ -248,8 +255,14 @@ export function Navbar() {
                   delay: (navItems.length + socialLinks.length) * 0.05 + 0.1,
                   duration: 0.3 
                 }}
-                className="pt-4"
+                className="pt-4 space-y-3"
               >
+                <Button asChild variant="outline" size="lg" className="w-full border-secondary/50 hover:bg-secondary/20">
+                  <Link to="/track-order" className="flex items-center gap-2">
+                    <Package className="h-4 w-4" />
+                    Track Order
+                  </Link>
+                </Button>
                 <Button asChild variant="gold" size="lg" className="w-full">
                   <Link to="/get-started">Get Started</Link>
                 </Button>
