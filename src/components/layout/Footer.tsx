@@ -12,10 +12,10 @@ const quickLinks = [
 ];
 
 const policyLinks = [
-  { name: "Privacy Policy", href: "/privacy-policy" },
-  { name: "Terms of Service", href: "/terms-of-service" },
-  { name: "Refund Policy", href: "/refund-policy" },
-  { name: "Cookie Policy", href: "/cookie-policy" },
+  { name: "Privacy", href: "/privacy-policy" },
+  { name: "Terms", href: "/terms-of-service" },
+  { name: "Refunds", href: "/refund-policy" },
+  { name: "Cookies", href: "/cookie-policy" },
 ];
 
 const eventTypes = [
@@ -49,7 +49,7 @@ export function Footer() {
             <Link to="/" className="flex items-center gap-2 mb-4">
               <Sparkles className="h-6 w-6 text-secondary" />
               <span className="text-xl font-bold font-poppins">
-                Vibe<span className="text-secondary">Link</span>
+                Vibe<span className="text-secondary">Link</span> <span className="text-primary-foreground/80 font-normal text-sm">Ghana</span>
               </span>
             </Link>
             <p className="text-primary-foreground/70 text-sm leading-relaxed mb-4">
@@ -78,22 +78,6 @@ export function Footer() {
             </h4>
             <ul className="space-y-2">
               {quickLinks.map((link) => (
-                <li key={link.name}>
-                  <Link
-                    to={link.href}
-                    className="text-primary-foreground/70 hover:text-secondary transition-colors text-sm"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-            {/* Policy Links */}
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-secondary mb-4 mt-6">
-              Policies
-            </h4>
-            <ul className="space-y-2">
-              {policyLinks.map((link) => (
                 <li key={link.name}>
                   <Link
                     to={link.href}
@@ -176,13 +160,23 @@ export function Footer() {
       {/* Bottom Bar */}
       <div className="border-t border-primary-foreground/10">
         <div className="container mx-auto px-4 lg:px-8 py-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-primary-foreground/60 text-sm text-center md:text-left">
-              © {new Date().getFullYear()} VibeLink Ghana. All rights reserved.
-            </p>
-            <p className="text-primary-foreground/60 text-sm flex items-center gap-1">
-              Made with <span className="text-destructive">❤️</span> in Ghana
-            </p>
+          <div className="flex flex-col md:flex-row items-center justify-center gap-4">
+            <div className="flex flex-wrap items-center justify-center gap-2 text-primary-foreground/60 text-sm">
+              <span>© {new Date().getFullYear()} VibeLink Ghana</span>
+              <span>|</span>
+              {policyLinks.map((link, index) => (
+                <span key={link.name} className="flex items-center gap-2">
+                  <Link to={link.href} className="hover:text-secondary transition-colors">
+                    {link.name}
+                  </Link>
+                  {index < policyLinks.length - 1 && <span>|</span>}
+                </span>
+              ))}
+              <span>|</span>
+              <span className="flex items-center gap-1">
+                Made with <span className="text-destructive">❤️</span> in Ghana
+              </span>
+            </div>
           </div>
         </div>
       </div>
