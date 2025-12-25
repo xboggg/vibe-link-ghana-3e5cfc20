@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
 import { CTASection } from "@/components/sections/CTASection";
+import SEO from "@/components/SEO";
 import {
   Accordion,
   AccordionContent,
@@ -83,6 +84,12 @@ const faqs = [
 const HowItWorks = () => {
   return (
     <Layout>
+      <SEO 
+        title="How It Works"
+        description="Simple 4-step process to get your digital invitation. Tell us about your event, receive a quote, we create your design, then share with guests!"
+        keywords="digital invitation process, how to order invitation Ghana, event invitation steps"
+        canonical="/how-it-works"
+      />
       {/* Hero */}
       <section className="pt-24 lg:pt-32 pb-16 bg-gradient-to-b from-[#6B46C1] via-[#553C9A] to-[#44337A]">
         <div className="container mx-auto px-4 lg:px-8">

@@ -3,10 +3,16 @@ import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Home, MessageCircle, ArrowRight } from "lucide-react";
+import SEO from "@/components/SEO";
 
 const ThankYou = () => {
   return (
     <Layout>
+      <SEO 
+        title="Thank You"
+        description="Your order has been received. We'll contact you within 2 hours with your custom quote."
+        noindex={true}
+      />
       <section className="pt-24 lg:pt-32 pb-20 min-h-[80vh] flex items-center bg-gradient-to-b from-[#6B46C1] via-[#553C9A] to-[#44337A]">
         <div className="container mx-auto px-4 lg:px-8">
           <motion.div

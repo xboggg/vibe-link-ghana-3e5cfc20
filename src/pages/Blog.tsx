@@ -6,6 +6,7 @@ import { CTASection } from "@/components/sections/CTASection";
 import { Clock, ArrowRight, BookOpen, Search, X, ChevronDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import SEO from "@/components/SEO";
 
 
 const POSTS_PER_LOAD = 6;
@@ -162,6 +163,12 @@ const Blog = () => {
 
   return (
     <Layout>
+      <SEO 
+        title="Blog"
+        description="Tips, guides and inspiration for planning your Ghanaian wedding, funeral, naming ceremony and more. Learn about traditions and modern event planning."
+        keywords="Ghana event planning blog, wedding traditions Ghana, funeral planning tips, naming ceremony guide"
+        canonical="/blog"
+      />
       {/* Hero */}
       <section className="pt-24 lg:pt-32 pb-16 bg-gradient-to-b from-[#6B46C1] via-[#553C9A] to-[#44337A]">
         <div className="container mx-auto px-4 lg:px-8">
