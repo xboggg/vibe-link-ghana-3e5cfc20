@@ -210,6 +210,45 @@ ${formData.designNotes ? `🎯 *Design Notes:* ${formData.designNotes}` : ""}`;
     }
   };
 
+  const sendAdminNotification = async (
+    orderId: string,
+    total: number,
+    selectedPkg: typeof packages[0] | undefined,
+    selectedAddOnsList: { id: string; name: string; price: number }[]
+  ) => {
+    try {
+      const { error } = await supabase.functions.invoke("send-admin-notification", {
+        body: {
+          orderId,
+          clientName: formData.fullName,
+          clientEmail: formData.email,
+          clientPhone: formData.phone,
+          clientWhatsapp: formData.whatsapp || null,
+          eventType: formData.eventType,
+          eventTitle: formData.eventTitle,
+          eventDate: formData.eventDate ? formData.eventDate.toISOString().split("T")[0] : null,
+          eventTime: formData.eventTime || null,
+          venueName: formData.eventVenue || null,
+          venueAddress: formData.eventAddress || null,
+          packageName: selectedPkg?.name || "",
+          packagePrice: selectedPkg?.price || 0,
+          totalPrice: total,
+          addOns: selectedAddOnsList.map(a => ({ name: a.name, price: a.price })),
+          colorPalette: formData.colorPalette || null,
+          stylePreference: formData.stylePreference || null,
+          deliveryType: formData.deliveryUrgency,
+          specialRequests: formData.designNotes || null,
+        },
+      });
+
+      if (error) {
+        console.error("Error sending admin notification:", error);
+      }
+    } catch (error) {
+      console.error("Failed to send admin notification:", error);
+    }
+  };
+
   const handleSubmit = async () => {
     setIsSubmitting(true);
     
@@ -259,9 +298,10 @@ ${formData.designNotes ? `🎯 *Design Notes:* ${formData.designNotes}` : ""}`;
         throw error;
       }
       
-      // Send confirmation email and WhatsApp notification
+      // Send confirmation email, admin notification, and WhatsApp notification
       if (data?.id) {
         sendOrderConfirmationEmail(data.id, total, selectedPkg, selectedAddOnsList);
+        sendAdminNotification(data.id, total, selectedPkg, selectedAddOnsList);
         sendWhatsAppNotification(data.id, total);
       }
       
