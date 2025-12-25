@@ -9,9 +9,9 @@ import type { Database } from "@/integrations/supabase/types";
 
 type Order = Database["public"]["Tables"]["orders"]["Row"];
 
-interface CalendarViewProps {
+export interface CalendarViewProps {
   orders: Order[];
-  onOrderClick: (order: Order) => void;
+  onSelectOrder: (order: Order) => void;
 }
 
 interface CalendarEvent {
@@ -20,7 +20,7 @@ interface CalendarEvent {
   date: Date;
 }
 
-export const CalendarView = ({ orders, onOrderClick }: CalendarViewProps) => {
+export const CalendarView = ({ orders, onSelectOrder }: CalendarViewProps) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
   const calendarDays = useMemo(() => {
@@ -135,7 +135,7 @@ export const CalendarView = ({ orders, onOrderClick }: CalendarViewProps) => {
                   {dayEvents.slice(0, 3).map((event, idx) => (
                     <button
                       key={`${event.order.id}-${event.type}-${idx}`}
-                      onClick={() => onOrderClick(event.order)}
+                      onClick={() => onSelectOrder(event.order)}
                       className={cn(
                         "w-full text-left px-1.5 py-0.5 rounded text-xs truncate transition-colors",
                         event.type === "event"

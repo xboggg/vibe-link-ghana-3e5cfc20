@@ -44,6 +44,7 @@ import {
 } from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { CalendarView } from "@/components/admin/CalendarView";
 import type { Database } from "@/integrations/supabase/types";
 
 type Order = Database["public"]["Tables"]["orders"]["Row"];
@@ -72,6 +73,7 @@ const Admin = () => {
   const [loadingOrders, setLoadingOrders] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [activeTab, setActiveTab] = useState("all");
+  const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
 
   useEffect(() => {
     if (!loading && !user) {
@@ -247,19 +249,41 @@ const Admin = () => {
           </Card>
         </div>
 
-        {/* Orders Table */}
+        {/* View Toggle and Orders */}
         <Card>
           <CardHeader>
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <CardTitle>Orders</CardTitle>
-              <Tabs value={activeTab} onValueChange={setActiveTab}>
-                <TabsList>
-                  <TabsTrigger value="all">All</TabsTrigger>
-                  <TabsTrigger value="pending">Pending</TabsTrigger>
-                  <TabsTrigger value="in_progress">In Progress</TabsTrigger>
-                  <TabsTrigger value="completed">Completed</TabsTrigger>
-                </TabsList>
-              </Tabs>
+              <div className="flex items-center gap-4">
+                <CardTitle>Orders</CardTitle>
+                <div className="flex gap-2">
+                  <Button
+                    variant={viewMode === "list" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setViewMode("list")}
+                  >
+                    <Package className="h-4 w-4 mr-1" />
+                    List
+                  </Button>
+                  <Button
+                    variant={viewMode === "calendar" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setViewMode("calendar")}
+                  >
+                    <Calendar className="h-4 w-4 mr-1" />
+                    Calendar
+                  </Button>
+                </div>
+              </div>
+              {viewMode === "list" && (
+                <Tabs value={activeTab} onValueChange={setActiveTab}>
+                  <TabsList>
+                    <TabsTrigger value="all">All</TabsTrigger>
+                    <TabsTrigger value="pending">Pending</TabsTrigger>
+                    <TabsTrigger value="in_progress">In Progress</TabsTrigger>
+                    <TabsTrigger value="completed">Completed</TabsTrigger>
+                  </TabsList>
+                </Tabs>
+              )}
             </div>
           </CardHeader>
           <CardContent>
@@ -267,6 +291,8 @@ const Admin = () => {
               <div className="flex items-center justify-center py-12">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
               </div>
+            ) : viewMode === "calendar" ? (
+              <CalendarView orders={orders} onSelectOrder={setSelectedOrder} />
             ) : filteredOrders.length === 0 ? (
               <div className="text-center py-12">
                 <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />

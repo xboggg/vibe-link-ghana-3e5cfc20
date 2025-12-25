@@ -11,6 +11,13 @@ const quickLinks = [
   { name: "About", href: "/about" },
 ];
 
+const policyLinks = [
+  { name: "Privacy Policy", href: "/privacy-policy" },
+  { name: "Terms of Service", href: "/terms-of-service" },
+  { name: "Refund Policy", href: "/refund-policy" },
+  { name: "Cookie Policy", href: "/cookie-policy" },
+];
+
 const eventTypes = [
   { name: "Weddings", href: "/services#wedding" },
   { name: "Funerals", href: "/services#funeral" },
@@ -71,6 +78,22 @@ export function Footer() {
             </h4>
             <ul className="space-y-2">
               {quickLinks.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    to={link.href}
+                    className="text-primary-foreground/70 hover:text-secondary transition-colors text-sm"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            {/* Policy Links */}
+            <h4 className="text-sm font-semibold uppercase tracking-wider text-secondary mb-4 mt-6">
+              Policies
+            </h4>
+            <ul className="space-y-2">
+              {policyLinks.map((link) => (
                 <li key={link.name}>
                   <Link
                     to={link.href}

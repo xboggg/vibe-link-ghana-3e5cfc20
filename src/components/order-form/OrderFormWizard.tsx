@@ -111,6 +111,75 @@ export const OrderFormWizard = ({ onComplete }: OrderFormWizardProps) => {
     return total;
   };
 
+  const uploadReferenceImages = async (): Promise<string[]> => {
+    const uploadedUrls: string[] = [];
+    
+    for (const file of formData.referenceImages) {
+      const fileName = `${Date.now()}-${file.name}`;
+      const { data, error } = await supabase.storage
+        .from("reference-images")
+        .upload(fileName, file);
+      
+      if (error) {
+        console.error("Error uploading image:", error);
+        continue;
+      }
+      
+      const { data: urlData } = supabase.storage
+        .from("reference-images")
+        .getPublicUrl(data.path);
+      
+      uploadedUrls.push(urlData.publicUrl);
+    }
+    
+    return uploadedUrls;
+  };
+
+  const sendWhatsAppNotification = (orderId: string, total: number) => {
+    const selectedPkg = packages.find((p) => p.id === formData.selectedPackage);
+    const selectedAddOnsList = formData.selectedAddOns.map((addonId) => {
+      const addon = addOns.find((a) => a.id === addonId);
+      return addon?.name || "";
+    }).filter(Boolean);
+    
+    const message = `🎉 *New Order from VibeLink Ghana!*
+    
+📋 *Order ID:* ${orderId.substring(0, 8)}
+
+👤 *Client Details:*
+• Name: ${formData.fullName}
+• Phone: ${formData.phone}
+• Email: ${formData.email}
+${formData.whatsapp ? `• WhatsApp: ${formData.whatsapp}` : ""}
+
+📅 *Event Details:*
+• Type: ${formData.eventType.charAt(0).toUpperCase() + formData.eventType.slice(1)}
+• Title: ${formData.eventTitle}
+• Date: ${formData.eventDate ? formData.eventDate.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : "TBD"}
+• Time: ${formData.eventTime || "TBD"}
+• Venue: ${formData.eventVenue}
+${formData.eventAddress ? `• Address: ${formData.eventAddress}` : ""}
+${formData.celebrantNames ? `• Celebrant(s): ${formData.celebrantNames}` : ""}
+
+🎨 *Design Preferences:*
+• Package: ${selectedPkg?.name || ""} (GHS ${selectedPkg?.price || 0})
+• Color Palette: ${formData.colorPalette}
+• Style: ${formData.stylePreference}
+${selectedAddOnsList.length > 0 ? `• Add-ons: ${selectedAddOnsList.join(", ")}` : ""}
+• Delivery: ${formData.deliveryUrgency === "rush" ? "Rush (48h)" : "Standard"}
+${formData.preferredDeliveryDate ? `• Preferred Delivery: ${formData.preferredDeliveryDate.toLocaleDateString("en-GB")}` : ""}
+
+💰 *Total:* GHS ${total.toLocaleString()}
+
+${formData.additionalInfo ? `📝 *Additional Notes:* ${formData.additionalInfo}` : ""}
+${formData.designNotes ? `🎯 *Design Notes:* ${formData.designNotes}` : ""}`;
+
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappNumber = "233245817973"; // VibeLink Ghana WhatsApp
+    
+    window.open(`https://wa.me/${whatsappNumber}?text=${encodedMessage}`, "_blank");
+  };
+
   const handleSubmit = async () => {
     setIsSubmitting(true);
     
@@ -123,7 +192,10 @@ export const OrderFormWizard = ({ onComplete }: OrderFormWizardProps) => {
       
       const total = calculateTotal();
       
-      const { error } = await supabase.from("orders").insert({
+      // Upload reference images first
+      const referenceImageUrls = await uploadReferenceImages();
+      
+      const { data, error } = await supabase.from("orders").insert({
         event_type: formData.eventType,
         event_title: formData.eventTitle,
         event_date: formData.eventDate ? formData.eventDate.toISOString().split("T")[0] : null,
@@ -149,11 +221,17 @@ export const OrderFormWizard = ({ onComplete }: OrderFormWizardProps) => {
         client_phone: formData.phone,
         client_whatsapp: formData.whatsapp || null,
         total_price: total,
-      });
+        reference_images: referenceImageUrls.length > 0 ? referenceImageUrls : null,
+      }).select("id").single();
 
       if (error) {
         console.error("Error submitting order:", error);
         throw error;
+      }
+      
+      // Send WhatsApp notification with order details
+      if (data?.id) {
+        sendWhatsAppNotification(data.id, total);
       }
       
       onComplete?.(formData);
