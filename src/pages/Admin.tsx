@@ -19,6 +19,9 @@ import {
   Mail,
   MessageCircle,
   Send,
+  Bell,
+  CheckCircle,
+  XCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -52,6 +55,16 @@ type Order = Database["public"]["Tables"]["orders"]["Row"];
 type OrderStatus = Database["public"]["Enums"]["order_status"];
 type PaymentStatus = Database["public"]["Enums"]["payment_status"];
 
+interface ReminderLog {
+  id: string;
+  order_id: string;
+  reminder_type: string;
+  sent_at: string;
+  recipient_email: string;
+  success: boolean;
+  error_message: string | null;
+}
+
 const orderStatusColors: Record<OrderStatus, string> = {
   pending: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
   in_progress: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
@@ -73,6 +86,8 @@ const Admin = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [reminderLogs, setReminderLogs] = useState<ReminderLog[]>([]);
+  const [loadingReminders, setLoadingReminders] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
   const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
 
@@ -88,6 +103,15 @@ const Admin = () => {
     }
   }, [user, isAdmin]);
 
+  // Fetch reminder logs when an order is selected
+  useEffect(() => {
+    if (selectedOrder) {
+      fetchReminderLogs(selectedOrder.id);
+    } else {
+      setReminderLogs([]);
+    }
+  }, [selectedOrder]);
+
   const fetchOrders = async () => {
     setLoadingOrders(true);
     const { data, error } = await supabase
@@ -102,6 +126,22 @@ const Admin = () => {
       setOrders(data || []);
     }
     setLoadingOrders(false);
+  };
+
+  const fetchReminderLogs = async (orderId: string) => {
+    setLoadingReminders(true);
+    const { data, error } = await supabase
+      .from("payment_reminder_logs")
+      .select("*")
+      .eq("order_id", orderId)
+      .order("sent_at", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching reminder logs:", error);
+    } else {
+      setReminderLogs((data as ReminderLog[]) || []);
+    }
+    setLoadingReminders(false);
   };
 
   const updateOrderStatus = async (orderId: string, status: OrderStatus) => {
@@ -643,6 +683,52 @@ const Admin = () => {
                   <p className="text-sm">{selectedOrder.special_requests}</p>
                 </div>
               )}
+
+              {/* Reminder History */}
+              <div className="bg-muted/50 rounded-lg p-4">
+                <h3 className="font-semibold mb-3 flex items-center gap-2">
+                  <Bell className="h-4 w-4" />
+                  Payment Reminder History
+                </h3>
+                {loadingReminders ? (
+                  <div className="flex items-center justify-center py-4">
+                    <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                  </div>
+                ) : reminderLogs.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">No reminders sent yet</p>
+                ) : (
+                  <div className="space-y-2">
+                    {reminderLogs.map((log) => (
+                      <div
+                        key={log.id}
+                        className="flex items-center justify-between bg-background rounded-md p-3 text-sm"
+                      >
+                        <div className="flex items-center gap-3">
+                          {log.success ? (
+                            <CheckCircle className="h-4 w-4 text-green-500" />
+                          ) : (
+                            <XCircle className="h-4 w-4 text-red-500" />
+                          )}
+                          <div>
+                            <p className="font-medium capitalize">
+                              {log.reminder_type.replace(/_/g, " ")}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              Sent to: {log.recipient_email}
+                            </p>
+                            {log.error_message && (
+                              <p className="text-xs text-red-500">{log.error_message}</p>
+                            )}
+                          </div>
+                        </div>
+                        <span className="text-xs text-muted-foreground whitespace-nowrap">
+                          {format(new Date(log.sent_at), "MMM d, yyyy h:mm a")}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </DialogContent>
