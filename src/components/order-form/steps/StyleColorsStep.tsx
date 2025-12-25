@@ -108,11 +108,18 @@ export const StyleColorsStep = ({
           continue;
         }
 
-        const { data: urlData } = supabase.storage
+        // Create a signed URL for private bucket (valid for 1 hour for preview)
+        const { data: signedUrlData, error: signedUrlError } = await supabase.storage
           .from("reference-images")
-          .getPublicUrl(fileName);
+          .createSignedUrl(fileName, 3600);
 
-        newUrls.push(urlData.publicUrl);
+        if (signedUrlError || !signedUrlData?.signedUrl) {
+          console.error("Signed URL error:", signedUrlError);
+          // Store the path for later retrieval
+          newUrls.push(fileName);
+        } else {
+          newUrls.push(signedUrlData.signedUrl);
+        }
       }
 
       if (newUrls.length > 0) {

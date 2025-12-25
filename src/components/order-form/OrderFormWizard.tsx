@@ -176,8 +176,17 @@ ${formData.designNotes ? `🎯 *Design Notes:* ${formData.designNotes}` : ""}`;
 
     const encodedMessage = encodeURIComponent(message);
     const whatsappNumber = "233245817973"; // VibeLink Ghana WhatsApp
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
     
-    window.open(`https://wa.me/${whatsappNumber}?text=${encodedMessage}`, "_blank");
+    // Use window.location.href for more reliable redirect, avoiding iframe blocking
+    // Create a link element and trigger click to ensure proper navigation
+    const link = document.createElement("a");
+    link.href = whatsappUrl;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const sendOrderConfirmationEmail = async (
