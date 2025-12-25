@@ -1,10 +1,9 @@
-import { useState, useRef } from "react";
-import ReCAPTCHA from "react-google-recaptcha";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { OrderFormData, eventTypes, packages, addOns, colorPalettes, stylePreferences } from "@/data/orderFormData";
-import { ArrowLeft, User, Mail, Phone, MessageCircle, Loader2, Send } from "lucide-react";
+import { ArrowLeft, User, Mail, Phone, MessageCircle, Loader2, Send, ShieldCheck } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -17,7 +16,18 @@ import { contactSchema } from "@/lib/validationSchemas";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-const RECAPTCHA_SITE_KEY = "6LeyPjYsAAAAALAgAstDDCFZ8LLcRCvKNijR815Z";
+const RECAPTCHA_SITE_KEY = "6LeEKjYsAAAAAPHV-PE4PQ31TsTTmRPc-ApB19f6";
+
+declare global {
+  interface Window {
+    grecaptcha: {
+      enterprise: {
+        ready: (callback: () => void) => void;
+        execute: (siteKey: string, options: { action: string }) => Promise<string>;
+      };
+    };
+  }
+}
 
 interface ContactStepProps {
   formData: OrderFormData;
@@ -38,15 +48,57 @@ export const ContactStep = ({
   total,
 }: ContactStepProps) => {
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [isVerifying, setIsVerifying] = useState(false);
-  const recaptchaRef = useRef<ReCAPTCHA>(null);
+  const [recaptchaLoaded, setRecaptchaLoaded] = useState(false);
   
   const selectedEvent = eventTypes.find((e) => e.id === formData.eventType);
   const selectedPackage = packages.find((p) => p.id === formData.selectedPackage);
   const selectedPalette = colorPalettes.find((c) => c.id === formData.colorPalette);
   const selectedStyle = stylePreferences.find((s) => s.id === formData.stylePreference);
   const selectedAddOnsList = formData.selectedAddOns.map((id) => addOns.find((a) => a.id === id)).filter(Boolean);
+
+  // Load reCAPTCHA Enterprise script
+  useEffect(() => {
+    const scriptId = "recaptcha-enterprise-script";
+    if (document.getElementById(scriptId)) {
+      setRecaptchaLoaded(true);
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.id = scriptId;
+    script.src = `https://www.google.com/recaptcha/enterprise.js?render=${RECAPTCHA_SITE_KEY}`;
+    script.async = true;
+    script.defer = true;
+    script.onload = () => {
+      window.grecaptcha.enterprise.ready(() => {
+        setRecaptchaLoaded(true);
+      });
+    };
+    document.head.appendChild(script);
+
+    return () => {
+      // Cleanup not needed as script should persist
+    };
+  }, []);
+
+  const executeRecaptcha = useCallback(async (): Promise<string | null> => {
+    if (!recaptchaLoaded || !window.grecaptcha?.enterprise) {
+      toast.error("Security verification not ready. Please wait.");
+      return null;
+    }
+
+    try {
+      const token = await window.grecaptcha.enterprise.execute(RECAPTCHA_SITE_KEY, {
+        action: "SUBMIT_ORDER",
+      });
+      return token;
+    } catch (error) {
+      console.error("reCAPTCHA execution error:", error);
+      toast.error("Security verification failed. Please refresh and try again.");
+      return null;
+    }
+  }, [recaptchaLoaded]);
 
   const validateAndSubmit = async () => {
     const result = contactSchema.safeParse({
@@ -68,22 +120,23 @@ export const ContactStep = ({
       return;
     }
 
-    if (!captchaToken) {
-      toast.error("Please complete the CAPTCHA verification");
-      return;
-    }
-
     setIsVerifying(true);
     try {
+      // Get reCAPTCHA token
+      const captchaToken = await executeRecaptcha();
+      if (!captchaToken) {
+        setIsVerifying(false);
+        return;
+      }
+
       // Verify captcha on server
       const { data, error } = await supabase.functions.invoke("verify-captcha", {
-        body: { token: captchaToken },
+        body: { token: captchaToken, action: "SUBMIT_ORDER" },
       });
 
       if (error || !data?.success) {
-        toast.error("CAPTCHA verification failed. Please try again.");
-        recaptchaRef.current?.reset();
-        setCaptchaToken(null);
+        toast.error("Security verification failed. Please try again.");
+        setIsVerifying(false);
         return;
       }
 
@@ -92,14 +145,12 @@ export const ContactStep = ({
     } catch (error) {
       console.error("Captcha verification error:", error);
       toast.error("Verification failed. Please try again.");
-      recaptchaRef.current?.reset();
-      setCaptchaToken(null);
     } finally {
       setIsVerifying(false);
     }
   };
 
-  const isValid = formData.fullName && formData.phone && captchaToken;
+  const isValid = formData.fullName && formData.phone && recaptchaLoaded;
 
   const clearError = (field: string) => {
     setErrors((prev) => ({ ...prev, [field]: "" }));
@@ -224,19 +275,13 @@ export const ContactStep = ({
           </Select>
         </div>
 
-        {/* reCAPTCHA */}
-        <div className="flex flex-col items-center gap-2">
-          <ReCAPTCHA
-            ref={recaptchaRef}
-            sitekey={RECAPTCHA_SITE_KEY}
-            onChange={(token) => setCaptchaToken(token)}
-            onExpired={() => setCaptchaToken(null)}
-          />
-          {!captchaToken && (
-            <p className="text-xs text-muted-foreground">
-              Please verify you're not a robot
-            </p>
-          )}
+        {/* reCAPTCHA Enterprise Badge */}
+        <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
+          <ShieldCheck className="h-4 w-4 text-primary" />
+          <span>
+            Protected by reCAPTCHA Enterprise
+            {!recaptchaLoaded && " (loading...)"}
+          </span>
         </div>
       </div>
 
