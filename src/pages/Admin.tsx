@@ -104,6 +104,9 @@ const Admin = () => {
   };
 
   const updateOrderStatus = async (orderId: string, status: OrderStatus) => {
+    // Find the order to get client details for email
+    const order = orders.find(o => o.id === orderId);
+    
     const { error } = await supabase
       .from("orders")
       .update({ order_status: status })
@@ -113,11 +116,43 @@ const Admin = () => {
       toast.error("Failed to update order status");
     } else {
       toast.success("Order status updated");
+      
+      // Send status update email
+      if (order) {
+        sendStatusEmail(order, status);
+      }
+      
       fetchOrders();
     }
   };
 
+  const sendStatusEmail = async (order: Order, newStatus: string, newPaymentStatus?: string) => {
+    try {
+      const { error } = await supabase.functions.invoke('send-status-email', {
+        body: {
+          clientName: order.client_name,
+          clientEmail: order.client_email,
+          eventTitle: order.event_title,
+          orderId: order.id,
+          orderStatus: newStatus,
+          paymentStatus: newPaymentStatus || order.payment_status,
+        },
+      });
+
+      if (error) {
+        console.error("Error sending status email:", error);
+      } else {
+        toast.success("Status email sent to customer");
+      }
+    } catch (err) {
+      console.error("Error invoking email function:", err);
+    }
+  };
+
   const updatePaymentStatus = async (orderId: string, status: PaymentStatus) => {
+    // Find the order to get client details for email
+    const order = orders.find(o => o.id === orderId);
+    
     const { error } = await supabase
       .from("orders")
       .update({ payment_status: status })
@@ -127,6 +162,12 @@ const Admin = () => {
       toast.error("Failed to update payment status");
     } else {
       toast.success("Payment status updated");
+      
+      // Send payment status update email
+      if (order) {
+        sendStatusEmail(order, order.order_status, status);
+      }
+      
       fetchOrders();
     }
   };
