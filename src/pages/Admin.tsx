@@ -25,10 +25,12 @@ import {
   BarChart3,
   RefreshCw,
   Zap,
+  FileText,
 } from "lucide-react";
 import { AnalyticsDashboard } from "@/components/admin/AnalyticsDashboard";
 import { FollowUpHistory } from "@/components/admin/FollowUpHistory";
 import { FollowUpSettings } from "@/components/admin/FollowUpSettings";
+import { BlogManager } from "@/components/admin/BlogManager";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -96,7 +98,7 @@ const Admin = () => {
   const [loadingReminders, setLoadingReminders] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
   const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
-  const [adminTab, setAdminTab] = useState<"orders" | "analytics" | "follow-ups" | "settings">("orders");
+  const [adminTab, setAdminTab] = useState<"orders" | "analytics" | "follow-ups" | "settings" | "blog">("orders");
   const [runningFollowUps, setRunningFollowUps] = useState(false);
 
   useEffect(() => {
@@ -376,6 +378,13 @@ const Admin = () => {
             <Clock className="h-4 w-4 mr-2" />
             Email Settings
           </Button>
+          <Button
+            variant={adminTab === "blog" ? "default" : "outline"}
+            onClick={() => setAdminTab("blog")}
+          >
+            <FileText className="h-4 w-4 mr-2" />
+            Blog
+          </Button>
           <div className="flex-1" />
           <Button
             variant="outline"
@@ -406,6 +415,8 @@ const Admin = () => {
           <FollowUpHistory />
         ) : adminTab === "settings" ? (
           <FollowUpSettings />
+        ) : adminTab === "blog" ? (
+          <BlogManager />
         ) : (
           <>
             {/* Stats Cards */}

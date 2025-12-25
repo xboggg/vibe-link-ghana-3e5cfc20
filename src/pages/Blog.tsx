@@ -1,18 +1,33 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { CTASection } from "@/components/sections/CTASection";
-import { Clock, ArrowRight, BookOpen, Search, X, ChevronDown } from "lucide-react";
+import { Clock, ArrowRight, BookOpen, Search, X, ChevronDown, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import SEO from "@/components/SEO";
-
+import { supabase } from "@/integrations/supabase/client";
+import { format } from "date-fns";
 
 const POSTS_PER_LOAD = 6;
 
 const categories = ["All", "Event Planning", "Traditions", "Tips & Guides", "Inspiration"];
 
+interface BlogPost {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  category: string;
+  image_url: string;
+  read_time: string;
+  featured: boolean;
+  published_at: string | null;
+  created_at: string;
+}
+
+// Keep for backwards compatibility - will be used as fallback
 export const blogPosts = [
   {
     id: 1,
@@ -36,97 +51,43 @@ export const blogPosts = [
     date: "December 10, 2024",
     featured: true,
   },
-  {
-    id: 3,
-    slug: "naming-ceremony-traditions-ghana",
-    title: "Naming Ceremony Traditions Across Ghanaian Cultures",
-    excerpt: "Explore the beautiful naming traditions of the Akan, Ga, Ewe, and other Ghanaian ethnic groups.",
-    category: "Traditions",
-    image: "https://images.unsplash.com/photo-1544126592-807ade215a0b?auto=format&fit=crop&w=800&q=80",
-    readTime: "6 min read",
-    date: "December 5, 2024",
-    featured: false,
-  },
-  {
-    id: 4,
-    slug: "digital-invitations-vs-paper-invitations",
-    title: "Digital vs Paper Invitations: Why Modern Families Are Switching",
-    excerpt: "Discover why more Ghanaian families are choosing digital invitations and how it saves time, money, and stress.",
-    category: "Tips & Guides",
-    image: "https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&fit=crop&w=800&q=80",
-    readTime: "5 min read",
-    date: "November 28, 2024",
-    featured: false,
-  },
-  {
-    id: 5,
-    slug: "coordinating-diaspora-family-events",
-    title: "How to Coordinate Events with Diaspora Family Members",
-    excerpt: "Tips for keeping overseas relatives informed and involved in family celebrations back home in Ghana.",
-    category: "Tips & Guides",
-    image: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=800&q=80",
-    readTime: "7 min read",
-    date: "November 20, 2024",
-    featured: false,
-  },
-  {
-    id: 6,
-    slug: "momo-contributions-modern-events",
-    title: "Using Mobile Money for Event Contributions: A Modern Approach",
-    excerpt: "How MoMo collection is transforming how Ghanaian families manage wedding gifts and funeral donations.",
-    category: "Tips & Guides",
-    image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=800&q=80",
-    readTime: "6 min read",
-    date: "November 15, 2024",
-    featured: false,
-  },
-  {
-    id: 7,
-    slug: "traditional-engagement-ceremony-guide",
-    title: "The Traditional Engagement Ceremony: A Step-by-Step Guide",
-    excerpt: "Everything you need to know about planning a beautiful traditional engagement (knocking) ceremony.",
-    category: "Event Planning",
-    image: "https://images.unsplash.com/photo-1529634806980-85c3dd6d34ac?auto=format&fit=crop&w=800&q=80",
-    readTime: "9 min read",
-    date: "November 8, 2024",
-    featured: false,
-  },
-  {
-    id: 8,
-    slug: "beautiful-ghanaian-wedding-themes",
-    title: "10 Beautiful Ghanaian Wedding Theme Ideas",
-    excerpt: "From kente-inspired elegance to modern minimalist, explore stunning wedding themes perfect for Ghanaian celebrations.",
-    category: "Inspiration",
-    image: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=800&q=80",
-    readTime: "8 min read",
-    date: "October 30, 2024",
-    featured: false,
-  },
-  {
-    id: 9,
-    slug: "creating-memorable-birthday-celebrations",
-    title: "Creating Memorable Birthday Celebrations for All Ages",
-    excerpt: "Ideas and tips for throwing unforgettable birthday parties, from first birthdays to milestone celebrations.",
-    category: "Inspiration",
-    image: "https://images.unsplash.com/photo-1464349095431-e9a21285a5f3?auto=format&fit=crop&w=800&q=80",
-    readTime: "5 min read",
-    date: "October 22, 2024",
-    featured: false,
-  },
 ];
 
 const Blog = () => {
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [visibleCount, setVisibleCount] = useState(POSTS_PER_LOAD);
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
+  const fetchPosts = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('blog_posts')
+        .select('id, slug, title, excerpt, category, image_url, read_time, featured, published_at, created_at')
+        .eq('published', true)
+        .order('published_at', { ascending: false });
+
+      if (error) throw error;
+      setPosts(data || []);
+    } catch (error) {
+      console.error('Error fetching blog posts:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const filteredPosts = useMemo(() => {
-    let posts = blogPosts;
+    let filtered = posts;
     
     // Filter by search query
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      posts = posts.filter(
+      filtered = filtered.filter(
         (post) =>
           post.title.toLowerCase().includes(query) ||
           post.excerpt.toLowerCase().includes(query) ||
@@ -136,16 +97,14 @@ const Blog = () => {
     
     // Filter by category
     if (activeCategory !== "All") {
-      posts = posts.filter((post) => post.category === activeCategory);
+      filtered = filtered.filter((post) => post.category === activeCategory);
     }
     
-    return posts;
-  }, [searchQuery, activeCategory]);
-
-  const [visibleCount, setVisibleCount] = useState(POSTS_PER_LOAD);
+    return filtered;
+  }, [posts, searchQuery, activeCategory]);
 
   // Reset visible count when filters change
-  useMemo(() => {
+  useEffect(() => {
     setVisibleCount(POSTS_PER_LOAD);
   }, [searchQuery, activeCategory]);
 
@@ -153,12 +112,17 @@ const Blog = () => {
     return filteredPosts.slice(0, visibleCount);
   }, [filteredPosts, visibleCount]);
 
-  const featuredPosts = blogPosts.filter((post) => post.featured);
+  const featuredPosts = posts.filter((post) => post.featured);
   const hasMorePosts = visibleCount < filteredPosts.length;
   const remainingPosts = filteredPosts.length - visibleCount;
 
   const handleLoadMore = () => {
     setVisibleCount((prev) => prev + POSTS_PER_LOAD);
+  };
+
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return '';
+    return format(new Date(dateString), 'MMMM d, yyyy');
   };
 
   return (
@@ -193,13 +157,20 @@ const Blog = () => {
       </section>
 
       {/* Featured Posts */}
-      <section className="py-16 bg-background">
-        <div className="container mx-auto px-4 lg:px-8">
-          <h2 className="text-2xl font-bold text-foreground mb-8">
-            Featured Articles
-          </h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
-            {featuredPosts.map((post, index) => (
+      {loading ? (
+        <section className="py-16 bg-background">
+          <div className="container mx-auto px-4 lg:px-8 flex justify-center">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        </section>
+      ) : featuredPosts.length > 0 && (
+        <section className="py-16 bg-background">
+          <div className="container mx-auto px-4 lg:px-8">
+            <h2 className="text-2xl font-bold text-foreground mb-8">
+              Featured Articles
+            </h2>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+              {featuredPosts.map((post, index) => (
               <motion.article
                 key={post.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -210,7 +181,7 @@ const Blog = () => {
                 <Link to={`/blog/${post.slug}`}>
                   <div className="aspect-[4/3] md:aspect-[16/9] overflow-hidden">
                     <img
-                      src={post.image}
+                      src={post.image_url}
                       alt={post.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
@@ -227,10 +198,10 @@ const Blog = () => {
                       {post.excerpt}
                     </p>
                     <div className="flex items-center gap-3 md:gap-4 text-primary-foreground/60 text-[10px] md:text-sm">
-                      <span>{post.date}</span>
+                      <span>{formatDate(post.published_at || post.created_at)}</span>
                       <span className="flex items-center gap-1">
                         <Clock className="h-3 w-3" />
-                        {post.readTime}
+                        {post.read_time}
                       </span>
                     </div>
                   </div>
@@ -240,7 +211,7 @@ const Blog = () => {
           </div>
         </div>
       </section>
-
+      )}
       {/* Search & Filter */}
       <section className="py-8 bg-muted/50 border-y border-border">
         <div className="container mx-auto px-4 lg:px-8">
@@ -328,7 +299,7 @@ const Blog = () => {
                     <Link to={`/blog/${post.slug}`}>
                       <div className="aspect-[16/10] overflow-hidden">
                         <img
-                          src={post.image}
+                          src={post.image_url}
                           alt={post.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
@@ -340,7 +311,7 @@ const Blog = () => {
                           </span>
                           <span className="flex items-center gap-1 text-muted-foreground text-[10px] md:text-xs">
                             <Clock className="h-3 w-3" />
-                            {post.readTime}
+                            {post.read_time}
                           </span>
                         </div>
                         <h3 className="text-base md:text-lg font-bold text-foreground mb-1.5 md:mb-2 group-hover:text-primary transition-colors line-clamp-2">
@@ -351,7 +322,7 @@ const Blog = () => {
                         </p>
                         <div className="flex items-center justify-between">
                           <span className="text-muted-foreground text-[10px] md:text-xs">
-                            {post.date}
+                            {formatDate(post.published_at || post.created_at)}
                           </span>
                           <span className="text-primary text-xs md:text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
                             Read more
