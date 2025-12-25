@@ -110,6 +110,44 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_reminder_logs: {
+        Row: {
+          error_message: string | null
+          id: string
+          order_id: string
+          recipient_email: string
+          reminder_type: string
+          sent_at: string
+          success: boolean
+        }
+        Insert: {
+          error_message?: string | null
+          id?: string
+          order_id: string
+          recipient_email: string
+          reminder_type: string
+          sent_at?: string
+          success?: boolean
+        }
+        Update: {
+          error_message?: string | null
+          id?: string
+          order_id?: string
+          recipient_email?: string
+          reminder_type?: string
+          sent_at?: string
+          success?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_reminder_logs_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string

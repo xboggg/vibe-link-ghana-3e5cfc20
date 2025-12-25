@@ -26,6 +26,7 @@ const handler = async (req: Request): Promise<Response> => {
     const threeDaysFromNow = new Date(today);
     threeDaysFromNow.setDate(today.getDate() + 3);
     const targetDate = threeDaysFromNow.toISOString().split('T')[0];
+    const reminderType = "auto_3_days_before";
 
     console.log("Checking for orders with event date:", targetDate);
 
@@ -41,11 +42,26 @@ const handler = async (req: Request): Promise<Response> => {
       throw error;
     }
 
-    console.log(`Found ${orders?.length || 0} orders needing payment reminders`);
+    console.log(`Found ${orders?.length || 0} orders with upcoming events`);
 
     const results = [];
 
     for (const order of orders || []) {
+      // Check if reminder was already sent for this order
+      const { data: existingReminder } = await supabase
+        .from("payment_reminder_logs")
+        .select("id")
+        .eq("order_id", order.id)
+        .eq("reminder_type", reminderType)
+        .eq("success", true)
+        .maybeSingle();
+
+      if (existingReminder) {
+        console.log(`Reminder already sent for order ${order.id}, skipping`);
+        results.push({ orderId: order.id, skipped: true, reason: "already_sent" });
+        continue;
+      }
+
       try {
         const formattedDate = order.event_date 
           ? new Date(order.event_date).toLocaleDateString('en-GB', { 
@@ -160,9 +176,28 @@ const handler = async (req: Request): Promise<Response> => {
         });
 
         console.log("Auto reminder sent for order:", order.id, emailResponse);
+
+        // Log successful reminder
+        await supabase.from("payment_reminder_logs").insert({
+          order_id: order.id,
+          reminder_type: reminderType,
+          recipient_email: order.client_email,
+          success: true,
+        });
+
         results.push({ orderId: order.id, success: true, email: order.client_email });
       } catch (emailError: any) {
         console.error("Error sending reminder for order:", order.id, emailError);
+
+        // Log failed reminder
+        await supabase.from("payment_reminder_logs").insert({
+          order_id: order.id,
+          reminder_type: reminderType,
+          recipient_email: order.client_email,
+          success: false,
+          error_message: emailError.message,
+        });
+
         results.push({ orderId: order.id, success: false, error: emailError.message });
       }
     }
@@ -170,7 +205,7 @@ const handler = async (req: Request): Promise<Response> => {
     return new Response(
       JSON.stringify({ 
         success: true, 
-        message: `Processed ${results.length} payment reminders`,
+        message: `Processed ${results.length} orders`,
         results 
       }), 
       {
