@@ -3,11 +3,14 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Trash2, Search, Mail, Users, Download, ToggleLeft, ToggleRight } from "lucide-react";
+import { Trash2, Search, Mail, Users, Download, ToggleLeft, ToggleRight, Send, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 
 interface Subscriber {
@@ -20,6 +23,9 @@ interface Subscriber {
 
 export function NewsletterManager() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [composeOpen, setComposeOpen] = useState(false);
+  const [subject, setSubject] = useState("");
+  const [content, setContent] = useState("");
   const queryClient = useQueryClient();
 
   const { data: subscribers = [], isLoading } = useQuery({
@@ -71,6 +77,26 @@ export function NewsletterManager() {
     }
   });
 
+  const sendNewsletterMutation = useMutation({
+    mutationFn: async () => {
+      const { data, error } = await supabase.functions.invoke('send-newsletter', {
+        body: { subject, content }
+      });
+      
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (data) => {
+      toast.success(data.message || "Newsletter sent successfully!");
+      setComposeOpen(false);
+      setSubject("");
+      setContent("");
+    },
+    onError: (error: any) => {
+      toast.error(error.message || "Failed to send newsletter");
+    }
+  });
+
   const filteredSubscribers = subscribers.filter(sub =>
     sub.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -99,15 +125,73 @@ export function NewsletterManager() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
           <h2 className="text-2xl font-bold">Newsletter Subscribers</h2>
           <p className="text-muted-foreground">Manage your newsletter subscriber list</p>
         </div>
-        <Button onClick={exportToCSV} variant="outline" className="gap-2">
-          <Download className="h-4 w-4" />
-          Export CSV
-        </Button>
+        <div className="flex items-center gap-2">
+          <Dialog open={composeOpen} onOpenChange={setComposeOpen}>
+            <DialogTrigger asChild>
+              <Button className="gap-2" disabled={activeCount === 0}>
+                <Send className="h-4 w-4" />
+                Send Newsletter
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>Compose Newsletter</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="subject">Subject</Label>
+                  <Input
+                    id="subject"
+                    placeholder="Enter newsletter subject..."
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="content">Content (HTML supported)</Label>
+                  <Textarea
+                    id="content"
+                    placeholder="Enter newsletter content... You can use HTML for formatting."
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    rows={10}
+                  />
+                </div>
+                <div className="flex items-center justify-between pt-4">
+                  <p className="text-sm text-muted-foreground">
+                    Will be sent to {activeCount} active subscriber{activeCount !== 1 ? 's' : ''}
+                  </p>
+                  <Button 
+                    onClick={() => sendNewsletterMutation.mutate()}
+                    disabled={!subject || !content || sendNewsletterMutation.isPending}
+                    className="gap-2"
+                  >
+                    {sendNewsletterMutation.isPending ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="h-4 w-4" />
+                        Send Now
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+          <Button onClick={exportToCSV} variant="outline" className="gap-2">
+            <Download className="h-4 w-4" />
+            Export CSV
+          </Button>
+        </div>
       </div>
 
       {/* Stats Cards */}
