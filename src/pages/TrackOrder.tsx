@@ -22,8 +22,7 @@ interface Order {
   order_status: OrderStatus;
   payment_status: PaymentStatus;
   created_at: string;
-  client_name: string;
-  client_email: string;
+  preferred_delivery_date: string | null;
 }
 
 const statusConfig: Record<OrderStatus, { label: string; color: string; icon: typeof Package }> = {
@@ -50,8 +49,19 @@ export default function TrackOrder() {
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!searchQuery.trim()) {
-      toast.error("Please enter an order ID or email address");
+    const trimmedQuery = searchQuery.trim();
+    
+    if (!trimmedQuery) {
+      toast.error("Please enter an order ID");
+      return;
+    }
+
+    // Validate UUID format
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(trimmedQuery)) {
+      toast.error("Please enter a valid order ID");
+      setOrder(null);
+      setSearched(true);
       return;
     }
 
@@ -59,20 +69,9 @@ export default function TrackOrder() {
     setSearched(true);
 
     try {
-      // Search by order ID or email
-      const isEmail = searchQuery.includes("@");
-      
-      let query = supabase
-        .from("orders")
-        .select("id, event_title, event_type, event_date, package_name, total_price, order_status, payment_status, created_at, client_name, client_email");
-      
-      if (isEmail) {
-        query = query.eq("client_email", searchQuery.toLowerCase().trim());
-      } else {
-        query = query.eq("id", searchQuery.trim());
-      }
-
-      const { data, error } = await query.maybeSingle();
+      // Use secure RPC function for order lookup
+      const { data, error } = await supabase
+        .rpc('get_order_by_id', { order_id: trimmedQuery });
 
       if (error) {
         console.error("Error fetching order:", error);
@@ -81,11 +80,11 @@ export default function TrackOrder() {
         return;
       }
 
-      if (data) {
-        setOrder(data as Order);
+      if (data && data.length > 0) {
+        setOrder(data[0] as Order);
       } else {
         setOrder(null);
-        toast.info("No order found with that ID or email");
+        toast.info("No order found with that ID");
       }
     } catch (error) {
       console.error("Error:", error);
@@ -111,7 +110,7 @@ export default function TrackOrder() {
               Track Your <span className="text-secondary">Order</span>
             </h1>
             <p className="text-muted-foreground">
-              Enter your order ID or email address to check your order status
+              Enter your order ID to check your order status
             </p>
           </motion.div>
 
@@ -127,7 +126,7 @@ export default function TrackOrder() {
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       type="text"
-                      placeholder="Enter order ID or email address"
+                      placeholder="Enter your order ID (e.g., a1b2c3d4-...)"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="pl-10"

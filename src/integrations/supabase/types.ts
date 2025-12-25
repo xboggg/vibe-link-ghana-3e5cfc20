@@ -195,6 +195,21 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_order_by_id: {
+        Args: { order_id: string }
+        Returns: {
+          created_at: string
+          event_date: string
+          event_title: string
+          event_type: string
+          id: string
+          order_status: string
+          package_name: string
+          payment_status: string
+          preferred_delivery_date: string
+          total_price: number
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
