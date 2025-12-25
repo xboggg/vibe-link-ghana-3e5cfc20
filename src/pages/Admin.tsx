@@ -47,6 +47,7 @@ import { BlogManager } from "@/components/admin/BlogManager";
 import { UserManagement } from "@/components/admin/UserManagement";
 import { TestimonialsManager } from "@/components/admin/TestimonialsManager";
 import { NewsletterManager } from "@/components/admin/NewsletterManager";
+import { SubscriberPreferences } from "@/components/admin/SubscriberPreferences";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -679,7 +680,12 @@ const Admin = () => {
         return <TestimonialsManager />;
 
       case "newsletter":
-        return <NewsletterManager />;
+        return (
+          <div className="space-y-8">
+            <NewsletterManager />
+            <SubscriberPreferences />
+          </div>
+        );
 
       case "follow-ups":
         return <FollowUpHistory />;

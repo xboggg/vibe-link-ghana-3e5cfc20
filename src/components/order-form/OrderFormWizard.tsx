@@ -302,9 +302,11 @@ ${formData.designNotes ? `🎯 *Design Notes:* ${formData.designNotes}` : ""}`;
         sendOrderConfirmationEmail(data.id, total, selectedPkg, selectedAddOnsList);
         sendAdminNotification(data.id, total, selectedPkg, selectedAddOnsList);
         
-        // Store WhatsApp URL for thank you page instead of auto-opening
+        // Store WhatsApp URL and order ID for thank you page
         const whatsappUrl = getWhatsAppUrl(data.id, total);
         sessionStorage.setItem("vibelink_whatsapp_url", whatsappUrl);
+        sessionStorage.setItem("vibelink_order_id", data.id);
+        sessionStorage.setItem("vibelink_order_email", formData.email);
       }
       
       onComplete?.(formData);

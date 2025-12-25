@@ -116,6 +116,14 @@ interface Subscriber {
   source: string | null;
 }
 
+const TOPIC_OPTIONS = [
+  { value: "", label: "All Subscribers", description: "Send to everyone" },
+  { value: "announcements", label: "Announcements", description: "Subscribers interested in news & updates" },
+  { value: "promotions", label: "Promotions", description: "Subscribers interested in deals & offers" },
+  { value: "events", label: "Event Tips", description: "Subscribers interested in event ideas" },
+  { value: "showcase", label: "Work Showcase", description: "Subscribers interested in your work" },
+];
+
 export function NewsletterManager() {
   const [searchTerm, setSearchTerm] = useState("");
   const [composeOpen, setComposeOpen] = useState(false);
@@ -123,6 +131,7 @@ export function NewsletterManager() {
   const [content, setContent] = useState("");
   const [attachments, setAttachments] = useState<File[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<string>("blank");
+  const [selectedTopic, setSelectedTopic] = useState<string>("");
   const [scheduleEnabled, setScheduleEnabled] = useState(false);
   const [scheduledDate, setScheduledDate] = useState<Date | undefined>(undefined);
   const [scheduledHour, setScheduledHour] = useState("09");
@@ -143,6 +152,7 @@ export function NewsletterManager() {
     setContent("");
     setAttachments([]);
     setSelectedTemplate("blank");
+    setSelectedTopic("");
     setScheduleEnabled(false);
     setScheduledDate(undefined);
     setScheduledHour("09");
@@ -201,7 +211,11 @@ export function NewsletterManager() {
   const sendNewsletterMutation = useMutation({
     mutationFn: async () => {
       const { data, error } = await supabase.functions.invoke('send-newsletter', {
-        body: { subject, content }
+        body: { 
+          subject, 
+          content,
+          topic: selectedTopic || undefined
+        }
       });
       
       if (error) throw error;
@@ -210,9 +224,7 @@ export function NewsletterManager() {
     onSuccess: (data) => {
       toast.success(data.message || "Newsletter sent successfully!");
       setComposeOpen(false);
-      setSubject("");
-      setContent("");
-      setAttachments([]);
+      resetForm();
     },
     onError: (error: any) => {
       toast.error(error.message || "Failed to send newsletter");
@@ -318,6 +330,29 @@ export function NewsletterManager() {
                   </Select>
                   <p className="text-xs text-muted-foreground">
                     Select a template to start with pre-filled content, or choose "Blank" to start fresh.
+                  </p>
+                </div>
+
+                {/* Target Audience */}
+                <div className="space-y-2">
+                  <Label>Target Audience</Label>
+                  <Select value={selectedTopic} onValueChange={setSelectedTopic}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Send to all subscribers..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {TOPIC_OPTIONS.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          <div className="flex flex-col">
+                            <span>{option.label}</span>
+                            <span className="text-xs text-muted-foreground">{option.description}</span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-muted-foreground">
+                    Filter recipients by their topic preferences. Subscribers without preferences will receive all newsletters.
                   </p>
                 </div>
 

@@ -13,6 +13,7 @@ interface NewsletterRequest {
   subject: string;
   content: string;
   campaignId?: string;
+  topic?: string; // Filter by topic: announcements, promotions, events, showcase
 }
 
 // Function to wrap links with tracking
@@ -89,7 +90,7 @@ const handler = async (req: Request): Promise<Response> => {
       });
     }
 
-    const { subject, content, campaignId }: NewsletterRequest = await req.json();
+    const { subject, content, campaignId, topic }: NewsletterRequest = await req.json();
 
     if (!subject || !content) {
       return new Response(JSON.stringify({ error: "Subject and content are required" }), {
@@ -97,6 +98,8 @@ const handler = async (req: Request): Promise<Response> => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+
+    console.log(`Fetching active subscribers${topic ? ` for topic: ${topic}` : ''}...`);
 
     console.log("Fetching active subscribers...");
 
@@ -135,14 +138,28 @@ const handler = async (req: Request): Promise<Response> => {
         .eq("id", activeCampaignId);
     }
 
-    const { data: subscribers, error: subError } = await supabaseAdmin
+    // Build query for subscribers
+    let subscriberQuery = supabaseAdmin
       .from("newsletter_subscribers")
-      .select("email")
+      .select("email, frequency, topics")
       .eq("is_active", true);
+
+    const { data: allSubscribers, error: subError } = await subscriberQuery;
 
     if (subError) {
       console.error("Error fetching subscribers:", subError);
       throw new Error("Failed to fetch subscribers");
+    }
+
+    // Filter subscribers based on topic preference (if topic is specified)
+    let subscribers = allSubscribers || [];
+    if (topic && subscribers.length > 0) {
+      subscribers = subscribers.filter(sub => {
+        // If subscriber has no topics set, include them for all
+        if (!sub.topics || sub.topics.length === 0) return true;
+        return sub.topics.includes(topic);
+      });
+      console.log(`Filtered to ${subscribers.length} subscribers interested in "${topic}"`);
     }
 
     if (!subscribers || subscribers.length === 0) {
