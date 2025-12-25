@@ -29,6 +29,7 @@ export type Database = {
           published: boolean
           published_at: string | null
           read_time: string
+          scheduled_publish_at: string | null
           slug: string
           tags: string[] | null
           title: string
@@ -48,6 +49,7 @@ export type Database = {
           published?: boolean
           published_at?: string | null
           read_time?: string
+          scheduled_publish_at?: string | null
           slug: string
           tags?: string[] | null
           title: string
@@ -67,6 +69,7 @@ export type Database = {
           published?: boolean
           published_at?: string | null
           read_time?: string
+          scheduled_publish_at?: string | null
           slug?: string
           tags?: string[] | null
           title?: string
