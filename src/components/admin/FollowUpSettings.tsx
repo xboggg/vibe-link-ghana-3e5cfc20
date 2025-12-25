@@ -326,7 +326,7 @@ export function FollowUpSettings() {
                     <div className="space-y-2">
                       <Label>Email Preview</Label>
                       <div 
-                        className="border rounded-lg p-4 bg-background prose prose-sm max-w-none dark:prose-invert"
+                        className="border rounded-lg p-4 bg-background prose prose-sm max-w-none dark:prose-invert [&_p]:my-4 [&_br]:block [&_br]:content-[''] [&_br]:my-2"
                         dangerouslySetInnerHTML={{ 
                           __html: (getCurrentValue(setting, 'email_template') as string)
                             .replace(/\{\{client_name\}\}/g, 'John Doe')
