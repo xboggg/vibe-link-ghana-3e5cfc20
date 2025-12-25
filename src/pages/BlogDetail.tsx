@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { CTASection } from "@/components/sections/CTASection";
 import { ArrowLeft, Clock, Calendar, Share2, Facebook, Twitter } from "lucide-react";
 import { blogPosts } from "./Blog";
+import SEO from "@/components/SEO";
 
 const blogContent: Record<string, {
   content: string[];
@@ -265,6 +266,14 @@ const BlogDetail = () => {
 
   return (
     <Layout>
+      <SEO 
+        title={post.title}
+        description={post.excerpt}
+        keywords={`${post.category}, Ghana events, VibeLink blog`}
+        canonical={`/blog/${slug}`}
+        ogImage={post.image}
+        ogType="article"
+      />
       {/* Hero */}
       <section className="pt-24 lg:pt-32 pb-8 bg-gradient-to-b from-[#6B46C1] via-[#553C9A] to-[#44337A]">
         <div className="container mx-auto px-4 lg:px-8">

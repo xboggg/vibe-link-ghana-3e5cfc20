@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import SEO from "@/components/SEO";
 
 type OrderStatus = "pending" | "in_progress" | "draft_ready" | "revision" | "completed" | "cancelled";
 type PaymentStatus = "pending" | "deposit_paid" | "fully_paid";
@@ -98,6 +99,12 @@ export default function TrackOrder() {
 
   return (
     <Layout>
+      <SEO 
+        title="Track Your Order"
+        description="Check the status of your VibeLink Ghana digital invitation order. Enter your order ID to see progress updates."
+        canonical="/track-order"
+        noindex={true}
+      />
       <div className="min-h-screen bg-background py-20">
         <div className="container mx-auto px-4 max-w-2xl">
           <motion.div

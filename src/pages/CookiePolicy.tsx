@@ -1,9 +1,15 @@
 import { Layout } from "@/components/layout/Layout";
+import SEO from "@/components/SEO";
 
 const CookiePolicy = () => {
   return (
     <Layout>
-      
+      <SEO 
+        title="Cookie Policy"
+        description="Learn about the cookies VibeLink Ghana uses on our website and how to manage your cookie preferences."
+        canonical="/cookie-policy"
+        noindex={true}
+      />
       <div className="container mx-auto px-4 lg:px-8 py-16 lg:py-24">
         <div className="max-w-3xl mx-auto prose prose-lg dark:prose-invert">
           <h1 className="text-3xl lg:text-4xl font-bold text-foreground mb-8">Cookie Policy</h1>

@@ -1,9 +1,15 @@
 import { Layout } from "@/components/layout/Layout";
+import SEO from "@/components/SEO";
 
 const TermsOfService = () => {
   return (
     <Layout>
-      
+      <SEO 
+        title="Terms of Service"
+        description="Read the terms and conditions for using VibeLink Ghana's digital invitation services, including pricing, payments, and delivery policies."
+        canonical="/terms-of-service"
+        noindex={true}
+      />
       <div className="container mx-auto px-4 lg:px-8 py-16 lg:py-24">
         <div className="max-w-3xl mx-auto prose prose-lg dark:prose-invert">
           <h1 className="text-3xl lg:text-4xl font-bold text-foreground mb-8">Terms of Service</h1>

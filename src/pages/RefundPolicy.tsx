@@ -1,9 +1,15 @@
 import { Layout } from "@/components/layout/Layout";
+import SEO from "@/components/SEO";
 
 const RefundPolicy = () => {
   return (
     <Layout>
-      
+      <SEO 
+        title="Refund Policy"
+        description="Understand VibeLink Ghana's refund policy for digital invitation orders, including full and partial refund conditions."
+        canonical="/refund-policy"
+        noindex={true}
+      />
       <div className="container mx-auto px-4 lg:px-8 py-16 lg:py-24">
         <div className="max-w-3xl mx-auto prose prose-lg dark:prose-invert">
           <h1 className="text-3xl lg:text-4xl font-bold text-foreground mb-8">Refund Policy</h1>
