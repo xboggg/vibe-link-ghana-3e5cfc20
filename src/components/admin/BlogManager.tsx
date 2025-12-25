@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -12,9 +12,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { toast } from 'sonner';
 import { 
   Plus, Pencil, Trash2, Eye, EyeOff, Star, RefreshCw, 
-  Calendar, Clock, ExternalLink, Search, Image
+  Calendar, Clock, ExternalLink, Search, Upload, Image
 } from 'lucide-react';
 import { format } from 'date-fns';
+import { RichTextEditor } from './RichTextEditor';
 
 interface BlogPost {
   id: string;
@@ -33,7 +34,18 @@ interface BlogPost {
   published_at: string | null;
 }
 
-const categories = ['Event Planning', 'Traditions', 'Tips & Guides', 'Inspiration'];
+const categories = [
+  'Wedding',
+  'Funeral & Memorial',
+  'Anniversaries',
+  'Church',
+  'Community',
+  'Ghanaian Culture',
+  'Event Planning',
+  'Naming Ceremonies',
+  'Inspirations',
+  'Tips & Guides'
+];
 
 const emptyPost: Partial<BlogPost> = {
   title: '',
@@ -56,6 +68,8 @@ export function BlogManager() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingPost, setEditingPost] = useState<Partial<BlogPost> | null>(null);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetchPosts();
@@ -96,6 +110,51 @@ export function BlogManager() {
     }));
   };
 
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please upload an image file');
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Image must be less than 5MB');
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+      const filePath = `blog/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('blog-images')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('blog-images')
+        .getPublicUrl(filePath);
+
+      setEditingPost(prev => ({ ...prev, image_url: publicUrl }));
+      toast.success('Image uploaded successfully');
+    } catch (error: any) {
+      console.error('Error uploading image:', error);
+      toast.error(error.message || 'Failed to upload image');
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
   const handleSave = async () => {
     if (!editingPost?.title || !editingPost?.excerpt || !editingPost?.image_url) {
       toast.error('Please fill in all required fields');
@@ -119,7 +178,6 @@ export function BlogManager() {
       };
 
       if (editingPost.id) {
-        // Update existing post
         const { error } = await supabase
           .from('blog_posts')
           .update(postData)
@@ -128,7 +186,6 @@ export function BlogManager() {
         if (error) throw error;
         toast.success('Post updated successfully');
       } else {
-        // Create new post
         const { error } = await supabase
           .from('blog_posts')
           .insert(postData);
@@ -238,7 +295,7 @@ export function BlogManager() {
               New Post
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>{editingPost?.id ? 'Edit Post' : 'Create New Post'}</DialogTitle>
             </DialogHeader>
@@ -292,17 +349,39 @@ export function BlogManager() {
                 </div>
               </div>
 
-              {/* Image URL */}
+              {/* Featured Image Upload */}
               <div className="space-y-2">
                 <Label className="flex items-center gap-2">
                   <Image className="h-4 w-4" />
-                  Featured Image URL *
+                  Featured Image *
                 </Label>
-                <Input
-                  value={editingPost?.image_url || ''}
-                  onChange={(e) => setEditingPost(prev => ({ ...prev, image_url: e.target.value }))}
-                  placeholder="https://images.unsplash.com/..."
-                />
+                <div className="flex gap-2">
+                  <Input
+                    value={editingPost?.image_url || ''}
+                    onChange={(e) => setEditingPost(prev => ({ ...prev, image_url: e.target.value }))}
+                    placeholder="Image URL or upload below..."
+                    className="flex-1"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploading}
+                  >
+                    {uploading ? (
+                      <RefreshCw className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Upload className="h-4 w-4" />
+                    )}
+                  </Button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                  />
+                </div>
                 {editingPost?.image_url && (
                   <img 
                     src={editingPost.image_url} 
@@ -323,15 +402,12 @@ export function BlogManager() {
                 />
               </div>
 
-              {/* Content */}
+              {/* Content - Rich Text Editor */}
               <div className="space-y-2">
-                <Label>Content (HTML supported)</Label>
-                <Textarea
-                  value={editingPost?.content || ''}
-                  onChange={(e) => setEditingPost(prev => ({ ...prev, content: e.target.value }))}
-                  placeholder="Full post content... You can use HTML tags for formatting."
-                  rows={10}
-                  className="font-mono text-sm"
+                <Label>Content</Label>
+                <RichTextEditor
+                  content={editingPost?.content || ''}
+                  onChange={(content) => setEditingPost(prev => ({ ...prev, content }))}
                 />
               </div>
 
@@ -482,9 +558,15 @@ export function BlogManager() {
                       onClick={() => togglePublish(post)}
                     >
                       {post.published ? (
-                        <><EyeOff className="h-3 w-3 mr-1" /> Unpublish</>
+                        <>
+                          <EyeOff className="h-3 w-3 mr-1" />
+                          Unpublish
+                        </>
                       ) : (
-                        <><Eye className="h-3 w-3 mr-1" /> Publish</>
+                        <>
+                          <Eye className="h-3 w-3 mr-1" />
+                          Publish
+                        </>
                       )}
                     </Button>
                     <Button 
@@ -495,18 +577,19 @@ export function BlogManager() {
                       <Star className={`h-3 w-3 mr-1 ${post.featured ? 'fill-yellow-500 text-yellow-500' : ''}`} />
                       {post.featured ? 'Unfeature' : 'Feature'}
                     </Button>
-                    {post.published && (
-                      <Button size="sm" variant="outline" asChild>
-                        <a href={`/blog/${post.slug}`} target="_blank" rel="noopener noreferrer">
-                          <ExternalLink className="h-3 w-3 mr-1" />
-                          View
-                        </a>
-                      </Button>
-                    )}
                     <Button 
                       size="sm" 
-                      variant="outline" 
-                      className="text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                      variant="outline"
+                      asChild
+                    >
+                      <a href={`/blog/${post.slug}`} target="_blank" rel="noopener noreferrer">
+                        <ExternalLink className="h-3 w-3 mr-1" />
+                        View
+                      </a>
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="destructive"
                       onClick={() => handleDelete(post.id)}
                     >
                       <Trash2 className="h-3 w-3" />
