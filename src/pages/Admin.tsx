@@ -18,6 +18,7 @@ import {
   Phone,
   Mail,
   MessageCircle,
+  Send,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -146,6 +147,34 @@ const Admin = () => {
       }
     } catch (err) {
       console.error("Error invoking email function:", err);
+    }
+  };
+
+  const sendPaymentReminder = async (order: Order) => {
+    try {
+      const { error } = await supabase.functions.invoke('send-payment-reminder', {
+        body: {
+          clientName: order.client_name,
+          clientEmail: order.client_email,
+          orderId: order.id,
+          eventTitle: order.event_title,
+          eventType: order.event_type,
+          eventDate: order.event_date,
+          packageName: order.package_name,
+          totalPrice: order.total_price,
+          paymentStatus: order.payment_status,
+        },
+      });
+
+      if (error) {
+        console.error("Error sending payment reminder:", error);
+        toast.error("Failed to send payment reminder");
+      } else {
+        toast.success("Payment reminder sent to customer");
+      }
+    } catch (err) {
+      console.error("Error invoking payment reminder function:", err);
+      toast.error("Failed to send payment reminder");
     }
   };
 
@@ -431,13 +460,25 @@ const Admin = () => {
                           </Select>
                         </TableCell>
                         <TableCell>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => setSelectedOrder(order)}
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Button>
+                          <div className="flex items-center gap-1">
+                            {order.payment_status !== "fully_paid" && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => sendPaymentReminder(order)}
+                                title="Send payment reminder"
+                              >
+                                <Send className="h-4 w-4" />
+                              </Button>
+                            )}
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => setSelectedOrder(order)}
+                            >
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))}
