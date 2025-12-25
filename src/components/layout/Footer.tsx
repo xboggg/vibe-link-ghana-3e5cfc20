@@ -62,9 +62,15 @@ export function Footer() {
 
     setIsSubmitting(true);
     try {
+      // Generate a preferences token
+      const preferencesToken = crypto.randomUUID();
+      
       const { error } = await supabase
         .from('newsletter_subscribers')
-        .insert({ email: email.trim().toLowerCase() });
+        .insert({ 
+          email: email.trim().toLowerCase(),
+          preferences_token: preferencesToken
+        });
 
       if (error) {
         if (error.code === '23505') {
@@ -73,6 +79,19 @@ export function Footer() {
           throw error;
         }
       } else {
+        // Send welcome email
+        try {
+          await supabase.functions.invoke('send-welcome-email', {
+            body: { 
+              email: email.trim().toLowerCase(),
+              preferencesToken
+            }
+          });
+        } catch (emailError) {
+          console.error("Failed to send welcome email:", emailError);
+          // Don't fail the subscription if welcome email fails
+        }
+        
         toast.success("Successfully subscribed to our newsletter!");
         setEmail("");
       }

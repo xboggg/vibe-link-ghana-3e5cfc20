@@ -12,7 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { toast } from "sonner";
-import { Trash2, Search, Mail, Users, Download, ToggleLeft, ToggleRight, Send, Loader2, Paperclip, X, FileText, Megaphone, Gift, CalendarDays, Clock } from "lucide-react";
+import { Trash2, Search, Mail, Users, Download, ToggleLeft, ToggleRight, Send, Loader2, Paperclip, X, FileText, Megaphone, Gift, CalendarDays, Clock, Eye } from "lucide-react";
 import { format, addHours, setHours, setMinutes } from "date-fns";
 import { RichTextEditor } from "./RichTextEditor";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -127,6 +127,7 @@ const TOPIC_OPTIONS = [
 export function NewsletterManager() {
   const [searchTerm, setSearchTerm] = useState("");
   const [composeOpen, setComposeOpen] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
   const [subject, setSubject] = useState("");
   const [content, setContent] = useState("");
   const [attachments, setAttachments] = useState<File[]>([]);
@@ -488,27 +489,131 @@ export function NewsletterManager() {
                       : `Will be sent to ${activeCount} active subscriber${activeCount !== 1 ? "s" : ""}`
                     }
                   </p>
+                  <div className="flex gap-2">
+                    <Button 
+                      variant="outline"
+                      onClick={() => setPreviewOpen(true)}
+                      disabled={!subject || !content}
+                      className="gap-2"
+                    >
+                      <Eye className="h-4 w-4" />
+                      Preview
+                    </Button>
+                    <Button 
+                      onClick={() => sendNewsletterMutation.mutate()}
+                      disabled={!subject || !content || sendNewsletterMutation.isPending || (scheduleEnabled && !scheduledDate)}
+                      className="gap-2"
+                    >
+                      {sendNewsletterMutation.isPending ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          {scheduleEnabled ? "Scheduling..." : "Sending..."}
+                        </>
+                      ) : (
+                        <>
+                          {scheduleEnabled ? <Clock className="h-4 w-4" /> : <Send className="h-4 w-4" />}
+                          {scheduleEnabled ? "Schedule" : "Send Now"}
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+          
+          {/* Email Preview Dialog */}
+          <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  <Eye className="h-5 w-5" />
+                  Email Preview
+                </DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                {/* Email Header Preview */}
+                <div className="border rounded-lg p-4 bg-muted/30">
+                  <div className="space-y-2 text-sm">
+                    <div className="flex gap-2">
+                      <span className="font-medium text-muted-foreground w-16">From:</span>
+                      <span>VibeLink Ghana &lt;newsletter@vibelinkgh.com&gt;</span>
+                    </div>
+                    <div className="flex gap-2">
+                      <span className="font-medium text-muted-foreground w-16">To:</span>
+                      <span className="text-muted-foreground italic">
+                        {activeCount} subscriber{activeCount !== 1 ? "s" : ""}
+                        {selectedTopic && ` (filtered by: ${TOPIC_OPTIONS.find(t => t.value === selectedTopic)?.label})`}
+                      </span>
+                    </div>
+                    <div className="flex gap-2">
+                      <span className="font-medium text-muted-foreground w-16">Subject:</span>
+                      <span className="font-semibold">{subject || "(No subject)"}</span>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Email Body Preview */}
+                <div className="border rounded-lg overflow-hidden">
+                  <div className="bg-gradient-to-r from-navy to-primary p-4 text-center">
+                    <h2 className="text-xl font-bold text-white">
+                      ✨ <span className="text-secondary">VibeLink</span> Ghana Newsletter
+                    </h2>
+                  </div>
+                  <div className="p-6 bg-white">
+                    <div 
+                      className="prose prose-sm max-w-none"
+                      dangerouslySetInnerHTML={{ __html: content || "<p class='text-muted-foreground italic'>No content yet...</p>" }}
+                    />
+                  </div>
+                  <div className="bg-muted/50 p-4 text-center text-xs text-muted-foreground border-t">
+                    <p className="mb-2">© {new Date().getFullYear()} VibeLink Ghana. Made with ❤️ in Ghana</p>
+                    <div className="flex justify-center gap-2">
+                      <span className="underline cursor-pointer">Manage preferences</span>
+                      <span>|</span>
+                      <span className="underline cursor-pointer">Unsubscribe</span>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Attachments Preview */}
+                {attachments.length > 0 && (
+                  <div className="border rounded-lg p-4">
+                    <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
+                      <Paperclip className="h-4 w-4" />
+                      Attachments ({attachments.length})
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {attachments.map((file, index) => (
+                        <Badge key={index} variant="secondary" className="gap-1">
+                          <Paperclip className="h-3 w-3" />
+                          {file.name} ({formatFileSize(file.size)})
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                <div className="flex justify-end gap-2 pt-2">
+                  <Button variant="outline" onClick={() => setPreviewOpen(false)}>
+                    Back to Edit
+                  </Button>
                   <Button 
-                    onClick={() => sendNewsletterMutation.mutate()}
+                    onClick={() => {
+                      setPreviewOpen(false);
+                      sendNewsletterMutation.mutate();
+                    }}
                     disabled={!subject || !content || sendNewsletterMutation.isPending || (scheduleEnabled && !scheduledDate)}
                     className="gap-2"
                   >
-                    {sendNewsletterMutation.isPending ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        {scheduleEnabled ? "Scheduling..." : "Sending..."}
-                      </>
-                    ) : (
-                      <>
-                        {scheduleEnabled ? <Clock className="h-4 w-4" /> : <Send className="h-4 w-4" />}
-                        {scheduleEnabled ? "Schedule" : "Send Now"}
-                      </>
-                    )}
+                    {scheduleEnabled ? <Clock className="h-4 w-4" /> : <Send className="h-4 w-4" />}
+                    {scheduleEnabled ? "Schedule Now" : "Send Now"}
                   </Button>
                 </div>
               </div>
             </DialogContent>
           </Dialog>
+          
           <Button onClick={exportToCSV} variant="outline" className="gap-2">
             <Download className="h-4 w-4" />
             Export CSV
