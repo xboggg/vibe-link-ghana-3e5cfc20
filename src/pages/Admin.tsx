@@ -27,6 +27,7 @@ import {
   Zap,
 } from "lucide-react";
 import { AnalyticsDashboard } from "@/components/admin/AnalyticsDashboard";
+import { FollowUpHistory } from "@/components/admin/FollowUpHistory";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -94,7 +95,7 @@ const Admin = () => {
   const [loadingReminders, setLoadingReminders] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
   const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
-  const [adminTab, setAdminTab] = useState<"orders" | "analytics">("orders");
+  const [adminTab, setAdminTab] = useState<"orders" | "analytics" | "follow-ups">("orders");
   const [runningFollowUps, setRunningFollowUps] = useState(false);
 
   useEffect(() => {
@@ -360,6 +361,13 @@ const Admin = () => {
             <BarChart3 className="h-4 w-4 mr-2" />
             Analytics
           </Button>
+          <Button
+            variant={adminTab === "follow-ups" ? "default" : "outline"}
+            onClick={() => setAdminTab("follow-ups")}
+          >
+            <Mail className="h-4 w-4 mr-2" />
+            Follow-up History
+          </Button>
           <div className="flex-1" />
           <Button
             variant="outline"
@@ -386,6 +394,8 @@ const Admin = () => {
 
         {adminTab === "analytics" ? (
           <AnalyticsDashboard />
+        ) : adminTab === "follow-ups" ? (
+          <FollowUpHistory />
         ) : (
           <>
             {/* Stats Cards */}
