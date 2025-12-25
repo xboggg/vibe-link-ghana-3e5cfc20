@@ -74,7 +74,7 @@ export function Footer() {
               href="https://vibelinkgh.com/newsletter"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary/20 hover:bg-secondary text-secondary hover:text-secondary-foreground transition-all duration-300 text-sm font-medium mt-4"
+              className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg bg-secondary/20 hover:bg-secondary text-secondary hover:text-secondary-foreground transition-all duration-300 text-sm font-medium mt-4 min-w-[160px]"
             >
               <Send className="h-4 w-4" />
               Newsletter
