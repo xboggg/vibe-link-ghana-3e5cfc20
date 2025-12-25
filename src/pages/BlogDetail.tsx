@@ -9,6 +9,7 @@ import { ArrowLeft, Clock, Calendar, Share2, Facebook, Twitter, Loader2, Tag } f
 import SEO, { createArticleSchema, createBreadcrumbSchema } from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
+import { ReadingProgressBar } from "@/components/ReadingProgressBar";
 
 interface BlogPost {
   id: string;
@@ -168,7 +169,8 @@ const BlogDetail = () => {
 
   return (
     <Layout>
-      <SEO 
+      <ReadingProgressBar />
+      <SEO
         title={post.title}
         description={seoDescription}
         keywords={seoKeywords}

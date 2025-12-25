@@ -35,6 +35,7 @@ interface BlogPost {
   meta_description: string | null;
   focus_keyword: string | null;
   tags: string[];
+  scheduled_publish_at: string | null;
 }
 
 const categories = [
@@ -78,7 +79,8 @@ const emptyPost: Partial<BlogPost> = {
   author_name: 'JC Creative Studios',
   meta_description: '',
   focus_keyword: '',
-  tags: []
+  tags: [],
+  scheduled_publish_at: null
 };
 
 export function BlogManager() {
@@ -199,7 +201,8 @@ export function BlogManager() {
         published_at: editingPost.published ? (editingPost.published_at || new Date().toISOString()) : null,
         meta_description: editingPost.meta_description || null,
         focus_keyword: editingPost.focus_keyword || null,
-        tags: editingPost.tags || []
+        tags: editingPost.tags || [],
+        scheduled_publish_at: !editingPost.published && editingPost.scheduled_publish_at ? editingPost.scheduled_publish_at : null
       };
 
       if (editingPost.id) {
@@ -552,7 +555,13 @@ export function BlogManager() {
                 <div className="flex items-center gap-2">
                   <Switch
                     checked={editingPost?.published || false}
-                    onCheckedChange={(checked) => setEditingPost(prev => ({ ...prev, published: checked }))}
+                    onCheckedChange={(checked) => {
+                      setEditingPost(prev => ({ 
+                        ...prev, 
+                        published: checked,
+                        scheduled_publish_at: checked ? null : prev?.scheduled_publish_at
+                      }));
+                    }}
                   />
                   <Label>Publish immediately</Label>
                 </div>
@@ -564,6 +573,50 @@ export function BlogManager() {
                   <Label>Featured post</Label>
                 </div>
               </div>
+
+              {/* Scheduled Publishing */}
+              {!editingPost?.published && (
+                <div className="space-y-2 p-4 rounded-lg bg-muted/50 border">
+                  <Label className="flex items-center gap-2">
+                    <Calendar className="h-4 w-4" />
+                    Schedule for Later
+                  </Label>
+                  <p className="text-xs text-muted-foreground mb-2">
+                    Set a date and time for this post to be automatically published
+                  </p>
+                  <Input
+                    type="datetime-local"
+                    value={editingPost?.scheduled_publish_at 
+                      ? new Date(editingPost.scheduled_publish_at).toISOString().slice(0, 16) 
+                      : ''
+                    }
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setEditingPost(prev => ({ 
+                        ...prev, 
+                        scheduled_publish_at: value ? new Date(value).toISOString() : null 
+                      }));
+                    }}
+                    min={new Date().toISOString().slice(0, 16)}
+                  />
+                  {editingPost?.scheduled_publish_at && (
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs text-primary">
+                        Will be published on {format(new Date(editingPost.scheduled_publish_at), 'MMMM d, yyyy \'at\' h:mm a')}
+                      </p>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setEditingPost(prev => ({ ...prev, scheduled_publish_at: null }))}
+                      >
+                        <X className="h-3 w-3 mr-1" />
+                        Clear
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Actions */}
               <div className="flex justify-end gap-2 pt-4">
@@ -659,6 +712,12 @@ export function BlogManager() {
                     <Badge variant={post.published ? "default" : "secondary"}>
                       {post.published ? 'Published' : 'Draft'}
                     </Badge>
+                    {post.scheduled_publish_at && !post.published && (
+                      <Badge className="bg-blue-500/10 text-blue-600 border-blue-500/20">
+                        <Clock className="h-3 w-3 mr-1" />
+                        Scheduled: {format(new Date(post.scheduled_publish_at), 'MMM d, h:mm a')}
+                      </Badge>
+                    )}
                     <Badge variant="outline">{post.category}</Badge>
                     {post.featured && (
                       <Badge className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20">
