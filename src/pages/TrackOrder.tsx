@@ -42,7 +42,8 @@ const paymentStatusConfig: Record<PaymentStatus, { label: string; color: string 
 };
 
 export default function TrackOrder() {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [orderId, setOrderId] = useState("");
+  const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [order, setOrder] = useState<Order | null>(null);
   const [searched, setSearched] = useState(false);
@@ -50,19 +51,27 @@ export default function TrackOrder() {
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const trimmedQuery = searchQuery.trim();
+    const trimmedOrderId = orderId.trim();
+    const trimmedEmail = email.trim();
     
-    if (!trimmedQuery) {
-      toast.error("Please enter an order ID");
+    if (!trimmedOrderId || !trimmedEmail) {
+      toast.error("Please enter both order ID and email");
       return;
     }
 
     // Validate UUID format
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    if (!uuidRegex.test(trimmedQuery)) {
+    if (!uuidRegex.test(trimmedOrderId)) {
       toast.error("Please enter a valid order ID");
       setOrder(null);
       setSearched(true);
+      return;
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmedEmail)) {
+      toast.error("Please enter a valid email address");
       return;
     }
 
@@ -70,9 +79,12 @@ export default function TrackOrder() {
     setSearched(true);
 
     try {
-      // Use secure RPC function for order lookup
+      // Use secure RPC function with email verification
       const { data, error } = await supabase
-        .rpc('get_order_by_id', { order_id: trimmedQuery });
+        .rpc('get_order_by_id', { 
+          order_id: trimmedOrderId,
+          customer_email: trimmedEmail 
+        });
 
       if (error) {
         console.error("Error fetching order:", error);
@@ -85,7 +97,7 @@ export default function TrackOrder() {
         setOrder(data[0] as Order);
       } else {
         setOrder(null);
-        toast.info("No order found with that ID");
+        toast.info("No order found. Please verify your order ID and email match.");
       }
     } catch (error) {
       console.error("Error:", error);
@@ -117,7 +129,7 @@ export default function TrackOrder() {
               Track Your <span className="text-secondary">Order</span>
             </h1>
             <p className="text-muted-foreground">
-              Enter your order ID to check your order status
+              Enter your order ID and email address to check your order status
             </p>
           </motion.div>
 
@@ -128,18 +140,24 @@ export default function TrackOrder() {
           >
             <Card className="mb-8">
               <CardContent className="pt-6">
-                <form onSubmit={handleSearch} className="flex gap-3">
-                  <div className="relative flex-1">
+                <form onSubmit={handleSearch} className="space-y-4">
+                  <div className="relative">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       type="text"
                       placeholder="Enter your order ID (e.g., a1b2c3d4-...)"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
+                      value={orderId}
+                      onChange={(e) => setOrderId(e.target.value)}
                       className="pl-10"
                     />
                   </div>
-                  <Button type="submit" disabled={isLoading}>
+                  <Input
+                    type="email"
+                    placeholder="Enter your email address"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                  <Button type="submit" disabled={isLoading} className="w-full">
                     {isLoading ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
                     ) : (

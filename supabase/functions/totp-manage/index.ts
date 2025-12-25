@@ -6,7 +6,85 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// Simple TOTP implementation
+// ============= Encryption helpers =============
+function hexToBytes(hex: string): Uint8Array {
+  const bytes = new Uint8Array(hex.length / 2);
+  for (let i = 0; i < hex.length; i += 2) {
+    bytes[i / 2] = parseInt(hex.slice(i, i + 2), 16);
+  }
+  return bytes;
+}
+
+function bytesToHex(bytes: Uint8Array): string {
+  return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function encrypt(text: string): Promise<string> {
+  const encryptionKey = Deno.env.get("TOTP_ENCRYPTION_KEY");
+  if (!encryptionKey) {
+    throw new Error("Encryption key not configured");
+  }
+  
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const keyBytes = hexToBytes(encryptionKey);
+  const key = await crypto.subtle.importKey(
+    'raw',
+    keyBytes.buffer as ArrayBuffer,
+    { name: 'AES-GCM' },
+    false,
+    ['encrypt']
+  );
+  
+  const encrypted = await crypto.subtle.encrypt(
+    { name: 'AES-GCM', iv: iv.buffer as ArrayBuffer },
+    key,
+    new TextEncoder().encode(text)
+  );
+  
+  return bytesToHex(iv) + ':' + bytesToHex(new Uint8Array(encrypted));
+}
+
+async function decrypt(encryptedText: string): Promise<string> {
+  const encryptionKey = Deno.env.get("TOTP_ENCRYPTION_KEY");
+  if (!encryptionKey) {
+    throw new Error("Encryption key not configured");
+  }
+  
+  const [ivHex, dataHex] = encryptedText.split(':');
+  if (!ivHex || !dataHex) {
+    throw new Error("Invalid encrypted data format");
+  }
+  
+  const iv = hexToBytes(ivHex);
+  const data = hexToBytes(dataHex);
+  const keyBytes = hexToBytes(encryptionKey);
+  
+  const key = await crypto.subtle.importKey(
+    'raw',
+    keyBytes.buffer as ArrayBuffer,
+    { name: 'AES-GCM' },
+    false,
+    ['decrypt']
+  );
+  
+  const decrypted = await crypto.subtle.decrypt(
+    { name: 'AES-GCM', iv: iv.buffer as ArrayBuffer },
+    key,
+    data.buffer as ArrayBuffer
+  );
+  
+  return new TextDecoder().decode(decrypted);
+}
+
+async function hashBackupCode(code: string): Promise<string> {
+  const hash = await crypto.subtle.digest(
+    'SHA-256',
+    new TextEncoder().encode(code.toUpperCase())
+  );
+  return bytesToHex(new Uint8Array(hash));
+}
+
+// ============= TOTP implementation =============
 function generateSecret(length = 20): string {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
   let secret = '';
@@ -46,29 +124,6 @@ async function hmacSha1(key: Uint8Array, data: Uint8Array): Promise<Uint8Array> 
   );
   const signature = await crypto.subtle.sign('HMAC', cryptoKey, data.buffer as ArrayBuffer);
   return new Uint8Array(signature);
-}
-
-async function generateTOTP(secret: string, timeStep = 30): Promise<string> {
-  const key = base32Decode(secret);
-  const time = Math.floor(Date.now() / 1000 / timeStep);
-  
-  const timeBytes = new Uint8Array(8);
-  let t = time;
-  for (let i = 7; i >= 0; i--) {
-    timeBytes[i] = t & 0xff;
-    t = Math.floor(t / 256);
-  }
-  
-  const hmac = await hmacSha1(key, timeBytes);
-  const offset = hmac[hmac.length - 1] & 0x0f;
-  const code = (
-    ((hmac[offset] & 0x7f) << 24) |
-    ((hmac[offset + 1] & 0xff) << 16) |
-    ((hmac[offset + 2] & 0xff) << 8) |
-    (hmac[offset + 3] & 0xff)
-  ) % 1000000;
-  
-  return code.toString().padStart(6, '0');
 }
 
 async function verifyTOTP(secret: string, token: string, window = 1): Promise<boolean> {
@@ -125,6 +180,7 @@ serve(async (req) => {
 
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
+      console.log("No authorization header provided");
       return new Response(JSON.stringify({ error: "No authorization header" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -136,6 +192,7 @@ serve(async (req) => {
     );
 
     if (authError || !user) {
+      console.log("Auth error:", authError?.message || "No user found");
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -143,12 +200,21 @@ serve(async (req) => {
     }
 
     const { action, token } = await req.json();
+    console.log(`Processing TOTP action: ${action} for user: ${user.id}`);
 
     switch (action) {
       case "setup": {
         // Generate new secret and backup codes
         const secret = generateSecret();
         const backupCodes = generateBackupCodes();
+        
+        // Encrypt the secret
+        const encryptedSecret = await encrypt(secret);
+        
+        // Hash all backup codes for storage
+        const hashedBackupCodes = await Promise.all(
+          backupCodes.map(code => hashBackupCode(code))
+        );
         
         // Check if user already has TOTP setup
         const { data: existing } = await supabase
@@ -161,8 +227,8 @@ serve(async (req) => {
           await supabase
             .from("user_totp_secrets")
             .update({ 
-              encrypted_secret: secret, 
-              backup_codes: backupCodes,
+              encrypted_secret: encryptedSecret, 
+              backup_codes: hashedBackupCodes,
               is_enabled: false 
             })
             .eq("user_id", user.id);
@@ -171,14 +237,17 @@ serve(async (req) => {
             .from("user_totp_secrets")
             .insert({ 
               user_id: user.id, 
-              encrypted_secret: secret, 
-              backup_codes: backupCodes,
+              encrypted_secret: encryptedSecret, 
+              backup_codes: hashedBackupCodes,
               is_enabled: false 
             });
         }
 
         const otpauthUrl = `otpauth://totp/JCCreativeStudios:${user.email}?secret=${secret}&issuer=JCCreativeStudios&algorithm=SHA1&digits=6&period=30`;
 
+        console.log("TOTP setup complete for user:", user.id);
+        
+        // Return plaintext values to user (only time they see them)
         return new Response(JSON.stringify({ 
           secret, 
           otpauthUrl,
@@ -189,7 +258,7 @@ serve(async (req) => {
       }
 
       case "verify": {
-        // Get user's secret
+        // Get user's encrypted secret
         const { data: totpData, error: fetchError } = await supabase
           .from("user_totp_secrets")
           .select("encrypted_secret, is_enabled")
@@ -203,9 +272,12 @@ serve(async (req) => {
           });
         }
 
-        const isValid = await verifyTOTP(totpData.encrypted_secret, token);
+        // Decrypt the secret for verification
+        const decryptedSecret = await decrypt(totpData.encrypted_secret);
+        const isValid = await verifyTOTP(decryptedSecret, token);
 
         if (!isValid) {
+          console.log("Invalid TOTP code for user:", user.id);
           return new Response(JSON.stringify({ error: "Invalid code", valid: false }), {
             status: 400,
             headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -218,6 +290,7 @@ serve(async (req) => {
             .from("user_totp_secrets")
             .update({ is_enabled: true })
             .eq("user_id", user.id);
+          console.log("2FA enabled for user:", user.id);
         }
 
         return new Response(JSON.stringify({ valid: true }), {
@@ -226,7 +299,7 @@ serve(async (req) => {
       }
 
       case "disable": {
-        // Verify token before disabling
+        // Get encrypted secret
         const { data: totpData } = await supabase
           .from("user_totp_secrets")
           .select("encrypted_secret")
@@ -240,7 +313,10 @@ serve(async (req) => {
           });
         }
 
-        const isValid = await verifyTOTP(totpData.encrypted_secret, token);
+        // Decrypt and verify token before disabling
+        const decryptedSecret = await decrypt(totpData.encrypted_secret);
+        const isValid = await verifyTOTP(decryptedSecret, token);
+        
         if (!isValid) {
           return new Response(JSON.stringify({ error: "Invalid code" }), {
             status: 400,
@@ -253,6 +329,7 @@ serve(async (req) => {
           .delete()
           .eq("user_id", user.id);
 
+        console.log("2FA disabled for user:", user.id);
         return new Response(JSON.stringify({ success: true }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
@@ -287,19 +364,23 @@ serve(async (req) => {
           });
         }
 
+        // Hash the provided code and compare with stored hashes
         const normalizedToken = token.toUpperCase().replace(/[^A-Z0-9-]/g, '');
+        const hashedToken = await hashBackupCode(normalizedToken);
+        
         const codeIndex = totpData.backup_codes.findIndex(
-          (code: string) => code === normalizedToken
+          (storedHash: string) => storedHash === hashedToken
         );
 
         if (codeIndex === -1) {
+          console.log("Invalid backup code for user:", user.id);
           return new Response(JSON.stringify({ error: "Invalid backup code", valid: false }), {
             status: 400,
             headers: { ...corsHeaders, "Content-Type": "application/json" },
           });
         }
 
-        // Remove used backup code
+        // Remove used backup code hash
         const newCodes = [...totpData.backup_codes];
         newCodes.splice(codeIndex, 1);
 
@@ -308,6 +389,7 @@ serve(async (req) => {
           .update({ backup_codes: newCodes })
           .eq("user_id", user.id);
 
+        console.log("Backup code used for user:", user.id, "remaining:", newCodes.length);
         return new Response(JSON.stringify({ valid: true, remainingCodes: newCodes.length }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
@@ -320,7 +402,7 @@ serve(async (req) => {
         });
     }
   } catch (error: unknown) {
-    console.error("Error:", error);
+    console.error("TOTP Error:", error);
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
     return new Response(JSON.stringify({ error: errorMessage }), {
       status: 500,
