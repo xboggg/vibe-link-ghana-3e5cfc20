@@ -15,6 +15,7 @@ const navItems = [
   { name: "Pricing", href: "/pricing" },
   { name: "About", href: "/about" },
   { name: "Contact Us", href: "/contact" },
+  { name: "Track Order", href: "/track-order" },
 ];
 
 const TikTokIcon = () => (
