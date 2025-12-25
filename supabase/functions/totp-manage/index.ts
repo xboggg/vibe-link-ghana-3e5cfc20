@@ -44,16 +44,30 @@ async function encrypt(text: string): Promise<string> {
   return bytesToHex(iv) + ':' + bytesToHex(new Uint8Array(encrypted));
 }
 
+function isEncrypted(text: string): boolean {
+  // Encrypted format is "ivHex:dataHex" - both are hex strings
+  // Legacy plaintext secrets are base32 (only A-Z and 2-7)
+  if (!text.includes(':')) {
+    return false;
+  }
+  const [ivHex, dataHex] = text.split(':');
+  // IV should be 24 hex chars (12 bytes) and data should be hex
+  return ivHex.length === 24 && /^[0-9a-f]+$/i.test(ivHex) && /^[0-9a-f]+$/i.test(dataHex);
+}
+
 async function decrypt(encryptedText: string): Promise<string> {
+  // Handle legacy plaintext secrets (base32 format)
+  if (!isEncrypted(encryptedText)) {
+    console.log("Using legacy plaintext secret format");
+    return encryptedText;
+  }
+  
   const encryptionKey = Deno.env.get("TOTP_ENCRYPTION_KEY");
   if (!encryptionKey) {
     throw new Error("Encryption key not configured");
   }
   
   const [ivHex, dataHex] = encryptedText.split(':');
-  if (!ivHex || !dataHex) {
-    throw new Error("Invalid encrypted data format");
-  }
   
   const iv = hexToBytes(ivHex);
   const data = hexToBytes(dataHex);
