@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Users, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import heroWedding from "@/assets/hero-celebration.jpg";
 import heroNaming from "@/assets/hero-naming.jpg";
@@ -10,6 +10,12 @@ import heroGraduation from "@/assets/hero-graduation.jpg";
 import heroBirthday from "@/assets/hero-birthday.jpg";
 import heroChurch from "@/assets/hero-church.jpg";
 import heroCorporate from "@/assets/hero-corporate.jpg";
+import avatar1 from "@/assets/avatar-1.jpg";
+import avatar2 from "@/assets/avatar-2.jpg";
+import avatar3 from "@/assets/avatar-3.jpg";
+import avatar4 from "@/assets/avatar-4.jpg";
+
+const avatarImages = [avatar1, avatar2, avatar3, avatar4];
 
 const slides = [
   {
@@ -309,13 +315,13 @@ export function HeroSection() {
             className="flex items-center gap-4"
           >
             <div className="flex -space-x-3">
-              {[1, 2, 3, 4].map((i) => (
-                <div
+              {avatarImages.map((avatar, i) => (
+                <img
                   key={i}
-                  className="w-10 h-10 rounded-full border-2 border-navy bg-gradient-to-br from-purple to-secondary flex items-center justify-center"
-                >
-                  <Users className="h-4 w-4 text-primary-foreground" />
-                </div>
+                  src={avatar}
+                  alt={`Happy customer ${i + 1}`}
+                  className="w-10 h-10 rounded-full border-2 border-navy object-cover"
+                />
               ))}
             </div>
             <div className="text-primary-foreground/80 text-sm">

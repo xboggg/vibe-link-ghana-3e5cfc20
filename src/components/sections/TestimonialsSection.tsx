@@ -2,32 +2,92 @@ import { motion } from "framer-motion";
 import { Star, Quote } from "lucide-react";
 import { ParallaxBackground } from "@/components/ParallaxBackground";
 import { AnimatedHeading, AnimatedText } from "@/components/AnimatedHeading";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import testimonialWedding from "@/assets/testimonial-wedding.jpg";
+import testimonialFamily from "@/assets/testimonial-family.jpg";
+import testimonialNaming from "@/assets/testimonial-naming.jpg";
 
-const testimonials = [
+interface Testimonial {
+  id: string;
+  name: string;
+  event_type: string;
+  quote: string;
+  rating: number;
+  image_url: string | null;
+}
+
+// Default images for different event types
+const defaultImages: Record<string, string> = {
+  "Wedding": testimonialWedding,
+  "Funeral": testimonialFamily,
+  "Naming Ceremony": testimonialNaming,
+};
+
+// Fallback testimonials when database is empty or loading
+const fallbackTestimonials: Testimonial[] = [
   {
-    id: 1,
+    id: "1",
     quote: "VibeLink transformed our wedding invitation into something our guests couldn't stop talking about. The MoMo collection feature was a game-changer!",
     name: "Akosua & Kwame",
-    event: "Wedding",
+    event_type: "Wedding",
     rating: 5,
+    image_url: null,
   },
   {
-    id: 2,
+    id: "2",
     quote: "During a difficult time, VibeLink helped us create a beautiful tribute for our late father. The whole family, even those abroad, could access everything easily.",
     name: "The Mensah Family",
-    event: "Funeral",
+    event_type: "Funeral",
     rating: 5,
+    image_url: null,
   },
   {
-    id: 3,
+    id: "3",
     quote: "Our baby's naming ceremony invitation was absolutely stunning. Everyone asked where we got it from. Professional, fast, and worth every pesewa!",
     name: "Efua & David",
-    event: "Naming Ceremony",
+    event_type: "Naming Ceremony",
     rating: 5,
+    image_url: null,
   },
 ];
 
 export function TestimonialsSection() {
+  const [testimonials, setTestimonials] = useState<Testimonial[]>(fallbackTestimonials);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("testimonials")
+          .select("id, name, event_type, quote, rating, image_url")
+          .eq("featured", true)
+          .order("display_order", { ascending: true })
+          .limit(3);
+
+        if (error) throw error;
+        if (data && data.length > 0) {
+          setTestimonials(data);
+        }
+      } catch (error) {
+        console.error("Error fetching testimonials:", error);
+        // Keep fallback testimonials on error
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTestimonials();
+  }, []);
+
+  const getTestimonialImage = (testimonial: Testimonial) => {
+    if (testimonial.image_url) {
+      return testimonial.image_url;
+    }
+    return defaultImages[testimonial.event_type] || testimonialWedding;
+  };
+
   return (
     <section className="py-20 lg:py-28 bg-muted/50 relative overflow-hidden">
       <ParallaxBackground variant="dots" />
@@ -99,15 +159,17 @@ export function TestimonialsSection() {
 
               {/* Author */}
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-primary-foreground font-semibold text-sm">
-                  {testimonial.name.charAt(0)}
-                </div>
+                <img
+                  src={getTestimonialImage(testimonial)}
+                  alt={testimonial.name}
+                  className="w-12 h-12 rounded-full object-cover border-2 border-secondary/30"
+                />
                 <div>
                   <p className="font-semibold text-foreground text-sm">
                     {testimonial.name}
                   </p>
                   <p className="text-muted-foreground text-xs">
-                    {testimonial.event}
+                    {testimonial.event_type}
                   </p>
                 </div>
               </div>
