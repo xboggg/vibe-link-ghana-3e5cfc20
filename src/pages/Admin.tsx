@@ -26,13 +26,23 @@ import {
   RefreshCw,
   Zap,
   FileText,
+  Settings,
+  Shield,
+  Menu,
+  X,
+  Home,
+  TrendingUp,
+  CreditCard,
+  LayoutDashboard,
 } from "lucide-react";
 import { AnalyticsDashboard } from "@/components/admin/AnalyticsDashboard";
 import { FollowUpHistory } from "@/components/admin/FollowUpHistory";
 import { FollowUpSettings } from "@/components/admin/FollowUpSettings";
 import { BlogManager } from "@/components/admin/BlogManager";
+import { UserManagement } from "@/components/admin/UserManagement";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   Table,
   TableBody,
@@ -54,9 +64,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CalendarView } from "@/components/admin/CalendarView";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 import type { Database } from "@/integrations/supabase/types";
 
 type Order = Database["public"]["Tables"]["orders"]["Row"];
@@ -73,6 +85,8 @@ interface ReminderLog {
   error_message: string | null;
 }
 
+type AdminSection = "dashboard" | "orders" | "analytics" | "blog" | "follow-ups" | "email-settings" | "users";
+
 const orderStatusColors: Record<OrderStatus, string> = {
   pending: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
   in_progress: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
@@ -88,6 +102,16 @@ const paymentStatusColors: Record<PaymentStatus, string> = {
   fully_paid: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
 };
 
+const navItems = [
+  { id: "dashboard" as AdminSection, label: "Dashboard", icon: LayoutDashboard },
+  { id: "orders" as AdminSection, label: "Orders", icon: Package },
+  { id: "analytics" as AdminSection, label: "Analytics", icon: BarChart3 },
+  { id: "blog" as AdminSection, label: "Blog", icon: FileText },
+  { id: "follow-ups" as AdminSection, label: "Follow-ups", icon: Send },
+  { id: "email-settings" as AdminSection, label: "Email Settings", icon: Mail },
+  { id: "users" as AdminSection, label: "User Management", icon: Shield },
+];
+
 const Admin = () => {
   const navigate = useNavigate();
   const { user, loading, isAdmin, signOut } = useAuth();
@@ -98,8 +122,9 @@ const Admin = () => {
   const [loadingReminders, setLoadingReminders] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
   const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
-  const [adminTab, setAdminTab] = useState<"orders" | "analytics" | "follow-ups" | "settings" | "blog">("orders");
+  const [activeSection, setActiveSection] = useState<AdminSection>("dashboard");
   const [runningFollowUps, setRunningFollowUps] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -113,7 +138,6 @@ const Admin = () => {
     }
   }, [user, isAdmin]);
 
-  // Fetch reminder logs when an order is selected
   useEffect(() => {
     if (selectedOrder) {
       fetchReminderLogs(selectedOrder.id);
@@ -155,7 +179,6 @@ const Admin = () => {
   };
 
   const updateOrderStatus = async (orderId: string, status: OrderStatus) => {
-    // Find the order to get client details for email
     const order = orders.find(o => o.id === orderId);
     
     const { error } = await supabase
@@ -167,12 +190,9 @@ const Admin = () => {
       toast.error("Failed to update order status");
     } else {
       toast.success("Order status updated");
-      
-      // Send status update email
       if (order) {
         sendStatusEmail(order, status);
       }
-      
       fetchOrders();
     }
   };
@@ -229,7 +249,6 @@ const Admin = () => {
   };
 
   const updatePaymentStatus = async (orderId: string, status: PaymentStatus) => {
-    // Find the order to get client details for email
     const order = orders.find(o => o.id === orderId);
     
     const { error } = await supabase
@@ -241,12 +260,9 @@ const Admin = () => {
       toast.error("Failed to update payment status");
     } else {
       toast.success("Payment status updated");
-      
-      // Send payment status update email
       if (order) {
         sendStatusEmail(order, order.order_status, status);
       }
-      
       fetchOrders();
     }
   };
@@ -300,6 +316,11 @@ const Admin = () => {
   const depositReceived = orders
     .filter((o) => o.payment_status === "deposit_paid")
     .reduce((sum, o) => sum + Number(o.total_price) * 0.5, 0);
+  const thisMonthOrders = orders.filter(o => {
+    const orderDate = new Date(o.created_at);
+    const now = new Date();
+    return orderDate.getMonth() === now.getMonth() && orderDate.getFullYear() === now.getFullYear();
+  }).length;
 
   if (loading) {
     return (
@@ -327,518 +348,535 @@ const Admin = () => {
     );
   }
 
-  return (
-    <div className="min-h-screen bg-muted/30">
-      {/* Header */}
-      <header className="bg-card border-b border-border sticky top-0 z-50">
-        <div className="container mx-auto px-4 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-xl font-bold text-foreground">Admin Dashboard</h1>
-              <p className="text-sm text-muted-foreground">
-                Manage orders and track payments
-              </p>
+  const renderContent = () => {
+    switch (activeSection) {
+      case "dashboard":
+        return (
+          <div className="space-y-6">
+            {/* Welcome Header */}
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div>
+                <h1 className="text-3xl font-bold">Welcome back!</h1>
+                <p className="text-muted-foreground">Here's what's happening with your business today.</p>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  onClick={runFollowUpEmails}
+                  disabled={runningFollowUps}
+                >
+                  {runningFollowUps ? (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <Zap className="h-4 w-4 mr-2" />
+                  )}
+                  Run Follow-ups
+                </Button>
+                <Button variant="outline" onClick={fetchOrders}>
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Refresh
+                </Button>
+              </div>
             </div>
-            <Button variant="outline" size="sm" onClick={handleSignOut}>
+
+            {/* Stats Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
+                <CardContent className="pt-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Total Orders</p>
+                      <p className="text-3xl font-bold">{totalOrders}</p>
+                      <p className="text-xs text-muted-foreground mt-1">{thisMonthOrders} this month</p>
+                    </div>
+                    <div className="p-3 rounded-xl bg-primary/10">
+                      <Package className="h-6 w-6 text-primary" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gradient-to-br from-yellow-500/10 to-yellow-500/5 border-yellow-500/20">
+                <CardContent className="pt-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Pending Orders</p>
+                      <p className="text-3xl font-bold">{pendingOrders}</p>
+                      <p className="text-xs text-muted-foreground mt-1">Needs attention</p>
+                    </div>
+                    <div className="p-3 rounded-xl bg-yellow-500/10">
+                      <Clock className="h-6 w-6 text-yellow-600" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gradient-to-br from-green-500/10 to-green-500/5 border-green-500/20">
+                <CardContent className="pt-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Total Revenue</p>
+                      <p className="text-3xl font-bold">₵{totalRevenue.toLocaleString()}</p>
+                      <p className="text-xs text-muted-foreground mt-1">Fully paid orders</p>
+                    </div>
+                    <div className="p-3 rounded-xl bg-green-500/10">
+                      <DollarSign className="h-6 w-6 text-green-600" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gradient-to-br from-blue-500/10 to-blue-500/5 border-blue-500/20">
+                <CardContent className="pt-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Deposits</p>
+                      <p className="text-3xl font-bold">₵{depositReceived.toLocaleString()}</p>
+                      <p className="text-xs text-muted-foreground mt-1">Partial payments</p>
+                    </div>
+                    <div className="p-3 rounded-xl bg-blue-500/10">
+                      <CreditCard className="h-6 w-6 text-blue-600" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Recent Orders */}
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <div>
+                  <CardTitle>Recent Orders</CardTitle>
+                  <CardDescription>Latest orders from your customers</CardDescription>
+                </div>
+                <Button variant="outline" size="sm" onClick={() => setActiveSection("orders")}>
+                  View All
+                </Button>
+              </CardHeader>
+              <CardContent>
+                {loadingOrders ? (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="h-6 w-6 animate-spin" />
+                  </div>
+                ) : orders.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    No orders yet
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {orders.slice(0, 5).map((order) => (
+                      <div
+                        key={order.id}
+                        className="flex items-center justify-between p-4 rounded-lg border hover:bg-muted/50 transition-colors cursor-pointer"
+                        onClick={() => setSelectedOrder(order)}
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                            <Package className="h-5 w-5 text-primary" />
+                          </div>
+                          <div>
+                            <p className="font-medium">{order.event_title}</p>
+                            <p className="text-sm text-muted-foreground">{order.client_name}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <Badge className={orderStatusColors[order.order_status]}>
+                            {order.order_status.replace("_", " ")}
+                          </Badge>
+                          <span className="text-sm font-medium">₵{Number(order.total_price).toLocaleString()}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        );
+
+      case "orders":
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-2xl font-bold">Orders Management</h1>
+                <p className="text-muted-foreground">Manage and track all customer orders</p>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  variant={viewMode === "list" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setViewMode("list")}
+                >
+                  <Package className="h-4 w-4 mr-1" />
+                  List
+                </Button>
+                <Button
+                  variant={viewMode === "calendar" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setViewMode("calendar")}
+                >
+                  <Calendar className="h-4 w-4 mr-1" />
+                  Calendar
+                </Button>
+              </div>
+            </div>
+
+            {viewMode === "calendar" ? (
+              <CalendarView orders={orders} onSelectOrder={setSelectedOrder} />
+            ) : (
+              <Card>
+                <CardHeader>
+                  <Tabs value={activeTab} onValueChange={setActiveTab}>
+                    <TabsList>
+                      <TabsTrigger value="all">All ({orders.length})</TabsTrigger>
+                      <TabsTrigger value="pending">Pending ({pendingOrders})</TabsTrigger>
+                      <TabsTrigger value="in_progress">In Progress</TabsTrigger>
+                      <TabsTrigger value="completed">Completed</TabsTrigger>
+                    </TabsList>
+                  </Tabs>
+                </CardHeader>
+                <CardContent>
+                  {loadingOrders ? (
+                    <div className="flex items-center justify-center py-12">
+                      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                    </div>
+                  ) : filteredOrders.length === 0 ? (
+                    <div className="text-center py-12 text-muted-foreground">
+                      No orders found
+                    </div>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Event</TableHead>
+                            <TableHead>Client</TableHead>
+                            <TableHead>Type</TableHead>
+                            <TableHead>Status</TableHead>
+                            <TableHead>Payment</TableHead>
+                            <TableHead>Price</TableHead>
+                            <TableHead>Date</TableHead>
+                            <TableHead></TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {filteredOrders.map((order) => (
+                            <TableRow key={order.id} className="cursor-pointer hover:bg-muted/50" onClick={() => setSelectedOrder(order)}>
+                              <TableCell className="font-medium">{order.event_title}</TableCell>
+                              <TableCell>{order.client_name}</TableCell>
+                              <TableCell>
+                                <Badge variant="outline">{order.event_type}</Badge>
+                              </TableCell>
+                              <TableCell>
+                                <Select
+                                  value={order.order_status}
+                                  onValueChange={(value) => {
+                                    updateOrderStatus(order.id, value as OrderStatus);
+                                  }}
+                                >
+                                  <SelectTrigger className="w-[140px]" onClick={(e) => e.stopPropagation()}>
+                                    <Badge className={orderStatusColors[order.order_status]}>
+                                      {order.order_status.replace("_", " ")}
+                                    </Badge>
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="pending">Pending</SelectItem>
+                                    <SelectItem value="in_progress">In Progress</SelectItem>
+                                    <SelectItem value="draft_ready">Draft Ready</SelectItem>
+                                    <SelectItem value="revision">Revision</SelectItem>
+                                    <SelectItem value="completed">Completed</SelectItem>
+                                    <SelectItem value="cancelled">Cancelled</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </TableCell>
+                              <TableCell>
+                                <Select
+                                  value={order.payment_status}
+                                  onValueChange={(value) => {
+                                    updatePaymentStatus(order.id, value as PaymentStatus);
+                                  }}
+                                >
+                                  <SelectTrigger className="w-[130px]" onClick={(e) => e.stopPropagation()}>
+                                    <Badge className={paymentStatusColors[order.payment_status]}>
+                                      {order.payment_status.replace("_", " ")}
+                                    </Badge>
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="pending">Pending</SelectItem>
+                                    <SelectItem value="deposit_paid">Deposit Paid</SelectItem>
+                                    <SelectItem value="fully_paid">Fully Paid</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </TableCell>
+                              <TableCell className="font-medium">₵{Number(order.total_price).toLocaleString()}</TableCell>
+                              <TableCell className="text-muted-foreground">
+                                {format(new Date(order.created_at), "MMM d, yyyy")}
+                              </TableCell>
+                              <TableCell>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSelectedOrder(order);
+                                  }}
+                                >
+                                  <Eye className="h-4 w-4" />
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        );
+
+      case "analytics":
+        return <AnalyticsDashboard />;
+
+      case "blog":
+        return <BlogManager />;
+
+      case "follow-ups":
+        return <FollowUpHistory />;
+
+      case "email-settings":
+        return <FollowUpSettings />;
+
+      case "users":
+        return <UserManagement />;
+
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-muted/30 flex">
+      {/* Sidebar */}
+      <aside className={`
+        fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-border transform transition-transform duration-200 ease-in-out
+        lg:relative lg:translate-x-0
+        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+      `}>
+        <div className="flex flex-col h-full">
+          {/* Logo */}
+          <div className="p-6 border-b border-border">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
+                  <span className="text-lg font-bold text-primary-foreground">V</span>
+                </div>
+                <div>
+                  <h2 className="font-bold text-lg">VibeLink</h2>
+                  <p className="text-xs text-muted-foreground">Admin Panel</p>
+                </div>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="lg:hidden"
+                onClick={() => setSidebarOpen(false)}
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+          </div>
+
+          {/* Navigation */}
+          <ScrollArea className="flex-1 py-4">
+            <nav className="px-3 space-y-1">
+              {navItems.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => {
+                    setActiveSection(item.id);
+                    setSidebarOpen(false);
+                  }}
+                  className={`
+                    w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all
+                    ${activeSection === item.id 
+                      ? 'bg-primary text-primary-foreground shadow-md' 
+                      : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                    }
+                  `}
+                >
+                  <item.icon className="h-5 w-5" />
+                  {item.label}
+                </button>
+              ))}
+            </nav>
+          </ScrollArea>
+
+          {/* User Profile */}
+          <div className="p-4 border-t border-border">
+            <div className="flex items-center gap-3 mb-3">
+              <Avatar>
+                <AvatarFallback className="bg-primary/10 text-primary">
+                  {user?.email?.charAt(0).toUpperCase() || 'A'}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium truncate">{user?.email}</p>
+                <p className="text-xs text-muted-foreground">Administrator</p>
+              </div>
+            </div>
+            <Button variant="outline" size="sm" className="w-full" onClick={handleSignOut}>
               <LogOut className="h-4 w-4 mr-2" />
               Sign Out
             </Button>
           </div>
         </div>
-      </header>
+      </aside>
 
-      <main className="container mx-auto px-4 lg:px-8 py-8">
-        {/* Admin Navigation Tabs */}
-        <div className="flex flex-wrap gap-2 mb-8">
-          <Button
-            variant={adminTab === "orders" ? "default" : "outline"}
-            onClick={() => setAdminTab("orders")}
+      {/* Overlay for mobile */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Main Content */}
+      <main className="flex-1 min-h-screen">
+        {/* Mobile Header */}
+        <header className="lg:hidden sticky top-0 z-30 bg-card border-b border-border px-4 py-3">
+          <div className="flex items-center justify-between">
+            <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(true)}>
+              <Menu className="h-6 w-6" />
+            </Button>
+            <h1 className="font-semibold">{navItems.find(i => i.id === activeSection)?.label}</h1>
+            <div className="w-10" />
+          </div>
+        </header>
+
+        {/* Page Content */}
+        <div className="p-4 lg:p-8">
+          <motion.div
+            key={activeSection}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.2 }}
           >
-            <Package className="h-4 w-4 mr-2" />
-            Orders
-          </Button>
-          <Button
-            variant={adminTab === "analytics" ? "default" : "outline"}
-            onClick={() => setAdminTab("analytics")}
-          >
-            <BarChart3 className="h-4 w-4 mr-2" />
-            Analytics
-          </Button>
-          <Button
-            variant={adminTab === "follow-ups" ? "default" : "outline"}
-            onClick={() => setAdminTab("follow-ups")}
-          >
-            <Mail className="h-4 w-4 mr-2" />
-            Follow-up History
-          </Button>
-          <Button
-            variant={adminTab === "settings" ? "default" : "outline"}
-            onClick={() => setAdminTab("settings")}
-          >
-            <Clock className="h-4 w-4 mr-2" />
-            Email Settings
-          </Button>
-          <Button
-            variant={adminTab === "blog" ? "default" : "outline"}
-            onClick={() => setAdminTab("blog")}
-          >
-            <FileText className="h-4 w-4 mr-2" />
-            Blog
-          </Button>
-          <div className="flex-1" />
-          <Button
-            variant="outline"
-            onClick={runFollowUpEmails}
-            disabled={runningFollowUps}
-            className="gap-2"
-          >
-            {runningFollowUps ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Zap className="h-4 w-4" />
-            )}
-            Run Follow-up Emails
-          </Button>
-          <Button
-            variant="outline"
-            onClick={fetchOrders}
-            className="gap-2"
-          >
-            <RefreshCw className="h-4 w-4" />
-            Refresh
-          </Button>
+            {renderContent()}
+          </motion.div>
         </div>
-
-        {adminTab === "analytics" ? (
-          <AnalyticsDashboard />
-        ) : adminTab === "follow-ups" ? (
-          <FollowUpHistory />
-        ) : adminTab === "settings" ? (
-          <FollowUpSettings />
-        ) : adminTab === "blog" ? (
-          <BlogManager />
-        ) : (
-          <>
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
-                    Total Orders
-                  </CardTitle>
-                  <Package className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{totalOrders}</div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
-                    Pending Orders
-                  </CardTitle>
-                  <Clock className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{pendingOrders}</div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
-                    Total Revenue
-                  </CardTitle>
-                  <DollarSign className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">GHS {totalRevenue.toLocaleString()}</div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
-                    Deposits Received
-                  </CardTitle>
-                  <Users className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">GHS {depositReceived.toLocaleString()}</div>
-                </CardContent>
-              </Card>
-            </div>
-
-        {/* View Toggle and Orders */}
-        <Card>
-          <CardHeader>
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <CardTitle>Orders</CardTitle>
-                <div className="flex gap-2">
-                  <Button
-                    variant={viewMode === "list" ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setViewMode("list")}
-                  >
-                    <Package className="h-4 w-4 mr-1" />
-                    List
-                  </Button>
-                  <Button
-                    variant={viewMode === "calendar" ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setViewMode("calendar")}
-                  >
-                    <Calendar className="h-4 w-4 mr-1" />
-                    Calendar
-                  </Button>
-                </div>
-              </div>
-              {viewMode === "list" && (
-                <Tabs value={activeTab} onValueChange={setActiveTab}>
-                  <TabsList>
-                    <TabsTrigger value="all">All</TabsTrigger>
-                    <TabsTrigger value="pending">Pending</TabsTrigger>
-                    <TabsTrigger value="in_progress">In Progress</TabsTrigger>
-                    <TabsTrigger value="completed">Completed</TabsTrigger>
-                  </TabsList>
-                </Tabs>
-              )}
-            </div>
-          </CardHeader>
-          <CardContent>
-            {loadingOrders ? (
-              <div className="flex items-center justify-center py-12">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              </div>
-            ) : viewMode === "calendar" ? (
-              <CalendarView orders={orders} onSelectOrder={setSelectedOrder} />
-            ) : filteredOrders.length === 0 ? (
-              <div className="text-center py-12">
-                <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-foreground mb-2">No orders yet</h3>
-                <p className="text-muted-foreground">
-                  Orders will appear here when clients submit the order form.
-                </p>
-              </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Client</TableHead>
-                      <TableHead>Event</TableHead>
-                      <TableHead>Package</TableHead>
-                      <TableHead>Total</TableHead>
-                      <TableHead>Order Status</TableHead>
-                      <TableHead>Payment</TableHead>
-                      <TableHead></TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredOrders.map((order) => (
-                      <TableRow key={order.id}>
-                        <TableCell className="whitespace-nowrap">
-                          {format(new Date(order.created_at), "MMM d, yyyy")}
-                        </TableCell>
-                        <TableCell>
-                          <div>
-                            <div className="font-medium">{order.client_name}</div>
-                            <div className="text-sm text-muted-foreground">
-                              {order.client_phone}
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div>
-                            <div className="font-medium">{order.event_title}</div>
-                            <div className="text-sm text-muted-foreground capitalize">
-                              {order.event_type}
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>{order.package_name}</TableCell>
-                        <TableCell className="font-medium">
-                          GHS {Number(order.total_price).toLocaleString()}
-                        </TableCell>
-                        <TableCell>
-                          <Select
-                            value={order.order_status}
-                            onValueChange={(value) =>
-                              updateOrderStatus(order.id, value as OrderStatus)
-                            }
-                          >
-                            <SelectTrigger className="w-[130px]">
-                              <Badge
-                                variant="secondary"
-                                className={orderStatusColors[order.order_status]}
-                              >
-                                {order.order_status.replace("_", " ")}
-                              </Badge>
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="pending">Pending</SelectItem>
-                              <SelectItem value="in_progress">In Progress</SelectItem>
-                              <SelectItem value="draft_ready">Draft Ready</SelectItem>
-                              <SelectItem value="revision">Revision</SelectItem>
-                              <SelectItem value="completed">Completed</SelectItem>
-                              <SelectItem value="cancelled">Cancelled</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </TableCell>
-                        <TableCell>
-                          <Select
-                            value={order.payment_status}
-                            onValueChange={(value) =>
-                              updatePaymentStatus(order.id, value as PaymentStatus)
-                            }
-                          >
-                            <SelectTrigger className="w-[130px]">
-                              <Badge
-                                variant="secondary"
-                                className={paymentStatusColors[order.payment_status]}
-                              >
-                                {order.payment_status.replace("_", " ")}
-                              </Badge>
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="pending">Pending</SelectItem>
-                              <SelectItem value="deposit_paid">50% Deposit</SelectItem>
-                              <SelectItem value="fully_paid">Fully Paid</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-1">
-                            {order.payment_status !== "fully_paid" && (
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => sendPaymentReminder(order)}
-                                title="Send payment reminder"
-                              >
-                                <Send className="h-4 w-4" />
-                              </Button>
-                            )}
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => setSelectedOrder(order)}
-                            >
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-          </>
-        )}
       </main>
 
       {/* Order Detail Dialog */}
       <Dialog open={!!selectedOrder} onOpenChange={() => setSelectedOrder(null)}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Order Details</DialogTitle>
           </DialogHeader>
           {selectedOrder && (
             <div className="space-y-6">
+              {/* Order Info Grid */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-muted-foreground">Event Title</p>
+                  <p className="font-medium">{selectedOrder.event_title}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Event Type</p>
+                  <p className="font-medium">{selectedOrder.event_type}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Package</p>
+                  <p className="font-medium">{selectedOrder.package_name}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Total Price</p>
+                  <p className="font-medium">₵{Number(selectedOrder.total_price).toLocaleString()}</p>
+                </div>
+              </div>
+
+              <Separator />
+
               {/* Client Info */}
-              <div className="bg-muted/50 rounded-lg p-4">
-                <h3 className="font-semibold mb-3">Client Information</h3>
+              <div>
+                <h4 className="font-semibold mb-3">Client Information</h4>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex items-center gap-2">
                     <Users className="h-4 w-4 text-muted-foreground" />
                     <span>{selectedOrder.client_name}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Phone className="h-4 w-4 text-muted-foreground" />
-                    <a href={`tel:${selectedOrder.client_phone}`} className="hover:underline">
-                      {selectedOrder.client_phone}
-                    </a>
+                    <Mail className="h-4 w-4 text-muted-foreground" />
+                    <span>{selectedOrder.client_email}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Mail className="h-4 w-4 text-muted-foreground" />
-                    <a href={`mailto:${selectedOrder.client_email}`} className="hover:underline">
-                      {selectedOrder.client_email}
-                    </a>
+                    <Phone className="h-4 w-4 text-muted-foreground" />
+                    <span>{selectedOrder.client_phone}</span>
                   </div>
                   {selectedOrder.client_whatsapp && (
                     <div className="flex items-center gap-2">
                       <MessageCircle className="h-4 w-4 text-muted-foreground" />
-                      <a
-                        href={`https://wa.me/${selectedOrder.client_whatsapp.replace(/\D/g, "")}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="hover:underline"
-                      >
-                        {selectedOrder.client_whatsapp}
-                      </a>
+                      <span>{selectedOrder.client_whatsapp}</span>
                     </div>
                   )}
                 </div>
               </div>
 
-              {/* Event Info */}
-              <div className="bg-muted/50 rounded-lg p-4">
-                <h3 className="font-semibold mb-3">Event Details</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <span className="text-sm text-muted-foreground">Event Type</span>
-                    <p className="font-medium capitalize">{selectedOrder.event_type}</p>
-                  </div>
-                  <div>
-                    <span className="text-sm text-muted-foreground">Event Title</span>
-                    <p className="font-medium">{selectedOrder.event_title}</p>
-                  </div>
-                  {selectedOrder.event_date && (
-                    <div>
-                      <span className="text-sm text-muted-foreground">Date</span>
-                      <p className="font-medium">
-                        {format(new Date(selectedOrder.event_date), "MMMM d, yyyy")}
-                      </p>
-                    </div>
-                  )}
-                  {selectedOrder.event_time && (
-                    <div>
-                      <span className="text-sm text-muted-foreground">Time</span>
-                      <p className="font-medium">{selectedOrder.event_time}</p>
-                    </div>
-                  )}
-                  {selectedOrder.venue_name && (
-                    <div className="col-span-2">
-                      <span className="text-sm text-muted-foreground">Venue</span>
-                      <p className="font-medium">{selectedOrder.venue_name}</p>
-                      {selectedOrder.venue_address && (
-                        <p className="text-sm text-muted-foreground">
-                          {selectedOrder.venue_address}
-                        </p>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div>
+              <Separator />
 
-              {/* Design Preferences */}
-              <div className="bg-muted/50 rounded-lg p-4">
-                <h3 className="font-semibold mb-3">Design Preferences</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  {selectedOrder.color_palette && (
-                    <div>
-                      <span className="text-sm text-muted-foreground">Color Palette</span>
-                      <p className="font-medium">{selectedOrder.color_palette}</p>
-                    </div>
-                  )}
-                  {selectedOrder.style_preferences && selectedOrder.style_preferences.length > 0 && (
-                    <div>
-                      <span className="text-sm text-muted-foreground">Style</span>
-                      <p className="font-medium">{selectedOrder.style_preferences.join(", ")}</p>
-                    </div>
-                  )}
-                  {selectedOrder.custom_colors && selectedOrder.custom_colors.length > 0 && (
-                    <div className="col-span-2">
-                      <span className="text-sm text-muted-foreground">Custom Colors</span>
-                      <div className="flex gap-2 mt-1">
-                        {selectedOrder.custom_colors.map((color, i) => (
-                          <div
-                            key={i}
-                            className="w-6 h-6 rounded border"
-                            style={{ backgroundColor: color }}
-                            title={color}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Package & Pricing */}
-              <div className="bg-muted/50 rounded-lg p-4">
-                <h3 className="font-semibold mb-3">Package & Pricing</h3>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span>{selectedOrder.package_name}</span>
-                    <span>GHS {Number(selectedOrder.package_price).toLocaleString()}</span>
-                  </div>
-                  {selectedOrder.add_ons && Array.isArray(selectedOrder.add_ons) && selectedOrder.add_ons.length > 0 && (
-                    <>
-                      <div className="border-t pt-2 mt-2">
-                        <span className="text-sm text-muted-foreground">Add-ons:</span>
-                        {(selectedOrder.add_ons as any[]).map((addon: any, i: number) => (
-                          <div key={i} className="flex justify-between text-sm">
-                            <span>{addon.name}</span>
-                            <span>GHS {addon.price}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </>
-                  )}
-                  <div className="border-t pt-2 mt-2 flex justify-between font-bold">
-                    <span>Total</span>
-                    <span>GHS {Number(selectedOrder.total_price).toLocaleString()}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Special Requests */}
-              {selectedOrder.special_requests && (
-                <div className="bg-muted/50 rounded-lg p-4">
-                  <h3 className="font-semibold mb-3">Special Requests</h3>
-                  <p className="text-sm">{selectedOrder.special_requests}</p>
-                </div>
-              )}
-
-              {/* Reminder History */}
-              <div className="bg-muted/50 rounded-lg p-4">
-                <h3 className="font-semibold mb-3 flex items-center gap-2">
-                  <Bell className="h-4 w-4" />
-                  Payment Reminder History
-                </h3>
-                {loadingReminders ? (
-                  <div className="flex items-center justify-center py-4">
-                    <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
-                  </div>
-                ) : reminderLogs.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">No reminders sent yet</p>
-                ) : (
-                  <div className="space-y-2">
-                    {reminderLogs.map((log) => (
-                      <div
-                        key={log.id}
-                        className="flex items-center justify-between bg-background rounded-md p-3 text-sm"
-                      >
-                        <div className="flex items-center gap-3">
-                          {log.success ? (
-                            <CheckCircle className="h-4 w-4 text-green-500" />
-                          ) : (
-                            <XCircle className="h-4 w-4 text-red-500" />
-                          )}
-                          <div>
-                            <p className="font-medium capitalize">
-                              {log.reminder_type.replace(/_/g, " ")}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              Sent to: {log.recipient_email}
-                            </p>
-                            {log.error_message && (
-                              <p className="text-xs text-red-500">{log.error_message}</p>
-                            )}
-                          </div>
-                        </div>
-                        <span className="text-xs text-muted-foreground whitespace-nowrap">
-                          {format(new Date(log.sent_at), "MMM d, yyyy h:mm a")}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
+              {/* Actions */}
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => sendPaymentReminder(selectedOrder)}
+                >
+                  <Send className="h-4 w-4 mr-2" />
+                  Send Payment Reminder
+                </Button>
+                {selectedOrder.client_whatsapp && (
+                  <Button
+                    variant="outline"
+                    onClick={() => window.open(`https://wa.me/${selectedOrder.client_whatsapp}`, '_blank')}
+                  >
+                    <MessageCircle className="h-4 w-4 mr-2" />
+                    WhatsApp
+                  </Button>
                 )}
               </div>
+
+              {/* Reminder History */}
+              {reminderLogs.length > 0 && (
+                <>
+                  <Separator />
+                  <div>
+                    <h4 className="font-semibold mb-3">Reminder History</h4>
+                    <div className="space-y-2">
+                      {reminderLogs.map((log) => (
+                        <div key={log.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
+                          <div className="flex items-center gap-3">
+                            {log.success ? (
+                              <CheckCircle className="h-4 w-4 text-green-500" />
+                            ) : (
+                              <XCircle className="h-4 w-4 text-red-500" />
+                            )}
+                            <div>
+                              <p className="text-sm font-medium">{log.reminder_type}</p>
+                              <p className="text-xs text-muted-foreground">
+                                {format(new Date(log.sent_at), "MMM d, yyyy h:mm a")}
+                              </p>
+                            </div>
+                          </div>
+                          <Badge variant={log.success ? "default" : "destructive"}>
+                            {log.success ? "Sent" : "Failed"}
+                          </Badge>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           )}
         </DialogContent>

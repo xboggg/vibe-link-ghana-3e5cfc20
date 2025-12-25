@@ -435,8 +435,23 @@ export function BlogManager() {
                 <Label>Content</Label>
                 <RichTextEditor
                   content={editingPost?.content || ''}
-                  onChange={(content) => setEditingPost(prev => ({ ...prev, content }))}
+                  onChange={(content) => {
+                    // Calculate reading time based on word count
+                    const textContent = content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+                    const wordCount = textContent.split(' ').filter(Boolean).length;
+                    const readingTime = Math.max(1, Math.ceil(wordCount / 200));
+                    const readTimeStr = `${readingTime} min read`;
+                    
+                    setEditingPost(prev => ({ 
+                      ...prev, 
+                      content,
+                      read_time: readTimeStr
+                    }));
+                  }}
                 />
+                <p className="text-xs text-muted-foreground">
+                  Estimated reading time: {editingPost?.read_time || '0 min read'} (auto-calculated)
+                </p>
               </div>
 
               {/* Tags Section */}
