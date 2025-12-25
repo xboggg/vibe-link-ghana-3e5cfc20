@@ -135,7 +135,7 @@ export const OrderFormWizard = ({ onComplete }: OrderFormWizardProps) => {
     return uploadedUrls;
   };
 
-  const sendWhatsAppNotification = (orderId: string, total: number) => {
+  const getWhatsAppUrl = (orderId: string, total: number): string => {
     const selectedPkg = packages.find((p) => p.id === formData.selectedPackage);
     const selectedAddOnsList = formData.selectedAddOns.map((addonId) => {
       const addon = addOns.find((a) => a.id === addonId);
@@ -175,18 +175,8 @@ ${formData.additionalInfo ? `📝 *Additional Notes:* ${formData.additionalInfo}
 ${formData.designNotes ? `🎯 *Design Notes:* ${formData.designNotes}` : ""}`;
 
     const encodedMessage = encodeURIComponent(message);
-    const whatsappNumber = "233245817973"; // VibeLink Ghana WhatsApp
-    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
-    
-    // Use window.location.href for more reliable redirect, avoiding iframe blocking
-    // Create a link element and trigger click to ensure proper navigation
-    const link = document.createElement("a");
-    link.href = whatsappUrl;
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const whatsappNumber = "233245817973";
+    return `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
   };
 
   const sendOrderConfirmationEmail = async (
@@ -307,11 +297,14 @@ ${formData.designNotes ? `🎯 *Design Notes:* ${formData.designNotes}` : ""}`;
         throw error;
       }
       
-      // Send confirmation email, admin notification, and WhatsApp notification
+      // Send confirmation email and admin notification
       if (data?.id) {
         sendOrderConfirmationEmail(data.id, total, selectedPkg, selectedAddOnsList);
         sendAdminNotification(data.id, total, selectedPkg, selectedAddOnsList);
-        sendWhatsAppNotification(data.id, total);
+        
+        // Store WhatsApp URL for thank you page instead of auto-opening
+        const whatsappUrl = getWhatsAppUrl(data.id, total);
+        sessionStorage.setItem("vibelink_whatsapp_url", whatsappUrl);
       }
       
       onComplete?.(formData);

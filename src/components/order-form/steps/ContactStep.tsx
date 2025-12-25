@@ -148,7 +148,7 @@ export const ContactStep = ({
     }
   };
 
-  const isValid = formData.fullName && formData.phone && recaptchaLoaded;
+  const isValid = formData.fullName && formData.email && formData.phone && recaptchaLoaded;
 
   const clearError = (field: string) => {
     setErrors((prev) => ({ ...prev, [field]: "" }));
@@ -191,7 +191,7 @@ export const ContactStep = ({
           <div className="space-y-2">
             <Label htmlFor="email" className="flex items-center gap-2">
               <Mail className="h-4 w-4 text-primary" />
-              Email Address
+              Email Address *
             </Label>
             <Input
               id="email"

@@ -35,7 +35,7 @@ export const timelineSchema = z.object({
 
 export const contactSchema = z.object({
   fullName: z.string().trim().min(1, "Full name is required").max(100, "Name must be less than 100 characters"),
-  email: z.string().trim().email("Please enter a valid email address").max(255, "Email must be less than 255 characters").optional().or(z.literal("")),
+  email: z.string().trim().min(1, "Email address is required").email("Please enter a valid email address").max(255, "Email must be less than 255 characters"),
   phone: z.string().trim().min(1, "Phone number is required").regex(ghanaPhoneRegex, "Please enter a valid Ghana phone number (e.g., 024 XXX XXXX or +233 24 XXX XXXX)"),
   whatsapp: z.string().regex(ghanaPhoneRegex, "Please enter a valid WhatsApp number").optional().or(z.literal("")),
   hearAboutUs: z.string().optional(),

@@ -1,11 +1,30 @@
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Home, MessageCircle, ArrowRight } from "lucide-react";
+import { CheckCircle, Home, MessageCircle } from "lucide-react";
 import SEO from "@/components/SEO";
 
 const ThankYou = () => {
+  const [whatsappUrl, setWhatsappUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Get WhatsApp URL from session storage
+    const storedUrl = sessionStorage.getItem("vibelink_whatsapp_url");
+    if (storedUrl) {
+      setWhatsappUrl(storedUrl);
+    }
+  }, []);
+
+  const handleWhatsAppClick = () => {
+    if (whatsappUrl) {
+      window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+    } else {
+      window.open("https://wa.me/233245817973", "_blank", "noopener,noreferrer");
+    }
+  };
+
   return (
     <Layout>
       <SEO 
@@ -62,15 +81,9 @@ const ThankYou = () => {
 
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button asChild variant="hero" size="lg">
-                <a
-                  href="https://wa.me/233XXXXXXXXX"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <MessageCircle className="mr-2 h-5 w-5" />
-                  Chat on WhatsApp
-                </a>
+              <Button onClick={handleWhatsAppClick} variant="hero" size="lg">
+                <MessageCircle className="mr-2 h-5 w-5" />
+                {whatsappUrl ? "Send Order via WhatsApp" : "Chat on WhatsApp"}
               </Button>
               <Button asChild variant="hero-outline" size="lg">
                 <Link to="/">
@@ -79,6 +92,12 @@ const ThankYou = () => {
                 </Link>
               </Button>
             </div>
+
+            {whatsappUrl && (
+              <p className="text-primary-foreground/60 text-sm mt-4">
+                Click the button above to send your order details to our team via WhatsApp
+              </p>
+            )}
           </motion.div>
         </div>
       </section>
