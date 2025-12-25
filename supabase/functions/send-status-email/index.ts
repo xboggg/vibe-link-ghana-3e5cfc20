@@ -327,7 +327,7 @@ const handler = async (req: Request): Promise<Response> => {
     const emailSubject = `${subjectEmoji} Order Update: ${statusLabel} - ${eventTitle}`;
 
     const emailResponse = await resend.emails.send({
-      from: "VibeLink Ghana <orders@itdeshop.com>",
+      from: "VibeLink Ghana <orders@vibelinkgh.com>",
       to: [clientEmail],
       subject: emailSubject,
       html: emailHtml,

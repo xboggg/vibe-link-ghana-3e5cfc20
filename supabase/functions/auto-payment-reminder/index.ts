@@ -169,7 +169,7 @@ const handler = async (req: Request): Promise<Response> => {
         console.log("Sending auto payment reminder to:", order.client_email);
 
         const emailResponse = await resend.emails.send({
-          from: "VibeLink Ghana <orders@itdeshop.com>",
+          from: "VibeLink Ghana <orders@vibelinkgh.com>",
           to: [order.client_email],
           subject: `⏰ URGENT: Payment Reminder - ${order.event_title} in 3 Days! | VibeLink Ghana`,
           html: emailHtml,

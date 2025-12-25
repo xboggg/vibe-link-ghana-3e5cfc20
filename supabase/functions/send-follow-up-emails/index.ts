@@ -218,7 +218,7 @@ const handler = async (req: Request): Promise<Response> => {
             const fullHtml = wrapInEmailTemplate(emailContent, emailSubject, order);
 
             await resend.emails.send({
-              from: "JC Creative Studios <orders@itdeshop.com>",
+              from: "VibeLink Ghana <orders@vibelinkgh.com>",
               to: [order.client_email],
               subject: emailSubject,
               html: fullHtml,
