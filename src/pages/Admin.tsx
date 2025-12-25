@@ -34,12 +34,14 @@ import {
   TrendingUp,
   CreditCard,
   LayoutDashboard,
+  Quote,
 } from "lucide-react";
 import { AnalyticsDashboard } from "@/components/admin/AnalyticsDashboard";
 import { FollowUpHistory } from "@/components/admin/FollowUpHistory";
 import { FollowUpSettings } from "@/components/admin/FollowUpSettings";
 import { BlogManager } from "@/components/admin/BlogManager";
 import { UserManagement } from "@/components/admin/UserManagement";
+import { TestimonialsManager } from "@/components/admin/TestimonialsManager";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -85,7 +87,7 @@ interface ReminderLog {
   error_message: string | null;
 }
 
-type AdminSection = "dashboard" | "orders" | "analytics" | "blog" | "follow-ups" | "email-settings" | "users";
+type AdminSection = "dashboard" | "orders" | "analytics" | "blog" | "testimonials" | "follow-ups" | "email-settings" | "users";
 
 const orderStatusColors: Record<OrderStatus, string> = {
   pending: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
@@ -107,6 +109,7 @@ const navItems = [
   { id: "orders" as AdminSection, label: "Orders", icon: Package },
   { id: "analytics" as AdminSection, label: "Analytics", icon: BarChart3 },
   { id: "blog" as AdminSection, label: "Blog", icon: FileText },
+  { id: "testimonials" as AdminSection, label: "Testimonials", icon: Quote },
   { id: "follow-ups" as AdminSection, label: "Follow-ups", icon: Send },
   { id: "email-settings" as AdminSection, label: "Email Settings", icon: Mail },
   { id: "users" as AdminSection, label: "User Management", icon: Shield },
@@ -642,6 +645,9 @@ const Admin = () => {
 
       case "blog":
         return <BlogManager />;
+
+      case "testimonials":
+        return <TestimonialsManager />;
 
       case "follow-ups":
         return <FollowUpHistory />;

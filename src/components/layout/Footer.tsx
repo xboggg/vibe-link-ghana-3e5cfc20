@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Sparkles, Instagram, Facebook, Twitter, Phone, Mail, MapPin } from "lucide-react";
+import { Sparkles, Instagram, Facebook, Twitter, Phone, Mail, MapPin, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const quickLinks = [
@@ -55,7 +55,7 @@ export function Footer() {
             <p className="text-primary-foreground/70 text-sm leading-relaxed mb-4">
               Your Event. Our Vibe. Transform your Ghanaian celebrations into stunning, shareable digital invitations.
             </p>
-            <div className="flex gap-3">
+            <div className="flex items-center gap-3 mb-4">
               {socialLinks.map((social) => (
                 <a
                   key={social.name}
@@ -68,6 +68,16 @@ export function Footer() {
                   <social.icon className="h-4 w-4" />
                 </a>
               ))}
+              {/* Newsletter Button */}
+              <a
+                href="https://vibelinkgh.com/newsletter"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary/20 hover:bg-secondary text-secondary hover:text-secondary-foreground transition-all duration-300 text-sm font-medium"
+              >
+                <Send className="h-4 w-4" />
+                Newsletter
+              </a>
             </div>
           </div>
 
@@ -160,10 +170,14 @@ export function Footer() {
       {/* Bottom Bar */}
       <div className="border-t border-primary-foreground/10">
         <div className="container mx-auto px-4 lg:px-8 py-6">
-          <div className="flex flex-col md:flex-row items-center justify-center gap-4">
-            <div className="flex flex-wrap items-center justify-center gap-2 text-primary-foreground/60 text-sm">
-              <span>© {new Date().getFullYear()} VibeLink Ghana</span>
-              <span>|</span>
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            {/* Left - Copyright */}
+            <div className="text-primary-foreground/60 text-sm">
+              © {new Date().getFullYear()} VibeLink Ghana
+            </div>
+            
+            {/* Right - Policy links and Made in Ghana */}
+            <div className="flex flex-wrap items-center justify-end gap-2 text-primary-foreground/60 text-sm mr-16 md:mr-20">
               {policyLinks.map((link, index) => (
                 <span key={link.name} className="flex items-center gap-2">
                   <Link to={link.href} className="hover:text-secondary transition-colors">
