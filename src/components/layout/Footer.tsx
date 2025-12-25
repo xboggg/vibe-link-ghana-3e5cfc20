@@ -118,7 +118,7 @@ export function Footer() {
             <form onSubmit={handleNewsletterSubmit} className="flex gap-2 mt-4">
               <Input
                 type="email"
-                placeholder="Enter your email"
+                placeholder="Enter email for Newsletter"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="h-10 bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 text-sm min-w-[160px]"
@@ -195,10 +195,10 @@ export function Footer() {
               <li className="flex items-center gap-3 text-sm">
                 <Mail className="h-4 w-4 text-secondary" />
                 <a
-                  href="mailto:hello@vibelinkgh.com"
+                  href="mailto:info@vibelinkgh.com"
                   className="text-primary-foreground/70 hover:text-secondary transition-colors"
                 >
-                  hello@vibelinkgh.com
+                  info@vibelinkgh.com
                 </a>
               </li>
               <li className="flex items-start gap-3 text-sm">
