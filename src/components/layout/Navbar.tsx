@@ -79,7 +79,7 @@ export function Navbar() {
               <div className="absolute inset-0 bg-secondary/20 blur-lg rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
             <span className="text-xl lg:text-2xl font-bold font-poppins text-primary-foreground">
-              Vibe<span className="text-secondary">Link</span>
+              Vibe<span className="text-secondary">Link</span> <span className="text-primary-foreground/70 font-normal text-sm">Ghana</span>
             </span>
           </Link>
 
