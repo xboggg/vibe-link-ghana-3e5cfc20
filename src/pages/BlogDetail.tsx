@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { CTASection } from "@/components/sections/CTASection";
 import { ArrowLeft, Clock, Calendar, Share2, Facebook, Twitter } from "lucide-react";
 import { blogPosts } from "./Blog";
-import SEO from "@/components/SEO";
+import SEO, { createArticleSchema, createBreadcrumbSchema } from "@/components/SEO";
 
 const blogContent: Record<string, {
   content: string[];
@@ -264,6 +264,23 @@ const BlogDetail = () => {
     .filter((p) => p.category === post.category && p.id !== post.id)
     .slice(0, 3);
 
+  // Create article schema for this blog post
+  const articleSchema = createArticleSchema({
+    title: post.title,
+    description: post.excerpt,
+    datePublished: new Date(post.date).toISOString(),
+    dateModified: new Date(post.date).toISOString(),
+    author: "VibeLink Ghana",
+    image: post.image,
+    url: `/blog/${slug}`,
+  });
+
+  const breadcrumbSchema = createBreadcrumbSchema([
+    { name: "Home", url: "/" },
+    { name: "Blog", url: "/blog" },
+    { name: post.title, url: `/blog/${slug}` },
+  ]);
+
   return (
     <Layout>
       <SEO 
@@ -273,6 +290,7 @@ const BlogDetail = () => {
         canonical={`/blog/${slug}`}
         ogImage={post.image}
         ogType="article"
+        jsonLd={[articleSchema, breadcrumbSchema]}
       />
       {/* Hero */}
       <section className="pt-24 lg:pt-32 pb-8 bg-gradient-to-b from-[#6B46C1] via-[#553C9A] to-[#44337A]">

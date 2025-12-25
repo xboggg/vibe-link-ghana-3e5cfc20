@@ -52,6 +52,43 @@ const pricingSchema = {
   ],
 };
 
+// FAQ Schema for rich snippets
+const pricingFAQs = [
+  {
+    question: "What is included in VibeLink digital invitations?",
+    answer: "All packages include mobile-responsive design, countdown timer, Google Maps directions, and WhatsApp sharing. Higher packages add features like photo galleries, RSVP tracking, background music, and MoMo collection.",
+  },
+  {
+    question: "How long does it take to create my digital invitation?",
+    answer: "Standard delivery is 5-7 business days. We offer rush delivery (48 hours) for an additional GHS 300.",
+  },
+  {
+    question: "Can I make changes after my invitation is created?",
+    answer: "Yes! Starter package includes 1 revision round, Classic includes 2 rounds, and Prestige/Royal packages include unlimited revisions.",
+  },
+  {
+    question: "How long will my invitation stay online?",
+    answer: "Hosting duration varies by package: Starter (30 days), Classic (90 days), Prestige (1 year), and Royal (2 years). Extended hosting is available as an add-on.",
+  },
+  {
+    question: "Can guests abroad access my digital invitation?",
+    answer: "Absolutely! Your digital invitation works anywhere in the world. Guests can view it on any device with internet access and contribute via mobile money or international transfers.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: pricingFAQs.map((faq) => ({
+    "@type": "Question",
+    name: faq.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: faq.answer,
+    },
+  })),
+};
+
 const packages = [
   {
     name: "Starter Vibe",
@@ -201,7 +238,7 @@ const Pricing = () => {
         description="Affordable digital invitation packages starting from GHS 500. Choose from Starter, Classic, or Premium packages for your wedding, funeral, or event in Ghana."
         keywords="digital invitation prices Ghana, wedding invitation cost, event invitation packages Accra"
         canonical="/pricing"
-        jsonLd={[pricingSchema, pricingBreadcrumb]}
+        jsonLd={[pricingSchema, pricingBreadcrumb, faqSchema]}
       />
       {/* Hero */}
       <section className="pt-24 lg:pt-32 pb-16 bg-gradient-to-b from-[#6B46C1] via-[#553C9A] to-[#44337A]">
