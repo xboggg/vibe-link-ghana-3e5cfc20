@@ -1,6 +1,10 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Sparkles, Instagram, Facebook, Twitter, Phone, Mail, MapPin, Send } from "lucide-react";
+import { Sparkles, Instagram, Facebook, Twitter, Phone, Mail, MapPin, Send, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const quickLinks = [
   { name: "Home", href: "/" },
@@ -39,6 +43,47 @@ const socialLinks = [
 ];
 
 export function Footer() {
+  const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!email.trim()) {
+      toast.error("Please enter your email address");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const { error } = await supabase
+        .from('newsletter_subscribers')
+        .insert({ email: email.trim().toLowerCase() });
+
+      if (error) {
+        if (error.code === '23505') {
+          toast.info("You're already subscribed!");
+        } else {
+          throw error;
+        }
+      } else {
+        toast.success("Successfully subscribed to our newsletter!");
+        setEmail("");
+      }
+    } catch (error) {
+      console.error("Newsletter subscription error:", error);
+      toast.error("Failed to subscribe. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <footer className="bg-navy text-primary-foreground">
       {/* Main Footer */}
@@ -69,16 +114,29 @@ export function Footer() {
                 </a>
               ))}
             </div>
-            {/* Newsletter Button - directly under social icons */}
-            <a
-              href="https://vibelinkgh.com/newsletter"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg bg-secondary/20 hover:bg-secondary text-secondary hover:text-secondary-foreground transition-all duration-300 text-sm font-medium mt-4 min-w-[160px]"
-            >
-              <Send className="h-4 w-4" />
-              Newsletter
-            </a>
+            {/* Newsletter Form - directly under social icons */}
+            <form onSubmit={handleNewsletterSubmit} className="flex gap-2 mt-4">
+              <Input
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="h-10 bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 text-sm min-w-[160px]"
+                disabled={isSubmitting}
+              />
+              <Button
+                type="submit"
+                size="sm"
+                disabled={isSubmitting}
+                className="h-10 bg-secondary/20 hover:bg-secondary text-secondary hover:text-secondary-foreground border-0"
+              >
+                {isSubmitting ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Send className="h-4 w-4" />
+                )}
+              </Button>
+            </form>
           </div>
 
           {/* Quick Links */}
