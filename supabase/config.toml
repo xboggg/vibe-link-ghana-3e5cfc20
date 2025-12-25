@@ -20,3 +20,9 @@ verify_jwt = false
 
 [functions.send-follow-up-emails]
 verify_jwt = false
+
+[functions.totp-manage]
+verify_jwt = false
+
+[functions.publish-scheduled-posts]
+verify_jwt = false
