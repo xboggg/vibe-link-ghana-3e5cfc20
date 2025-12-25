@@ -21,6 +21,37 @@ interface PaymentReminderRequest {
   paymentStatus: string;
 }
 
+// Rate limiting constants
+const RATE_LIMIT_MAX_REQUESTS = 10;
+const RATE_LIMIT_WINDOW_MINUTES = 60;
+
+async function checkRateLimit(supabase: any, functionName: string, clientIp: string): Promise<boolean> {
+  try {
+    const { data, error } = await supabase.rpc('check_rate_limit', {
+      p_function_name: functionName,
+      p_client_ip: clientIp,
+      p_max_requests: RATE_LIMIT_MAX_REQUESTS,
+      p_window_minutes: RATE_LIMIT_WINDOW_MINUTES
+    });
+    
+    if (error) {
+      console.error("Rate limit check error:", error);
+      return true;
+    }
+    
+    return data === true;
+  } catch (err) {
+    console.error("Rate limit check exception:", err);
+    return true;
+  }
+}
+
+function getClientIp(req: Request): string {
+  return req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || 
+         req.headers.get("x-real-ip") || 
+         "unknown";
+}
+
 const handler = async (req: Request): Promise<Response> => {
   console.log("Payment reminder function called");
 
@@ -32,6 +63,21 @@ const handler = async (req: Request): Promise<Response> => {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    // Check rate limit
+    const clientIp = getClientIp(req);
+    const isAllowed = await checkRateLimit(supabase, "send-payment-reminder", clientIp);
+    
+    if (!isAllowed) {
+      console.log(`Rate limit exceeded for IP: ${clientIp}`);
+      return new Response(
+        JSON.stringify({ error: "Rate limit exceeded. Please try again later." }),
+        {
+          status: 429,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
 
     const data: PaymentReminderRequest = await req.json();
     console.log("Payment reminder data:", data);

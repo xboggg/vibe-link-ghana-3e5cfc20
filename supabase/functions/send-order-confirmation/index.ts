@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 import { Resend } from "https://esm.sh/resend@2.0.0";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
@@ -21,12 +22,63 @@ interface OrderConfirmationRequest {
   addOns: { name: string; price: number }[];
 }
 
+// Rate limiting constants
+const RATE_LIMIT_MAX_REQUESTS = 5;
+const RATE_LIMIT_WINDOW_MINUTES = 60;
+
+async function checkRateLimit(supabase: any, functionName: string, clientIp: string): Promise<boolean> {
+  try {
+    const { data, error } = await supabase.rpc('check_rate_limit', {
+      p_function_name: functionName,
+      p_client_ip: clientIp,
+      p_max_requests: RATE_LIMIT_MAX_REQUESTS,
+      p_window_minutes: RATE_LIMIT_WINDOW_MINUTES
+    });
+    
+    if (error) {
+      console.error("Rate limit check error:", error);
+      // Allow request if rate limit check fails
+      return true;
+    }
+    
+    return data === true;
+  } catch (err) {
+    console.error("Rate limit check exception:", err);
+    return true;
+  }
+}
+
+function getClientIp(req: Request): string {
+  return req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || 
+         req.headers.get("x-real-ip") || 
+         "unknown";
+}
+
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    // Check rate limit
+    const clientIp = getClientIp(req);
+    const isAllowed = await checkRateLimit(supabase, "send-order-confirmation", clientIp);
+    
+    if (!isAllowed) {
+      console.log(`Rate limit exceeded for IP: ${clientIp}`);
+      return new Response(
+        JSON.stringify({ error: "Rate limit exceeded. Please try again later." }),
+        {
+          status: 429,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
+
     const data: OrderConfirmationRequest = await req.json();
     console.log("Sending order confirmation email:", data);
 
