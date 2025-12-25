@@ -634,7 +634,7 @@ export function BlogManager() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <Card>
           <CardContent className="pt-6">
             <div className="text-2xl font-bold">{posts.length}</div>
@@ -645,6 +645,12 @@ export function BlogManager() {
           <CardContent className="pt-6">
             <div className="text-2xl font-bold">{posts.filter(p => p.published).length}</div>
             <p className="text-sm text-muted-foreground">Published</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-6">
+            <div className="text-2xl font-bold text-blue-600">{posts.filter(p => p.scheduled_publish_at && !p.published).length}</div>
+            <p className="text-sm text-muted-foreground">Scheduled</p>
           </CardContent>
         </Card>
         <Card>
