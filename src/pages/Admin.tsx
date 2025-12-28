@@ -36,6 +36,7 @@ import {
   LayoutDashboard,
   Quote,
   Newspaper,
+  UsersRound,
 } from "lucide-react";
 import { AnalyticsDashboard } from "@/components/admin/AnalyticsDashboard";
 import { OrderAnalytics } from "@/components/admin/OrderAnalytics";
@@ -49,6 +50,7 @@ import { TestimonialsManager } from "@/components/admin/TestimonialsManager";
 import { NewsletterManager } from "@/components/admin/NewsletterManager";
 import { SubscriberPreferences } from "@/components/admin/SubscriberPreferences";
 import { ChatAnalytics } from "@/components/admin/ChatAnalytics";
+import { TeamManager } from "@/components/admin/TeamManager";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -94,7 +96,7 @@ interface ReminderLog {
   error_message: string | null;
 }
 
-type AdminSection = "dashboard" | "orders" | "analytics" | "chatbot" | "blog" | "testimonials" | "newsletter" | "follow-ups" | "email-settings" | "users";
+type AdminSection = "dashboard" | "orders" | "analytics" | "chatbot" | "blog" | "testimonials" | "newsletter" | "follow-ups" | "email-settings" | "users" | "team";
 
 const orderStatusColors: Record<OrderStatus, string> = {
   pending: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
@@ -118,6 +120,7 @@ const navItems = [
   { id: "chatbot" as AdminSection, label: "Chatbot", icon: MessageCircle },
   { id: "blog" as AdminSection, label: "Blog", icon: FileText },
   { id: "testimonials" as AdminSection, label: "Testimonials", icon: Quote },
+  { id: "team" as AdminSection, label: "Team", icon: UsersRound },
   { id: "newsletter" as AdminSection, label: "Newsletter", icon: Newspaper },
   { id: "follow-ups" as AdminSection, label: "Follow-ups", icon: Send },
   { id: "email-settings" as AdminSection, label: "Email Settings", icon: Mail },
@@ -697,6 +700,9 @@ const Admin = () => {
 
       case "users":
         return <UserManagement />;
+
+      case "team":
+        return <TeamManager />;
 
       default:
         return null;
