@@ -2,7 +2,157 @@ import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
+
+// Floating particle component
+const FloatingParticle = ({ 
+  size, 
+  initialX, 
+  initialY, 
+  duration, 
+  delay,
+  type 
+}: { 
+  size: number; 
+  initialX: number; 
+  initialY: number; 
+  duration: number; 
+  delay: number;
+  type: 'circle' | 'star' | 'diamond' | 'ring';
+}) => {
+  const getShape = () => {
+    switch (type) {
+      case 'star':
+        return (
+          <svg viewBox="0 0 24 24" className="w-full h-full fill-current">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+          </svg>
+        );
+      case 'diamond':
+        return <div className="w-full h-full rotate-45 bg-current" />;
+      case 'ring':
+        return <div className="w-full h-full rounded-full border-2 border-current bg-transparent" />;
+      default:
+        return <div className="w-full h-full rounded-full bg-current" />;
+    }
+  };
+
+  return (
+    <motion.div
+      className="absolute pointer-events-none text-white/20"
+      style={{
+        width: size,
+        height: size,
+        left: `${initialX}%`,
+        top: `${initialY}%`,
+      }}
+      animate={{
+        y: [0, -100, -200, -100, 0],
+        x: [0, 30, -20, 40, 0],
+        opacity: [0.1, 0.4, 0.2, 0.5, 0.1],
+        scale: [1, 1.2, 0.8, 1.1, 1],
+        rotate: type === 'star' ? [0, 180, 360] : [0, 45, 0],
+      }}
+      transition={{
+        duration,
+        delay,
+        repeat: Infinity,
+        ease: "easeInOut",
+      }}
+    >
+      {getShape()}
+    </motion.div>
+  );
+};
+
+// Floating particles container
+const FloatingParticles = () => {
+  const particles = useMemo(() => {
+    const types: Array<'circle' | 'star' | 'diamond' | 'ring'> = ['circle', 'star', 'diamond', 'ring'];
+    return [...Array(25)].map((_, i) => ({
+      id: i,
+      size: 4 + Math.random() * 12,
+      initialX: Math.random() * 100,
+      initialY: Math.random() * 100,
+      duration: 15 + Math.random() * 20,
+      delay: Math.random() * 10,
+      type: types[Math.floor(Math.random() * types.length)],
+    }));
+  }, []);
+
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none" style={{ zIndex: 3 }}>
+      {particles.map((particle) => (
+        <FloatingParticle
+          key={particle.id}
+          size={particle.size}
+          initialX={particle.initialX}
+          initialY={particle.initialY}
+          duration={particle.duration}
+          delay={particle.delay}
+          type={particle.type}
+        />
+      ))}
+      
+      {/* Glowing orbs */}
+      <motion.div
+        className="absolute w-64 h-64 rounded-full"
+        style={{
+          background: "radial-gradient(circle, rgba(124,58,237,0.15) 0%, transparent 70%)",
+          left: "10%",
+          top: "20%",
+        }}
+        animate={{
+          scale: [1, 1.3, 1],
+          opacity: [0.3, 0.6, 0.3],
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      />
+      <motion.div
+        className="absolute w-48 h-48 rounded-full"
+        style={{
+          background: "radial-gradient(circle, rgba(245,158,11,0.1) 0%, transparent 70%)",
+          right: "15%",
+          bottom: "30%",
+        }}
+        animate={{
+          scale: [1.2, 1, 1.2],
+          opacity: [0.2, 0.5, 0.2],
+        }}
+        transition={{
+          duration: 10,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 2,
+        }}
+      />
+      <motion.div
+        className="absolute w-32 h-32 rounded-full"
+        style={{
+          background: "radial-gradient(circle, rgba(16,185,129,0.12) 0%, transparent 70%)",
+          left: "60%",
+          top: "60%",
+        }}
+        animate={{
+          scale: [1, 1.4, 1],
+          opacity: [0.2, 0.4, 0.2],
+          x: [0, 30, 0],
+          y: [0, -20, 0],
+        }}
+        transition={{
+          duration: 12,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 4,
+        }}
+      />
+    </div>
+  );
+};
 import heroWedding from "@/assets/hero-celebration.jpg";
 import heroNaming from "@/assets/hero-naming.jpg";
 import heroFuneral from "@/assets/hero-funeral.jpg";
@@ -158,8 +308,11 @@ export function HeroSection() {
         </div>
       </div>
 
+      {/* Floating Particles Effect */}
+      <FloatingParticles />
+
       {/* Decorative Diagonal Lines */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none" style={{ zIndex: 4 }}>
         {/* Diagonal lines pattern */}
         <motion.div
           initial={{ opacity: 0 }}
