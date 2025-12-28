@@ -22,7 +22,7 @@ const portfolioItems = [
   },
   {
     id: 2,
-    title: "Kofi & Ama's Wedding",
+    title: "Kofi & Efua's Wedding",
     type: "Weddings",
     description: "Traditional Ghanaian wedding with modern digital touches and kente-inspired design.",
     image: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80",
