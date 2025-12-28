@@ -255,7 +255,7 @@ export function HeroSection() {
       </button>
 
       {/* Content */}
-      <div className="relative container mx-auto px-4 lg:px-8 pt-20 lg:pt-24">
+      <div className="relative z-10 container mx-auto px-4 lg:px-8 pt-20 lg:pt-24">
         <div className="max-w-3xl">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -333,11 +333,14 @@ export function HeroSection() {
       </div>
 
       {/* Slide Indicators */}
-      <div className="absolute bottom-24 left-1/2 -translate-x-1/2 flex gap-2">
+      <div className="absolute bottom-24 left-1/2 -translate-x-1/2 flex gap-2 z-10">
         {slides.map((_, index) => (
           <button
             key={index}
-            onClick={() => setCurrentSlide(index)}
+            onClick={() => {
+              setPreviousSlide(currentSlide);
+              setCurrentSlide(index);
+            }}
             className={`w-2 h-2 rounded-full transition-all duration-300 ${
               index === currentSlide
                 ? "bg-secondary w-8"
@@ -353,7 +356,7 @@ export function HeroSection() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1, duration: 0.6 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10"
       >
         <div className="w-6 h-10 rounded-full border-2 border-primary-foreground/30 flex items-start justify-center p-2">
           <motion.div
