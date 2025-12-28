@@ -5,6 +5,23 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  rectSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import {
   Loader2,
   Plus,
   Pencil,
@@ -86,6 +103,138 @@ const teamMemberSchema = z.object({
 
 type TeamMemberFormData = z.infer<typeof teamMemberSchema>;
 
+// Sortable Team Member Card Component
+function SortableTeamCard({
+  member,
+  onEdit,
+  onDelete,
+  onToggleActive,
+}: {
+  member: TeamMember;
+  onEdit: (member: TeamMember) => void;
+  onDelete: (member: TeamMember) => void;
+  onToggleActive: (member: TeamMember) => void;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: member.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 1000 : 1,
+  };
+
+  return (
+    <Card
+      ref={setNodeRef}
+      style={style}
+      className={`${!member.is_active ? "opacity-60" : ""} ${isDragging ? "shadow-xl ring-2 ring-primary" : ""}`}
+    >
+      <CardHeader className="pb-3">
+        <div className="flex items-start justify-between">
+          <div className="flex items-center gap-3">
+            <button
+              className="cursor-grab active:cursor-grabbing touch-none p-1 -ml-1 text-muted-foreground hover:text-foreground transition-colors"
+              {...attributes}
+              {...listeners}
+            >
+              <GripVertical className="h-5 w-5" />
+            </button>
+            <Avatar className="h-14 w-14">
+              <AvatarImage src={member.photo_url || undefined} alt={member.name} />
+              <AvatarFallback className="text-lg">
+                {member.name.split(" ").map((n) => n[0]).join("")}
+              </AvatarFallback>
+            </Avatar>
+            <div>
+              <CardTitle className="text-lg">{member.name}</CardTitle>
+              <CardDescription>{member.role}</CardDescription>
+            </div>
+          </div>
+          <Badge variant={member.is_active ? "default" : "secondary"}>
+            {member.is_active ? "Active" : "Hidden"}
+          </Badge>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        {member.bio && (
+          <p className="text-sm text-muted-foreground line-clamp-2">
+            {member.bio}
+          </p>
+        )}
+
+        <div className="flex flex-wrap gap-2">
+          {member.email && (
+            <Badge variant="outline" className="gap-1">
+              <Mail className="h-3 w-3" />
+              Email
+            </Badge>
+          )}
+          {member.phone && (
+            <Badge variant="outline" className="gap-1">
+              <Phone className="h-3 w-3" />
+              Phone
+            </Badge>
+          )}
+          {member.social_facebook && (
+            <Badge variant="outline" className="gap-1">
+              <Facebook className="h-3 w-3" />
+            </Badge>
+          )}
+          {member.social_twitter && (
+            <Badge variant="outline" className="gap-1">
+              <Twitter className="h-3 w-3" />
+            </Badge>
+          )}
+          {member.social_instagram && (
+            <Badge variant="outline" className="gap-1">
+              <Instagram className="h-3 w-3" />
+            </Badge>
+          )}
+          {member.social_linkedin && (
+            <Badge variant="outline" className="gap-1">
+              <Linkedin className="h-3 w-3" />
+            </Badge>
+          )}
+        </div>
+
+        <div className="flex items-center justify-between pt-2 border-t">
+          <div className="flex items-center gap-2">
+            <Switch
+              checked={member.is_active}
+              onCheckedChange={() => onToggleActive(member)}
+            />
+            <span className="text-sm text-muted-foreground">Visible</span>
+          </div>
+          <div className="flex gap-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => onEdit(member)}
+            >
+              <Pencil className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => onDelete(member)}
+            >
+              <Trash2 className="h-4 w-4 text-destructive" />
+            </Button>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 export function TeamManager() {
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [loading, setLoading] = useState(true);
@@ -97,6 +246,17 @@ export function TeamManager() {
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   const form = useForm<TeamMemberFormData>({
     resolver: zodResolver(teamMemberSchema),
@@ -132,6 +292,39 @@ export function TeamManager() {
       setTeamMembers(data || []);
     }
     setLoading(false);
+  };
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = teamMembers.findIndex((m) => m.id === active.id);
+    const newIndex = teamMembers.findIndex((m) => m.id === over.id);
+
+    const newOrder = arrayMove(teamMembers, oldIndex, newIndex);
+    setTeamMembers(newOrder);
+
+    // Update display_order in database
+    try {
+      const updates = newOrder.map((member, index) => ({
+        id: member.id,
+        display_order: index,
+      }));
+
+      for (const update of updates) {
+        await supabase
+          .from("team_members")
+          .update({ display_order: update.display_order })
+          .eq("id", update.id);
+      }
+
+      toast.success("Order updated");
+    } catch (error) {
+      console.error("Error updating order:", error);
+      toast.error("Failed to update order");
+      fetchTeamMembers(); // Revert on error
+    }
   };
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -344,7 +537,7 @@ export function TeamManager() {
         <div>
           <h2 className="text-2xl font-bold">Team Members</h2>
           <p className="text-muted-foreground">
-            Manage your team members displayed on the website
+            Manage your team members displayed on the website. Drag to reorder.
           </p>
         </div>
         <Button onClick={openCreateDialog}>
@@ -368,102 +561,31 @@ export function TeamManager() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {teamMembers.map((member) => (
-            <Card key={member.id} className={!member.is_active ? "opacity-60" : ""}>
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    <Avatar className="h-14 w-14">
-                      <AvatarImage src={member.photo_url || undefined} alt={member.name} />
-                      <AvatarFallback className="text-lg">
-                        {member.name.split(" ").map((n) => n[0]).join("")}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <CardTitle className="text-lg">{member.name}</CardTitle>
-                      <CardDescription>{member.role}</CardDescription>
-                    </div>
-                  </div>
-                  <Badge variant={member.is_active ? "default" : "secondary"}>
-                    {member.is_active ? "Active" : "Hidden"}
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {member.bio && (
-                  <p className="text-sm text-muted-foreground line-clamp-2">
-                    {member.bio}
-                  </p>
-                )}
-
-                <div className="flex flex-wrap gap-2">
-                  {member.email && (
-                    <Badge variant="outline" className="gap-1">
-                      <Mail className="h-3 w-3" />
-                      Email
-                    </Badge>
-                  )}
-                  {member.phone && (
-                    <Badge variant="outline" className="gap-1">
-                      <Phone className="h-3 w-3" />
-                      Phone
-                    </Badge>
-                  )}
-                  {member.social_facebook && (
-                    <Badge variant="outline" className="gap-1">
-                      <Facebook className="h-3 w-3" />
-                    </Badge>
-                  )}
-                  {member.social_twitter && (
-                    <Badge variant="outline" className="gap-1">
-                      <Twitter className="h-3 w-3" />
-                    </Badge>
-                  )}
-                  {member.social_instagram && (
-                    <Badge variant="outline" className="gap-1">
-                      <Instagram className="h-3 w-3" />
-                    </Badge>
-                  )}
-                  {member.social_linkedin && (
-                    <Badge variant="outline" className="gap-1">
-                      <Linkedin className="h-3 w-3" />
-                    </Badge>
-                  )}
-                </div>
-
-                <div className="flex items-center justify-between pt-2 border-t">
-                  <div className="flex items-center gap-2">
-                    <Switch
-                      checked={member.is_active}
-                      onCheckedChange={() => toggleActive(member)}
-                    />
-                    <span className="text-sm text-muted-foreground">Visible</span>
-                  </div>
-                  <div className="flex gap-1">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => openEditDialog(member)}
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => {
-                        setMemberToDelete(member);
-                        setDeleteDialogOpen(true);
-                      }}
-                    >
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={teamMembers.map((m) => m.id)}
+            strategy={rectSortingStrategy}
+          >
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {teamMembers.map((member) => (
+                <SortableTeamCard
+                  key={member.id}
+                  member={member}
+                  onEdit={openEditDialog}
+                  onDelete={(m) => {
+                    setMemberToDelete(m);
+                    setDeleteDialogOpen(true);
+                  }}
+                  onToggleActive={toggleActive}
+                />
+              ))}
+            </div>
+          </SortableContext>
+        </DndContext>
       )}
 
       {/* Create/Edit Dialog */}
