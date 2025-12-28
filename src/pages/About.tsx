@@ -1,10 +1,24 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { Layout } from "@/components/layout/Layout";
-import { Heart, Globe, Sparkles, Shield, Users, MessageCircle as MessageCircleIcon, Instagram, Facebook, Twitter, Linkedin } from "lucide-react";
+import { Heart, Globe, Sparkles, Shield, Users, MessageCircle as MessageCircleIcon, Instagram, Facebook, Twitter, Linkedin, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AnimatedCounter } from "@/components/AnimatedCounter";
 import SEO, { createBreadcrumbSchema } from "@/components/SEO";
+import { supabase } from "@/integrations/supabase/client";
+
+interface TeamMember {
+  id: string;
+  name: string;
+  role: string;
+  bio: string | null;
+  photo_url: string | null;
+  social_facebook: string | null;
+  social_twitter: string | null;
+  social_instagram: string | null;
+  social_linkedin: string | null;
+}
 
 const aboutBreadcrumb = createBreadcrumbSchema([
   { name: "Home", url: "/" },
@@ -74,6 +88,26 @@ const whyChooseFeatures = [
 ];
 
 const About = () => {
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+  const [loadingTeam, setLoadingTeam] = useState(true);
+
+  useEffect(() => {
+    const fetchTeamMembers = async () => {
+      const { data, error } = await supabase
+        .from("team_members")
+        .select("id, name, role, bio, photo_url, social_facebook, social_twitter, social_instagram, social_linkedin")
+        .eq("is_active", true)
+        .order("display_order", { ascending: true });
+
+      if (!error && data) {
+        setTeamMembers(data);
+      }
+      setLoadingTeam(false);
+    };
+
+    fetchTeamMembers();
+  }, []);
+
   return (
     <Layout>
       <SEO 
@@ -247,83 +281,93 @@ const About = () => {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-5xl mx-auto">
-            {[
-              {
-                name: "Edmund Adjekum",
-                role: "Founder & CEO",
-                image: "/edmund-adjekum.jpg",
-                linkedin: "https://instagram.com/xbogg",
-                twitter: "https://twitter.com/xbogg",
-              },
-              {
-                name: "Ama Mensah",
-                role: "Creative Director",
-                image: "/placeholder.svg",
-                linkedin: "https://linkedin.com/in/amimensah",
-                twitter: "https://twitter.com/amimensah",
-              },
-              {
-                name: "Kofi Darko",
-                role: "Lead Designer",
-                image: "/placeholder.svg",
-                linkedin: "https://linkedin.com/in/kofidarko",
-                twitter: "https://twitter.com/kofidarko",
-              },
-              {
-                name: "Efua Boateng",
-                role: "Customer Success",
-                image: "/placeholder.svg",
-                linkedin: "https://linkedin.com/in/efuaboateng",
-                twitter: "https://twitter.com/efuaboateng",
-              },
-            ].map((member, index) => (
-              <motion.div
-                key={member.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="group text-center"
-              >
-                <div className="relative mb-4 overflow-hidden rounded-2xl">
-                  <img
-                    src={member.image}
-                    alt={member.name}
-                    className="w-full aspect-square object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
-                    <div className="flex gap-3">
-                      <a
-                        href={member.linkedin}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="p-2 bg-white/20 hover:bg-white/30 rounded-full transition-colors"
-                        aria-label={`${member.name} LinkedIn`}
-                      >
-                        <Linkedin className="h-4 w-4 text-white" />
-                      </a>
-                      <a
-                        href={member.twitter}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="p-2 bg-white/20 hover:bg-white/30 rounded-full transition-colors"
-                        aria-label={`${member.name} Twitter`}
-                      >
-                        <Twitter className="h-4 w-4 text-white" />
-                      </a>
+          {loadingTeam ? (
+            <div className="flex justify-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+          ) : teamMembers.length === 0 ? (
+            <p className="text-center text-muted-foreground">Team information coming soon.</p>
+          ) : (
+            <div className={`grid grid-cols-1 sm:grid-cols-2 ${teamMembers.length >= 3 ? 'lg:grid-cols-3' : ''} ${teamMembers.length >= 4 ? 'xl:grid-cols-4' : ''} gap-8 max-w-5xl mx-auto`}>
+              {teamMembers.map((member, index) => (
+                <motion.div
+                  key={member.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className="group text-center"
+                >
+                  <div className="relative mb-4 overflow-hidden rounded-2xl">
+                    <img
+                      src={member.photo_url || "/placeholder.svg"}
+                      alt={member.name}
+                      className="w-full aspect-square object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
+                      <div className="flex gap-3">
+                        {member.social_linkedin && (
+                          <a
+                            href={member.social_linkedin}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2 bg-white/20 hover:bg-white/30 rounded-full transition-colors"
+                            aria-label={`${member.name} LinkedIn`}
+                          >
+                            <Linkedin className="h-4 w-4 text-white" />
+                          </a>
+                        )}
+                        {member.social_twitter && (
+                          <a
+                            href={member.social_twitter}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2 bg-white/20 hover:bg-white/30 rounded-full transition-colors"
+                            aria-label={`${member.name} Twitter`}
+                          >
+                            <Twitter className="h-4 w-4 text-white" />
+                          </a>
+                        )}
+                        {member.social_instagram && (
+                          <a
+                            href={member.social_instagram}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2 bg-white/20 hover:bg-white/30 rounded-full transition-colors"
+                            aria-label={`${member.name} Instagram`}
+                          >
+                            <Instagram className="h-4 w-4 text-white" />
+                          </a>
+                        )}
+                        {member.social_facebook && (
+                          <a
+                            href={member.social_facebook}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2 bg-white/20 hover:bg-white/30 rounded-full transition-colors"
+                            aria-label={`${member.name} Facebook`}
+                          >
+                            <Facebook className="h-4 w-4 text-white" />
+                          </a>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-                <h3 className="text-lg font-bold text-foreground mb-1">
-                  {member.name}
-                </h3>
-                <p className="text-muted-foreground text-sm">
-                  {member.role}
-                </p>
-              </motion.div>
-            ))}
-          </div>
+                  <h3 className="text-lg font-bold text-foreground mb-1">
+                    {member.name}
+                  </h3>
+                  <p className="text-muted-foreground text-sm">
+                    {member.role}
+                  </p>
+                  {member.bio && (
+                    <p className="text-muted-foreground text-xs mt-2 line-clamp-2">
+                      {member.bio}
+                    </p>
+                  )}
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
