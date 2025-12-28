@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, X, Send, Package, Phone, DollarSign, Trash2, Copy, Check, Volume2, VolumeX } from "lucide-react";
+import { MessageCircle, X, Send, Package, Phone, DollarSign, Trash2, Copy, Check, Volume2, VolumeX, SmilePlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -566,11 +566,24 @@ function TypingIndicator() {
   );
 }
 
+// Available emoji reactions
+const EMOJI_REACTIONS = [
+  { emoji: "👍", label: "Like" },
+  { emoji: "❤️", label: "Love" },
+  { emoji: "😂", label: "Laugh" },
+  { emoji: "😮", label: "Wow" },
+  { emoji: "😢", label: "Sad" },
+  { emoji: "🙏", label: "Thanks" },
+];
+
 function MessageBubble({ message }: { message: MessageWithTime }) {
   const isUser = message.role === "user";
   const [copied, setCopied] = useState(false);
+  const [showReactions, setShowReactions] = useState(false);
+  const [reactions, setReactions] = useState<string[]>([]);
 
-  const handleCopy = async () => {
+  const handleCopy = async (e: React.MouseEvent) => {
+    e.stopPropagation();
     try {
       await navigator.clipboard.writeText(message.content);
       setCopied(true);
@@ -587,6 +600,21 @@ function MessageBubble({ message }: { message: MessageWithTime }) {
       });
     }
   };
+
+  const handleReaction = (emoji: string) => {
+    setReactions(prev => {
+      if (prev.includes(emoji)) {
+        return prev.filter(e => e !== emoji);
+      }
+      return [...prev, emoji];
+    });
+    setShowReactions(false);
+  };
+
+  const toggleReactionPicker = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowReactions(!showReactions);
+  };
   
   return (
     <div className={cn("flex flex-col gap-1", isUser ? "items-end" : "items-start")}>
@@ -594,13 +622,11 @@ function MessageBubble({ message }: { message: MessageWithTime }) {
         <div className="relative">
           <div
             className={cn(
-              "max-w-[85%] rounded-2xl px-4 py-3 text-sm cursor-pointer transition-all",
+              "max-w-[85%] rounded-2xl px-4 py-3 text-sm transition-all",
               isUser 
-                ? "bg-primary text-primary-foreground rounded-br-md hover:bg-primary/90" 
-                : "bg-muted text-foreground rounded-bl-md hover:bg-muted/80"
+                ? "bg-primary text-primary-foreground rounded-br-md" 
+                : "bg-muted text-foreground rounded-bl-md"
             )}
-            onClick={handleCopy}
-            title="Click to copy"
           >
             <div className="space-y-2 leading-relaxed">
               {message.content.split('\n').map((line, i) => (
@@ -609,31 +635,93 @@ function MessageBubble({ message }: { message: MessageWithTime }) {
                 </p>
               ))}
             </div>
+            
+            {/* Display reactions */}
+            {reactions.length > 0 && (
+              <div className={cn(
+                "flex flex-wrap gap-1 mt-2 pt-2 border-t",
+                isUser ? "border-primary-foreground/20" : "border-border"
+              )}>
+                {reactions.map((emoji, i) => (
+                  <motion.button
+                    key={i}
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    onClick={() => handleReaction(emoji)}
+                    className={cn(
+                      "text-sm px-1.5 py-0.5 rounded-full transition-colors",
+                      isUser 
+                        ? "bg-primary-foreground/20 hover:bg-primary-foreground/30" 
+                        : "bg-background hover:bg-background/80"
+                    )}
+                  >
+                    {emoji}
+                  </motion.button>
+                ))}
+              </div>
+            )}
           </div>
           
-          {/* Copy indicator */}
+          {/* Action buttons */}
+          <div className={cn(
+            "absolute -top-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity",
+            isUser ? "-left-16 flex-row-reverse" : "-right-16"
+          )}>
+            {/* Reaction button */}
+            <motion.button
+              onClick={toggleReactionPicker}
+              className="bg-background border border-border text-muted-foreground rounded-full p-1.5 hover:bg-muted transition-colors"
+              title="Add reaction"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <SmilePlus className="h-3 w-3" />
+            </motion.button>
+            
+            {/* Copy button */}
+            <motion.button
+              onClick={handleCopy}
+              className={cn(
+                "rounded-full p-1.5 transition-colors",
+                copied 
+                  ? "bg-green-500 text-white" 
+                  : "bg-background border border-border text-muted-foreground hover:bg-muted"
+              )}
+              title="Copy message"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+            </motion.button>
+          </div>
+          
+          {/* Reaction picker */}
           <AnimatePresence>
-            {copied ? (
+            {showReactions && (
               <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
+                initial={{ opacity: 0, scale: 0.8, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.8, y: 10 }}
                 className={cn(
-                  "absolute -top-2 -right-2 bg-green-500 text-white rounded-full p-1",
-                  isUser && "-left-2 -right-auto"
+                  "absolute -top-12 z-10 bg-background border border-border rounded-full px-2 py-1.5 shadow-lg flex items-center gap-1",
+                  isUser ? "right-0" : "left-0"
                 )}
               >
-                <Check className="h-3 w-3" />
-              </motion.div>
-            ) : (
-              <motion.div
-                initial={{ opacity: 0 }}
-                className={cn(
-                  "absolute -top-2 -right-2 bg-background border border-border text-muted-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity",
-                  isUser && "-left-2 -right-auto"
-                )}
-              >
-                <Copy className="h-3 w-3" />
+                {EMOJI_REACTIONS.map(({ emoji, label }) => (
+                  <motion.button
+                    key={emoji}
+                    onClick={() => handleReaction(emoji)}
+                    className={cn(
+                      "text-lg p-1 rounded-full transition-all hover:bg-muted",
+                      reactions.includes(emoji) && "bg-primary/10 ring-2 ring-primary/20"
+                    )}
+                    title={label}
+                    whileHover={{ scale: 1.3 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    {emoji}
+                  </motion.button>
+                ))}
               </motion.div>
             )}
           </AnimatePresence>
