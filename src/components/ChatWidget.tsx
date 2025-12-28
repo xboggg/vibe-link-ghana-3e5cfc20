@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, X, Send, Package, Phone, DollarSign, Trash2, Copy, Check, Volume2, VolumeX, SmilePlus, Search, Reply, ChevronUp } from "lucide-react";
+import { MessageCircle, X, Send, Package, Phone, DollarSign, Trash2, Copy, Check, Volume2, VolumeX, SmilePlus, Search, Reply, ChevronUp, Pin, PinOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -34,6 +34,7 @@ export function ChatWidget() {
   const [showSearch, setShowSearch] = useState(false);
   const [replyingTo, setReplyingTo] = useState<MessageWithTime | null>(null);
   const [highlightedMessageId, setHighlightedMessageId] = useState<string | null>(null);
+  const [pinnedMessages, setPinnedMessages] = useState<Set<string>>(new Set());
   
   const { messages, isLoading, suggestions, sendMessage, trackOrder, clearMessages } = useChatbot();
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -212,7 +213,24 @@ export function ChatWidget() {
     setReplyingTo(null);
     setSearchQuery("");
     setShowSearch(false);
+    setPinnedMessages(new Set());
   };
+
+  // Toggle pin on a message
+  const handlePinMessage = (messageId: string) => {
+    setPinnedMessages(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(messageId)) {
+        newSet.delete(messageId);
+      } else {
+        newSet.add(messageId);
+      }
+      return newSet;
+    });
+  };
+
+  // Get pinned messages in order
+  const pinnedMessagesList = messagesWithTime.filter(msg => pinnedMessages.has(msg.id));
 
   // Filter messages based on search query
   const filteredMessages = searchQuery.trim()
@@ -409,6 +427,32 @@ export function ChatWidget() {
                   </div>
                 ) : (
                   <div className="space-y-4">
+                    {/* Pinned Messages Section */}
+                    {!searchQuery && pinnedMessagesList.length > 0 && (
+                      <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 space-y-2">
+                        <div className="flex items-center gap-1.5 text-xs font-medium text-primary">
+                          <Pin className="h-3 w-3" />
+                          <span>Pinned ({pinnedMessagesList.length})</span>
+                        </div>
+                        <div className="space-y-2">
+                          {pinnedMessagesList.map((message) => (
+                            <button
+                              key={`pinned-${message.id}`}
+                              onClick={() => scrollToMessage(message.id)}
+                              className="w-full text-left text-xs p-2 rounded bg-background/50 hover:bg-background/80 transition-colors border border-border/50"
+                            >
+                              <p className="line-clamp-2 text-foreground">
+                                {message.content.slice(0, 100)}{message.content.length > 100 ? '...' : ''}
+                              </p>
+                              <span className="text-muted-foreground text-[10px]">
+                                {message.role === 'user' ? 'You' : 'Assistant'} • {format(message.timestamp, "h:mm a")}
+                              </span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    
                     {/* Search results info */}
                     {searchQuery && filteredMessages.length === 0 && (
                       <div className="text-center py-8 text-muted-foreground">
@@ -417,12 +461,14 @@ export function ChatWidget() {
                       </div>
                     )}
                     
-                    {(searchQuery ? filteredMessages : messagesWithTime).map((message, index) => (
+                    {(searchQuery ? filteredMessages : messagesWithTime).map((message) => (
                       <MessageBubble 
                         key={message.id} 
                         message={message}
                         onReply={() => handleReply(message)}
                         onScrollToReply={scrollToMessage}
+                        onPin={() => handlePinMessage(message.id)}
+                        isPinned={pinnedMessages.has(message.id)}
                         isHighlighted={highlightedMessageId === message.id}
                         ref={(el) => {
                           if (el) messageRefs.current.set(message.id, el);
@@ -737,11 +783,13 @@ interface MessageBubbleProps {
   message: MessageWithTime;
   onReply?: () => void;
   onScrollToReply?: (messageId: string) => void;
+  onPin?: () => void;
+  isPinned?: boolean;
   isHighlighted?: boolean;
 }
 
 const MessageBubble = React.forwardRef<HTMLDivElement, MessageBubbleProps>(
-  ({ message, onReply, onScrollToReply, isHighlighted }, ref) => {
+  ({ message, onReply, onScrollToReply, onPin, isPinned, isHighlighted }, ref) => {
   const isUser = message.role === "user";
   const [copied, setCopied] = useState(false);
   const [showReactions, setShowReactions] = useState(false);
@@ -784,6 +832,11 @@ const MessageBubble = React.forwardRef<HTMLDivElement, MessageBubbleProps>(
   const handleReplyClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     onReply?.();
+  };
+
+  const handlePinClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onPin?.();
   };
   
   return (
@@ -858,8 +911,24 @@ const MessageBubble = React.forwardRef<HTMLDivElement, MessageBubbleProps>(
           {/* Action buttons */}
           <div className={cn(
             "absolute -top-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity",
-            isUser ? "-left-20 flex-row-reverse" : "-right-20"
+            isUser ? "-left-24 flex-row-reverse" : "-right-24"
           )}>
+            {/* Pin button */}
+            <motion.button
+              onClick={handlePinClick}
+              className={cn(
+                "rounded-full p-1.5 transition-colors",
+                isPinned 
+                  ? "bg-primary text-primary-foreground" 
+                  : "bg-background border border-border text-muted-foreground hover:bg-muted"
+              )}
+              title={isPinned ? "Unpin message" : "Pin message"}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              {isPinned ? <PinOff className="h-3 w-3" /> : <Pin className="h-3 w-3" />}
+            </motion.button>
+            
             {/* Reply button */}
             <motion.button
               onClick={handleReplyClick}

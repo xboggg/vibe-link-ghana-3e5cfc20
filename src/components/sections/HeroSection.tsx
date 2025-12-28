@@ -121,42 +121,28 @@ export function HeroSection() {
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* Background Images with Crossfade and Blur-up */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentSlide}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 1 }}
-          className="absolute inset-0"
-        >
-          {/* Placeholder blur */}
+      {/* Background Images with Crossfade - all images stacked, opacity controlled */}
+      <div className="absolute inset-0">
+        {slides.map((slide, index) => (
           <motion.div
-            className="absolute inset-0 bg-gradient-to-br from-primary/30 via-muted to-secondary/30"
-            initial={{ opacity: 1 }}
-            animate={{ opacity: imagesLoaded[currentSlide] ? 0 : 1 }}
-            transition={{ duration: 0.5 }}
-            style={{ filter: "blur(20px)" }}
-          />
-          
-          {/* Main image with blur-up effect */}
-          <motion.img
-            src={slides[currentSlide].image}
-            alt={slides[currentSlide].alt}
-            className="w-full h-full object-cover"
-            onLoad={() => handleImageLoad(currentSlide)}
-            initial={{ filter: "blur(20px)", scale: 1.1 }}
-            animate={{ 
-              filter: imagesLoaded[currentSlide] ? "blur(0px)" : "blur(20px)",
-              scale: imagesLoaded[currentSlide] ? 1 : 1.1
-            }}
-            transition={{ duration: 0.8, ease: [0.25, 0.4, 0.25, 1] }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/85 to-purple-dark/70" />
-          <div className="absolute inset-0 bg-pattern-dots opacity-20" />
-        </motion.div>
-      </AnimatePresence>
+            key={index}
+            initial={false}
+            animate={{ opacity: index === currentSlide ? 1 : 0 }}
+            transition={{ duration: 0.8, ease: "easeInOut" }}
+            className="absolute inset-0"
+            style={{ zIndex: index === currentSlide ? 1 : 0 }}
+          >
+            <img
+              src={slide.image}
+              alt={slide.alt}
+              className="w-full h-full object-cover"
+              onLoad={() => handleImageLoad(index)}
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/85 to-purple-dark/70" />
+            <div className="absolute inset-0 bg-pattern-dots opacity-20" />
+          </motion.div>
+        ))}
+      </div>
 
       {/* Decorative Diagonal Lines */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
