@@ -143,10 +143,10 @@ export function ChatWidget() {
                 {messages.length === 0 ? (
                   <div className="space-y-4">
                     <div className="bg-muted rounded-lg p-4">
-                      <p className="text-sm text-muted-foreground">
-                        Akwaaba! 👋 I'm your VibeLink Ghana assistant. I can help you with:
+                      <p className="text-sm text-foreground">
+                        Akwaaba! 👋 I'm your VibeLink Assistant. I can help you with:
                       </p>
-                      <ul className="mt-2 text-sm text-muted-foreground space-y-1">
+                      <ul className="mt-3 text-sm text-foreground space-y-2">
                         <li>• Our invitation packages & pricing</li>
                         <li>• Tracking your order</li>
                         <li>• Ghanaian event traditions & tips</li>
@@ -268,6 +268,131 @@ export function ChatWidget() {
   );
 }
 
+// Parse and render text with clickable links and phone numbers
+function parseMessageContent(content: string) {
+  // Combined regex for URLs, WhatsApp links, phone numbers, and markdown-style links
+  const patterns = [
+    // Markdown links [text](url)
+    /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
+    // Plain URLs
+    /(https?:\/\/[^\s\])<>]+)/g,
+    // WhatsApp wa.me links
+    /(wa\.me\/\d+)/g,
+    // Phone numbers (various formats)
+    /(\+?\d{1,3}[\s.-]?\d{2,3}[\s.-]?\d{3}[\s.-]?\d{4})/g,
+  ];
+
+  // First, handle markdown links
+  let processedContent = content.replace(
+    /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
+    '{{LINK:$2:$1}}'
+  );
+
+  // Handle plain URLs (not already in markdown)
+  processedContent = processedContent.replace(
+    /(?<!\]\()(?<!\{\{LINK:)(https?:\/\/[^\s\])<>]+)/g,
+    '{{URL:$1}}'
+  );
+
+  // Handle wa.me links
+  processedContent = processedContent.replace(
+    /(?<!\{\{URL:)(wa\.me\/\d+)/g,
+    '{{WHATSAPP:$1}}'
+  );
+
+  // Handle phone numbers
+  processedContent = processedContent.replace(
+    /(\+?\d{1,3}[\s.-]?\d{2,3}[\s.-]?\d{3}[\s.-]?\d{4})/g,
+    (match) => {
+      // Don't replace if it's already part of a wa.me link
+      if (processedContent.includes(`wa.me/${match.replace(/[\s.-]/g, '')}`)) {
+        return match;
+      }
+      return `{{PHONE:${match}}}`;
+    }
+  );
+
+  // Split by our markers and create elements
+  const parts = processedContent.split(/(\{\{(?:LINK|URL|WHATSAPP|PHONE):[^}]+\}\})/g);
+  
+  return parts.map((part, index) => {
+    // Check for markdown-style link
+    const linkMatch = part.match(/\{\{LINK:([^:]+):([^}]+)\}\}/);
+    if (linkMatch) {
+      return (
+        <a
+          key={index}
+          href={linkMatch[1]}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-primary underline underline-offset-2 hover:text-primary/80 transition-colors"
+        >
+          {linkMatch[2]}
+        </a>
+      );
+    }
+
+    // Check for plain URL
+    const urlMatch = part.match(/\{\{URL:([^}]+)\}\}/);
+    if (urlMatch) {
+      return (
+        <a
+          key={index}
+          href={urlMatch[1]}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-primary underline underline-offset-2 hover:text-primary/80 transition-colors break-all"
+        >
+          {urlMatch[1]}
+        </a>
+      );
+    }
+
+    // Check for WhatsApp link
+    const whatsappMatch = part.match(/\{\{WHATSAPP:([^}]+)\}\}/);
+    if (whatsappMatch) {
+      return (
+        <a
+          key={index}
+          href={`https://${whatsappMatch[1]}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-green-600 dark:text-green-400 underline underline-offset-2 hover:text-green-500 transition-colors"
+        >
+          {whatsappMatch[1]}
+        </a>
+      );
+    }
+
+    // Check for phone number
+    const phoneMatch = part.match(/\{\{PHONE:([^}]+)\}\}/);
+    if (phoneMatch) {
+      const cleanPhone = phoneMatch[1].replace(/[\s.-]/g, '');
+      return (
+        <span key={index} className="inline-flex items-center gap-1">
+          <a
+            href={`tel:${cleanPhone}`}
+            className="text-primary underline underline-offset-2 hover:text-primary/80 transition-colors"
+          >
+            {phoneMatch[1]}
+          </a>
+          <a
+            href={`https://wa.me/${cleanPhone.replace('+', '')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-green-600 dark:text-green-400 hover:text-green-500 transition-colors text-xs"
+            title="Chat on WhatsApp"
+          >
+            (WhatsApp)
+          </a>
+        </span>
+      );
+    }
+
+    return part;
+  });
+}
+
 function MessageBubble({ message }: { message: ChatMessage }) {
   const isUser = message.role === "user";
   
@@ -275,13 +400,19 @@ function MessageBubble({ message }: { message: ChatMessage }) {
     <div className={cn("flex", isUser ? "justify-end" : "justify-start")}>
       <div
         className={cn(
-          "max-w-[85%] rounded-2xl px-4 py-2 text-sm whitespace-pre-wrap",
+          "max-w-[85%] rounded-2xl px-4 py-3 text-sm",
           isUser 
             ? "bg-primary text-primary-foreground rounded-br-md" 
             : "bg-muted text-foreground rounded-bl-md"
         )}
       >
-        {message.content}
+        <div className="space-y-2 leading-relaxed">
+          {message.content.split('\n').map((line, i) => (
+            <p key={i} className={line.trim() === '' ? 'h-2' : ''}>
+              {parseMessageContent(line)}
+            </p>
+          ))}
+        </div>
       </div>
     </div>
   );
