@@ -77,6 +77,101 @@ export type Database = {
         }
         Relationships: []
       }
+      chat_analytics: {
+        Row: {
+          count: number
+          created_at: string
+          id: string
+          last_asked_at: string
+          question_pattern: string | null
+          topic: string
+        }
+        Insert: {
+          count?: number
+          created_at?: string
+          id?: string
+          last_asked_at?: string
+          question_pattern?: string | null
+          topic: string
+        }
+        Update: {
+          count?: number
+          created_at?: string
+          id?: string
+          last_asked_at?: string
+          question_pattern?: string | null
+          topic?: string
+        }
+        Relationships: []
+      }
+      chat_conversations: {
+        Row: {
+          ended_at: string | null
+          id: string
+          message_count: number
+          page_url: string | null
+          session_id: string
+          started_at: string
+          user_agent: string | null
+        }
+        Insert: {
+          ended_at?: string | null
+          id?: string
+          message_count?: number
+          page_url?: string | null
+          session_id: string
+          started_at?: string
+          user_agent?: string | null
+        }
+        Update: {
+          ended_at?: string | null
+          id?: string
+          message_count?: number
+          page_url?: string | null
+          session_id?: string
+          started_at?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
+      chat_messages: {
+        Row: {
+          content: string
+          conversation_id: string
+          created_at: string
+          id: string
+          response_time_ms: number | null
+          role: string
+          suggestions: string[] | null
+        }
+        Insert: {
+          content: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          response_time_ms?: number | null
+          role: string
+          suggestions?: string[] | null
+        }
+        Update: {
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          response_time_ms?: number | null
+          role?: string
+          suggestions?: string[] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "chat_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       follow_up_logs: {
         Row: {
           error_message: string | null

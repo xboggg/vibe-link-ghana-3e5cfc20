@@ -12,7 +12,7 @@ export function ChatWidget() {
   const [input, setInput] = useState("");
   const [showTrackInput, setShowTrackInput] = useState(false);
   const [trackOrderId, setTrackOrderId] = useState("");
-  const { messages, isLoading, sendMessage, trackOrder, clearMessages } = useChatbot();
+  const { messages, isLoading, suggestions, sendMessage, trackOrder, clearMessages } = useChatbot();
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -21,7 +21,7 @@ export function ChatWidget() {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages]);
+  }, [messages, suggestions]);
 
   // Focus input when chat opens
   useEffect(() => {
@@ -35,6 +35,11 @@ export function ChatWidget() {
     const message = input.trim();
     setInput("");
     await sendMessage(message);
+  };
+
+  const handleSuggestionClick = async (suggestion: string) => {
+    if (isLoading) return;
+    await sendMessage(suggestion);
   };
 
   const handleTrackOrder = async () => {
@@ -175,6 +180,31 @@ export function ChatWidget() {
                         <Loader2 className="h-4 w-4 animate-spin" />
                         <span className="text-sm">Thinking...</span>
                       </div>
+                    )}
+                    
+                    {/* Suggested Follow-up Questions */}
+                    {!isLoading && suggestions.length > 0 && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                        className="space-y-2"
+                      >
+                        <p className="text-xs text-muted-foreground">Suggested questions:</p>
+                        <div className="flex flex-wrap gap-2">
+                          {suggestions.map((suggestion, index) => (
+                            <Button
+                              key={index}
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleSuggestionClick(suggestion)}
+                              className="text-xs h-auto py-1.5 px-3 whitespace-normal text-left"
+                            >
+                              {suggestion}
+                            </Button>
+                          ))}
+                        </div>
+                      </motion.div>
                     )}
                   </div>
                 )}
