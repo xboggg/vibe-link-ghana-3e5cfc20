@@ -1,62 +1,8 @@
 import { Link } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
-
-// Typewriter effect component
-const TypewriterText = ({ 
-  text, 
-  className = "",
-  delay = 0 
-}: { 
-  text: string; 
-  className?: string;
-  delay?: number;
-}) => {
-  const [displayedText, setDisplayedText] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
-  const previousTextRef = useRef("");
-
-  useEffect(() => {
-    // Reset when text changes
-    if (text !== previousTextRef.current) {
-      setDisplayedText("");
-      setIsTyping(false);
-      previousTextRef.current = text;
-    }
-
-    const startTimeout = setTimeout(() => {
-      setIsTyping(true);
-    }, delay);
-
-    return () => clearTimeout(startTimeout);
-  }, [text, delay]);
-
-  useEffect(() => {
-    if (!isTyping) return;
-
-    if (displayedText.length < text.length) {
-      const timeout = setTimeout(() => {
-        setDisplayedText(text.slice(0, displayedText.length + 1));
-      }, 50);
-      return () => clearTimeout(timeout);
-    }
-  }, [displayedText, text, isTyping]);
-
-  return (
-    <span className={className}>
-      {displayedText}
-      {displayedText.length < text.length && (
-        <motion.span
-          className="inline-block w-[3px] h-[1em] bg-current ml-1 align-middle"
-          animate={{ opacity: [1, 0] }}
-          transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
-        />
-      )}
-    </span>
-  );
-};
 
 // Floating particle component
 const FloatingParticle = ({ 
@@ -293,6 +239,12 @@ export function HeroSection() {
   const [previousSlide, setPreviousSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [imagesLoaded, setImagesLoaded] = useState<boolean[]>(new Array(slides.length).fill(false));
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // Parallax scroll effect
+  const { scrollY } = useScroll();
+  const parallaxY = useTransform(scrollY, [0, 500], [0, 150]);
+  const parallaxScale = useTransform(scrollY, [0, 500], [1, 1.1]);
 
   const nextSlide = useCallback(() => {
     setCurrentSlide((prev) => {
@@ -328,12 +280,16 @@ export function HeroSection() {
 
   return (
     <section 
+      ref={sectionRef}
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* Background Images with Crossfade - only show current and previous */}
-      <div className="absolute inset-0 bg-navy">
+      {/* Background Images with Crossfade and Parallax */}
+      <motion.div 
+        className="absolute inset-0 bg-navy"
+        style={{ y: parallaxY, scale: parallaxScale }}
+      >
         {/* Previous slide (bottom layer) */}
         <div className="absolute inset-0" style={{ zIndex: 1 }}>
           <img
@@ -360,7 +316,7 @@ export function HeroSection() {
           <div className="absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/85 to-purple-dark/70" />
           <div className="absolute inset-0 bg-pattern-dots opacity-20" />
         </div>
-      </div>
+      </motion.div>
 
       {/* Floating Particles Effect */}
       <FloatingParticles />
@@ -487,16 +443,9 @@ export function HeroSection() {
               transition={{ duration: 0.5 }}
             >
               <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-primary-foreground leading-tight mb-6">
-                <TypewriterText text={slides[currentSlide].headline} delay={100} />{" "}
-                <TypewriterText 
-                  text={slides[currentSlide].highlight} 
-                  className="text-gradient-gold"
-                  delay={100 + slides[currentSlide].headline.length * 50 + 200}
-                />{" "}
-                <TypewriterText 
-                  text={slides[currentSlide].subline} 
-                  delay={100 + (slides[currentSlide].headline.length + slides[currentSlide].highlight.length) * 50 + 400}
-                />
+                {slides[currentSlide].headline}{" "}
+                <span className="text-gradient-gold">{slides[currentSlide].highlight}</span>{" "}
+                {slides[currentSlide].subline}
               </h1>
 
               <p className="text-lg md:text-xl text-primary-foreground/80 leading-relaxed mb-8 max-w-2xl">
