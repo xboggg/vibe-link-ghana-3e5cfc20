@@ -234,66 +234,6 @@ const preloadImages = () => {
   });
 };
 
-// Mouse-following spotlight component
-const MouseSpotlight = () => {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      const hero = document.getElementById('hero-section');
-      if (hero) {
-        const rect = hero.getBoundingClientRect();
-        setMousePosition({
-          x: e.clientX - rect.left,
-          y: e.clientY - rect.top,
-        });
-      }
-    };
-
-    const hero = document.getElementById('hero-section');
-    if (hero) {
-      hero.addEventListener('mousemove', handleMouseMove);
-      hero.addEventListener('mouseenter', () => setIsVisible(true));
-      hero.addEventListener('mouseleave', () => setIsVisible(false));
-    }
-
-    return () => {
-      if (hero) {
-        hero.removeEventListener('mousemove', handleMouseMove);
-        hero.removeEventListener('mouseenter', () => setIsVisible(true));
-        hero.removeEventListener('mouseleave', () => setIsVisible(false));
-      }
-    };
-  }, []);
-
-  return (
-    <motion.div
-      className="absolute pointer-events-none"
-      style={{
-        width: 400,
-        height: 400,
-        left: mousePosition.x - 200,
-        top: mousePosition.y - 200,
-        background: `radial-gradient(circle, rgba(245,158,11,0.15) 0%, rgba(124,58,237,0.08) 40%, transparent 70%)`,
-        borderRadius: '50%',
-        filter: 'blur(40px)',
-        zIndex: 5,
-      }}
-      animate={{
-        opacity: isVisible ? 1 : 0,
-        scale: isVisible ? 1 : 0.8,
-      }}
-      transition={{
-        opacity: { duration: 0.3 },
-        scale: { duration: 0.3 },
-        left: { duration: 0.1, ease: "linear" },
-        top: { duration: 0.1, ease: "linear" },
-      }}
-    />
-  );
-};
-
 export function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [previousSlide, setPreviousSlide] = useState(0);
@@ -334,14 +274,10 @@ export function HeroSection() {
 
   return (
     <section 
-      id="hero-section"
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* Mouse-following Spotlight */}
-      <MouseSpotlight />
-
       {/* Background Images with Crossfade - only show current and previous */}
       <div className="absolute inset-0 bg-navy">
         {/* Previous slide (bottom layer) */}
