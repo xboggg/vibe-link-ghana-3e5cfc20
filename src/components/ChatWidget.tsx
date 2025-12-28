@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect, ReactNode } from "react";
+import React, { useState, useRef, useEffect, ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, X, Send, Package, Phone, DollarSign, Trash2, Copy, Check, Volume2, VolumeX, SmilePlus } from "lucide-react";
+import { MessageCircle, X, Send, Package, Phone, DollarSign, Trash2, Copy, Check, Volume2, VolumeX, SmilePlus, Search, Reply, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -9,8 +9,16 @@ import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 
-// Store message timestamps
-type MessageWithTime = ChatMessage & { timestamp: Date };
+// Store message timestamps and reply info
+type MessageWithTime = ChatMessage & { 
+  timestamp: Date; 
+  id: string;
+  replyTo?: { id: string; content: string; role: string };
+};
+
+// Generate unique message ID
+let messageIdCounter = 0;
+const generateMessageId = () => `msg_${Date.now()}_${++messageIdCounter}`;
 
 export function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,12 +30,17 @@ export function ChatWidget() {
     return stored !== "false"; // Default to true
   });
   const [messagesWithTime, setMessagesWithTime] = useState<MessageWithTime[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showSearch, setShowSearch] = useState(false);
+  const [replyingTo, setReplyingTo] = useState<MessageWithTime | null>(null);
+  const [highlightedMessageId, setHighlightedMessageId] = useState<string | null>(null);
   
   const { messages, isLoading, suggestions, sendMessage, trackOrder, clearMessages } = useChatbot();
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const prevMessageCountRef = useRef(0);
+  const messageRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
   // Initialize audio
   useEffect(() => {
@@ -71,14 +84,27 @@ export function ChatWidget() {
     prevMessageCountRef.current = messages.length;
   }, [messages, soundEnabled, isLoading]);
 
-  // Sync messages with timestamps
+  // Sync messages with timestamps and IDs
   useEffect(() => {
     if (messages.length > messagesWithTime.length) {
       const newMessages = messages.slice(messagesWithTime.length);
       setMessagesWithTime(prev => [
         ...prev,
-        ...newMessages.map(msg => ({ ...msg, timestamp: new Date() }))
+        ...newMessages.map(msg => ({ 
+          ...msg, 
+          timestamp: new Date(),
+          id: generateMessageId(),
+          replyTo: replyingTo ? { 
+            id: replyingTo.id, 
+            content: replyingTo.content.slice(0, 100), 
+            role: replyingTo.role 
+          } : undefined
+        }))
       ]);
+      // Clear reply after sending
+      if (newMessages.some(m => m.role === 'user')) {
+        setReplyingTo(null);
+      }
     } else if (messages.length < messagesWithTime.length) {
       // Messages were cleared
       setMessagesWithTime([]);
@@ -88,12 +114,17 @@ export function ChatWidget() {
       setMessagesWithTime(prev => {
         const updated = [...prev];
         if (updated.length > 0) {
-          updated[updated.length - 1] = { ...lastMsg, timestamp: updated[updated.length - 1].timestamp };
+          updated[updated.length - 1] = { 
+            ...lastMsg, 
+            timestamp: updated[updated.length - 1].timestamp,
+            id: updated[updated.length - 1].id,
+            replyTo: updated[updated.length - 1].replyTo
+          };
         }
         return updated;
       });
     }
-  }, [messages]);
+  }, [messages, replyingTo]);
 
   const playNotificationSound = () => {
     try {
@@ -178,6 +209,32 @@ export function ChatWidget() {
   const handleClearMessages = () => {
     clearMessages();
     setMessagesWithTime([]);
+    setReplyingTo(null);
+    setSearchQuery("");
+    setShowSearch(false);
+  };
+
+  // Filter messages based on search query
+  const filteredMessages = searchQuery.trim()
+    ? messagesWithTime.filter(msg => 
+        msg.content.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : messagesWithTime;
+
+  // Scroll to a specific message
+  const scrollToMessage = (messageId: string) => {
+    const element = messageRefs.current.get(messageId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setHighlightedMessageId(messageId);
+      setTimeout(() => setHighlightedMessageId(null), 2000);
+    }
+  };
+
+  // Handle reply to message
+  const handleReply = (message: MessageWithTime) => {
+    setReplyingTo(message);
+    inputRef.current?.focus();
   };
 
   const quickActions = [
@@ -232,6 +289,22 @@ export function ChatWidget() {
                   </div>
                 </div>
                 <div className="flex items-center gap-1">
+                  {/* Search Toggle */}
+                  {messagesWithTime.length > 0 && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setShowSearch(!showSearch)}
+                      className={cn(
+                        "h-8 w-8 text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/20",
+                        showSearch && "bg-primary-foreground/20"
+                      )}
+                      title="Search messages"
+                    >
+                      <Search className="h-4 w-4" />
+                      <span className="sr-only">Search</span>
+                    </Button>
+                  )}
                   {/* Sound Toggle */}
                   <Button
                     variant="ghost"
@@ -266,6 +339,42 @@ export function ChatWidget() {
                 </div>
               </div>
 
+              {/* Search Bar */}
+              <AnimatePresence>
+                {showSearch && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="border-b border-border bg-muted/50 px-4 py-2"
+                  >
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        placeholder="Search messages..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="pl-9 h-9"
+                      />
+                      {searchQuery && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setSearchQuery("")}
+                          className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7"
+                        >
+                          <X className="h-3 w-3" />
+                        </Button>
+                      )}
+                    </div>
+                    {searchQuery && (
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {filteredMessages.length} result{filteredMessages.length !== 1 ? 's' : ''} found
+                      </p>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
               {/* Messages Area */}
               <ScrollArea ref={scrollRef} className="flex-1 p-4">
                 {messagesWithTime.length === 0 ? (
@@ -300,13 +409,30 @@ export function ChatWidget() {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {messagesWithTime.map((message, index) => (
-                      <MessageBubble key={index} message={message} />
+                    {/* Search results info */}
+                    {searchQuery && filteredMessages.length === 0 && (
+                      <div className="text-center py-8 text-muted-foreground">
+                        <Search className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                        <p className="text-sm">No messages found for "{searchQuery}"</p>
+                      </div>
+                    )}
+                    
+                    {(searchQuery ? filteredMessages : messagesWithTime).map((message, index) => (
+                      <MessageBubble 
+                        key={message.id} 
+                        message={message}
+                        onReply={() => handleReply(message)}
+                        onScrollToReply={scrollToMessage}
+                        isHighlighted={highlightedMessageId === message.id}
+                        ref={(el) => {
+                          if (el) messageRefs.current.set(message.id, el);
+                        }}
+                      />
                     ))}
-                    {isLoading && <TypingIndicator />}
+                    {isLoading && !searchQuery && <TypingIndicator />}
                     
                     {/* Suggested Follow-up Questions */}
-                    {!isLoading && suggestions.length > 0 && (
+                    {!isLoading && !searchQuery && suggestions.length > 0 && (
                       <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -361,12 +487,43 @@ export function ChatWidget() {
                 )}
               </AnimatePresence>
 
+              {/* Reply Preview */}
+              <AnimatePresence>
+                {replyingTo && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="border-t border-border bg-muted/30 px-4 py-2"
+                  >
+                    <div className="flex items-start gap-2">
+                      <div className="flex-1 border-l-2 border-primary pl-2">
+                        <p className="text-xs text-muted-foreground">
+                          Replying to {replyingTo.role === 'user' ? 'yourself' : 'Assistant'}
+                        </p>
+                        <p className="text-sm text-foreground line-clamp-2">
+                          {replyingTo.content.slice(0, 100)}{replyingTo.content.length > 100 ? '...' : ''}
+                        </p>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setReplyingTo(null)}
+                        className="h-6 w-6 shrink-0"
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
               {/* Input Area */}
               <div className="p-4 border-t border-border bg-background">
                 <div className="flex gap-2">
                   <Input
                     ref={inputRef}
-                    placeholder="Type your message..."
+                    placeholder={replyingTo ? "Type your reply..." : "Type your message..."}
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyPress={handleKeyPress}
@@ -576,7 +733,15 @@ const EMOJI_REACTIONS = [
   { emoji: "🙏", label: "Thanks" },
 ];
 
-function MessageBubble({ message }: { message: MessageWithTime }) {
+interface MessageBubbleProps {
+  message: MessageWithTime;
+  onReply?: () => void;
+  onScrollToReply?: (messageId: string) => void;
+  isHighlighted?: boolean;
+}
+
+const MessageBubble = React.forwardRef<HTMLDivElement, MessageBubbleProps>(
+  ({ message, onReply, onScrollToReply, isHighlighted }, ref) => {
   const isUser = message.role === "user";
   const [copied, setCopied] = useState(false);
   const [showReactions, setShowReactions] = useState(false);
@@ -615,9 +780,37 @@ function MessageBubble({ message }: { message: MessageWithTime }) {
     e.stopPropagation();
     setShowReactions(!showReactions);
   };
+
+  const handleReplyClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onReply?.();
+  };
   
   return (
-    <div className={cn("flex flex-col gap-1", isUser ? "items-end" : "items-start")}>
+    <div 
+      ref={ref}
+      className={cn(
+        "flex flex-col gap-1 transition-all duration-500",
+        isUser ? "items-end" : "items-start",
+        isHighlighted && "bg-primary/10 -mx-2 px-2 py-1 rounded-lg"
+      )}
+    >
+      {/* Reply reference */}
+      {message.replyTo && (
+        <button
+          onClick={() => onScrollToReply?.(message.replyTo!.id)}
+          className={cn(
+            "flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors px-2",
+            isUser ? "flex-row-reverse" : ""
+          )}
+        >
+          <ChevronUp className="h-3 w-3" />
+          <span className="border-l-2 border-primary/50 pl-2 line-clamp-1">
+            {message.replyTo.content.slice(0, 50)}{message.replyTo.content.length > 50 ? '...' : ''}
+          </span>
+        </button>
+      )}
+      
       <div className={cn("flex group", isUser ? "justify-end" : "justify-start")}>
         <div className="relative">
           <div
@@ -665,8 +858,19 @@ function MessageBubble({ message }: { message: MessageWithTime }) {
           {/* Action buttons */}
           <div className={cn(
             "absolute -top-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity",
-            isUser ? "-left-16 flex-row-reverse" : "-right-16"
+            isUser ? "-left-20 flex-row-reverse" : "-right-20"
           )}>
+            {/* Reply button */}
+            <motion.button
+              onClick={handleReplyClick}
+              className="bg-background border border-border text-muted-foreground rounded-full p-1.5 hover:bg-muted transition-colors"
+              title="Reply"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Reply className="h-3 w-3" />
+            </motion.button>
+            
             {/* Reaction button */}
             <motion.button
               onClick={toggleReactionPicker}
@@ -737,4 +941,6 @@ function MessageBubble({ message }: { message: MessageWithTime }) {
       </span>
     </div>
   );
-}
+});
+
+MessageBubble.displayName = 'MessageBubble';
