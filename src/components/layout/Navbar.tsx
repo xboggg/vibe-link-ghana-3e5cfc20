@@ -257,7 +257,7 @@ export function Navbar() {
                 }}
                 className="pt-4 space-y-3"
               >
-                <Button asChild variant="outline" size="lg" className="w-full border-secondary/50 hover:bg-secondary/20">
+                <Button asChild variant="outline" size="lg" className="w-full border-secondary/50 text-primary-foreground hover:bg-secondary/20 hover:text-primary-foreground">
                   <Link to="/track-order" className="flex items-center gap-2">
                     <Package className="h-4 w-4" />
                     Track Order
