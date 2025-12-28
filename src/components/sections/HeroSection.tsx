@@ -121,27 +121,30 @@ export function HeroSection() {
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* Background Images with Crossfade - all images stacked, opacity controlled */}
-      <div className="absolute inset-0">
-        {slides.map((slide, index) => (
-          <motion.div
-            key={index}
-            initial={false}
-            animate={{ opacity: index === currentSlide ? 1 : 0 }}
-            transition={{ duration: 0.8, ease: "easeInOut" }}
-            className="absolute inset-0"
-            style={{ zIndex: index === currentSlide ? 1 : 0 }}
-          >
-            <img
-              src={slide.image}
-              alt={slide.alt}
-              className="w-full h-full object-cover"
-              onLoad={() => handleImageLoad(index)}
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/85 to-purple-dark/70" />
-            <div className="absolute inset-0 bg-pattern-dots opacity-20" />
-          </motion.div>
-        ))}
+      {/* Background Images with Crossfade */}
+      <div className="absolute inset-0 bg-navy">
+        {slides.map((slide, index) => {
+          const isActive = index === currentSlide;
+          return (
+            <div
+              key={index}
+              className="absolute inset-0 transition-opacity duration-1000 ease-in-out"
+              style={{ 
+                opacity: isActive ? 1 : 0,
+                zIndex: isActive ? 2 : 1
+              }}
+            >
+              <img
+                src={slide.image}
+                alt={slide.alt}
+                className="w-full h-full object-cover"
+                onLoad={() => handleImageLoad(index)}
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/85 to-purple-dark/70" />
+              <div className="absolute inset-0 bg-pattern-dots opacity-20" />
+            </div>
+          );
+        })}
       </div>
 
       {/* Decorative Diagonal Lines */}
