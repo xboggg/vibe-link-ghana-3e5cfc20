@@ -86,15 +86,22 @@ const preloadImages = () => {
 
 export function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [previousSlide, setPreviousSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [imagesLoaded, setImagesLoaded] = useState<boolean[]>(new Array(slides.length).fill(false));
 
   const nextSlide = useCallback(() => {
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
+    setCurrentSlide((prev) => {
+      setPreviousSlide(prev);
+      return (prev + 1) % slides.length;
+    });
   }, []);
 
   const prevSlide = useCallback(() => {
-    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+    setCurrentSlide((prev) => {
+      setPreviousSlide(prev);
+      return (prev - 1 + slides.length) % slides.length;
+    });
   }, []);
 
   useEffect(() => {
@@ -121,30 +128,34 @@ export function HeroSection() {
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* Background Images with Crossfade */}
+      {/* Background Images with Crossfade - only show current and previous */}
       <div className="absolute inset-0 bg-navy">
-        {slides.map((slide, index) => {
-          const isActive = index === currentSlide;
-          return (
-            <div
-              key={index}
-              className="absolute inset-0 transition-opacity duration-1000 ease-in-out"
-              style={{ 
-                opacity: isActive ? 1 : 0,
-                zIndex: isActive ? 2 : 1
-              }}
-            >
-              <img
-                src={slide.image}
-                alt={slide.alt}
-                className="w-full h-full object-cover"
-                onLoad={() => handleImageLoad(index)}
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/85 to-purple-dark/70" />
-              <div className="absolute inset-0 bg-pattern-dots opacity-20" />
-            </div>
-          );
-        })}
+        {/* Previous slide (bottom layer) */}
+        <div className="absolute inset-0" style={{ zIndex: 1 }}>
+          <img
+            src={slides[previousSlide].image}
+            alt={slides[previousSlide].alt}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/85 to-purple-dark/70" />
+          <div className="absolute inset-0 bg-pattern-dots opacity-20" />
+        </div>
+        
+        {/* Current slide (top layer with fade-in) */}
+        <div 
+          key={currentSlide}
+          className="absolute inset-0 hero-slide-fade"
+          style={{ zIndex: 2 }}
+        >
+          <img
+            src={slides[currentSlide].image}
+            alt={slides[currentSlide].alt}
+            className="w-full h-full object-cover"
+            onLoad={() => handleImageLoad(currentSlide)}
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/85 to-purple-dark/70" />
+          <div className="absolute inset-0 bg-pattern-dots opacity-20" />
+        </div>
       </div>
 
       {/* Decorative Diagonal Lines */}
