@@ -1,11 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, X, Send, Package, Phone, DollarSign, Loader2, Trash2 } from "lucide-react";
+import { MessageCircle, X, Send, Package, Phone, DollarSign, Trash2, Copy, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useChatbot, type ChatMessage } from "@/hooks/useChatbot";
 import { cn } from "@/lib/utils";
+import { toast } from "@/hooks/use-toast";
 
 export function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
@@ -175,12 +176,7 @@ export function ChatWidget() {
                     {messages.map((message, index) => (
                       <MessageBubble key={index} message={message} />
                     ))}
-                    {isLoading && (
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        <span className="text-sm">Thinking...</span>
-                      </div>
-                    )}
+                    {isLoading && <TypingIndicator />}
                     
                     {/* Suggested Follow-up Questions */}
                     {!isLoading && suggestions.length > 0 && (
@@ -393,26 +389,103 @@ function parseMessageContent(content: string) {
   });
 }
 
+// Typing indicator with animated dots
+function TypingIndicator() {
+  return (
+    <div className="flex justify-start">
+      <div className="bg-muted rounded-2xl rounded-bl-md px-4 py-3">
+        <div className="flex items-center gap-1">
+          <motion.span
+            className="w-2 h-2 bg-muted-foreground/60 rounded-full"
+            animate={{ y: [0, -4, 0] }}
+            transition={{ duration: 0.6, repeat: Infinity, delay: 0 }}
+          />
+          <motion.span
+            className="w-2 h-2 bg-muted-foreground/60 rounded-full"
+            animate={{ y: [0, -4, 0] }}
+            transition={{ duration: 0.6, repeat: Infinity, delay: 0.15 }}
+          />
+          <motion.span
+            className="w-2 h-2 bg-muted-foreground/60 rounded-full"
+            animate={{ y: [0, -4, 0] }}
+            transition={{ duration: 0.6, repeat: Infinity, delay: 0.3 }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function MessageBubble({ message }: { message: ChatMessage }) {
   const isUser = message.role === "user";
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(message.content);
+      setCopied(true);
+      toast({
+        title: "Copied!",
+        description: "Message copied to clipboard",
+      });
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      toast({
+        title: "Failed to copy",
+        description: "Could not copy message",
+        variant: "destructive",
+      });
+    }
+  };
   
   return (
-    <div className={cn("flex", isUser ? "justify-end" : "justify-start")}>
-      <div
-        className={cn(
-          "max-w-[85%] rounded-2xl px-4 py-3 text-sm",
-          isUser 
-            ? "bg-primary text-primary-foreground rounded-br-md" 
-            : "bg-muted text-foreground rounded-bl-md"
-        )}
-      >
-        <div className="space-y-2 leading-relaxed">
-          {message.content.split('\n').map((line, i) => (
-            <p key={i} className={line.trim() === '' ? 'h-2' : ''}>
-              {parseMessageContent(line)}
-            </p>
-          ))}
+    <div className={cn("flex group", isUser ? "justify-end" : "justify-start")}>
+      <div className="relative">
+        <div
+          className={cn(
+            "max-w-[85%] rounded-2xl px-4 py-3 text-sm cursor-pointer transition-all",
+            isUser 
+              ? "bg-primary text-primary-foreground rounded-br-md hover:bg-primary/90" 
+              : "bg-muted text-foreground rounded-bl-md hover:bg-muted/80"
+          )}
+          onClick={handleCopy}
+          title="Click to copy"
+        >
+          <div className="space-y-2 leading-relaxed">
+            {message.content.split('\n').map((line, i) => (
+              <p key={i} className={line.trim() === '' ? 'h-2' : ''}>
+                {parseMessageContent(line)}
+              </p>
+            ))}
+          </div>
         </div>
+        
+        {/* Copy indicator */}
+        <AnimatePresence>
+          {copied ? (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              className={cn(
+                "absolute -top-2 -right-2 bg-green-500 text-white rounded-full p-1",
+                isUser && "-left-2 -right-auto"
+              )}
+            >
+              <Check className="h-3 w-3" />
+            </motion.div>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0 }}
+              className={cn(
+                "absolute -top-2 -right-2 bg-background border border-border text-muted-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity",
+                isUser && "-left-2 -right-auto"
+              )}
+            >
+              <Copy className="h-3 w-3" />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
