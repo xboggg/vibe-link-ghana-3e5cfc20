@@ -22,7 +22,7 @@ const portfolioData: Record<string, {
     description: "A beautiful crystal anniversary celebration with elegant gold accents and heartfelt memories.",
     image: "/blog/evans-mina-anniversary.jpg",
     demoUrl: "https://evmin-rsvp.netlify.app/",
-    features: ["Photo gallery with 50+ images", "RSVP tracking", "Background music", "Countdown timer", "Google Maps integration", "WhatsApp sharing", "Mobile responsive"],
+    features: ["Photo gallery with 10+ images", "RSVP tracking", "Background music", "Countdown timer", "Google Maps integration", "WhatsApp sharing", "Mobile responsive"],
     story: "Evans and Mina wanted to celebrate their 15 years of marriage with family and friends from around the world. We created a stunning digital invitation that showcased their journey together, complete with a photo gallery of their most cherished memories. The invitation was shared on WhatsApp and received over 200 views within the first week.",
     package: "Classic Vibe",
     highlights: ["200+ invitation views", "85 RSVPs received", "Shared across 3 countries"],
