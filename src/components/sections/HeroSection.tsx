@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { MagneticButton } from "@/components/MagneticButton";
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 
 // Floating particle component
@@ -460,15 +461,19 @@ export function HeroSection() {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="flex flex-col sm:flex-row gap-4 mb-10"
           >
-            <Button asChild variant="hero" size="xl">
-              <Link to="/get-started">
-                Get Started
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
-            </Button>
-            <Button asChild variant="hero-outline" size="xl">
-              <Link to="/portfolio">View Portfolio</Link>
-            </Button>
+            <MagneticButton strength={0.25}>
+              <Button asChild variant="hero" size="xl">
+                <Link to="/get-started">
+                  Get Started
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
+            </MagneticButton>
+            <MagneticButton strength={0.25}>
+              <Button asChild variant="hero-outline" size="xl">
+                <Link to="/portfolio">View Portfolio</Link>
+              </Button>
+            </MagneticButton>
           </motion.div>
 
           <motion.div
