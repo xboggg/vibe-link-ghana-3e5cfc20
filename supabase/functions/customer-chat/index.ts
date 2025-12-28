@@ -171,6 +171,217 @@ A: Yes! Use your Order ID or email at vibelinkgh.com/track-order
 - For pricing details, direct them to vibelinkgh.com/pricing
 - If asked about something outside your knowledge, be honest and suggest contacting the team directly`;
 
+// Function to determine topic from user message
+function detectTopic(message: string): string {
+  const lowerMessage = message.toLowerCase();
+  
+  if (lowerMessage.includes("price") || lowerMessage.includes("cost") || lowerMessage.includes("package") || lowerMessage.includes("ghs") || lowerMessage.includes("how much")) {
+    return "pricing";
+  }
+  if (lowerMessage.includes("track") || lowerMessage.includes("order") || lowerMessage.includes("status")) {
+    return "order_tracking";
+  }
+  if (lowerMessage.includes("wedding") || lowerMessage.includes("marry") || lowerMessage.includes("bride") || lowerMessage.includes("groom") || lowerMessage.includes("kente")) {
+    return "wedding";
+  }
+  if (lowerMessage.includes("funeral") || lowerMessage.includes("burial") || lowerMessage.includes("memorial") || lowerMessage.includes("tribute")) {
+    return "funeral";
+  }
+  if (lowerMessage.includes("naming") || lowerMessage.includes("outdooring") || lowerMessage.includes("baby")) {
+    return "naming_ceremony";
+  }
+  if (lowerMessage.includes("birthday") || lowerMessage.includes("party")) {
+    return "birthday";
+  }
+  if (lowerMessage.includes("church") || lowerMessage.includes("harvest") || lowerMessage.includes("confirmation") || lowerMessage.includes("baptism")) {
+    return "church_event";
+  }
+  if (lowerMessage.includes("corporate") || lowerMessage.includes("conference") || lowerMessage.includes("meeting") || lowerMessage.includes("business")) {
+    return "corporate";
+  }
+  if (lowerMessage.includes("consult") || lowerMessage.includes("book") || lowerMessage.includes("whatsapp") || lowerMessage.includes("contact")) {
+    return "consultation";
+  }
+  if (lowerMessage.includes("how") && (lowerMessage.includes("work") || lowerMessage.includes("process") || lowerMessage.includes("start"))) {
+    return "how_it_works";
+  }
+  if (lowerMessage.includes("adinkra") || lowerMessage.includes("symbol")) {
+    return "adinkra";
+  }
+  if (lowerMessage.includes("festival") || lowerMessage.includes("homowo") || lowerMessage.includes("akwasidae")) {
+    return "festivals";
+  }
+  return "general";
+}
+
+// Function to generate contextual suggestions based on topic
+function generateSuggestions(topic: string, lastUserMessage: string): string[] {
+  const suggestionSets: Record<string, string[]> = {
+    pricing: [
+      "What's included in each package?",
+      "Do you offer rush delivery?",
+      "Can I add printing to my order?",
+      "I'd like to place an order"
+    ],
+    order_tracking: [
+      "When will my order be ready?",
+      "How do I request revisions?",
+      "I'd like to speak to someone",
+      "What are your packages?"
+    ],
+    wedding: [
+      "Tell me about Kente colors",
+      "What Adinkra symbols are good for weddings?",
+      "What about traditional wedding invitations?",
+      "How much are wedding packages?"
+    ],
+    funeral: [
+      "What should a funeral program include?",
+      "How quickly can you deliver?",
+      "Do you do printed programs?",
+      "I'd like to place an order"
+    ],
+    naming_ceremony: [
+      "What are outdooring traditions?",
+      "How soon should I order invitations?",
+      "What packages do you recommend?",
+      "Book a consultation"
+    ],
+    birthday: [
+      "What themes are popular?",
+      "Can I see examples?",
+      "What are your prices?",
+      "I'd like to order"
+    ],
+    church_event: [
+      "What about harvest thanksgiving?",
+      "Do you do church programs?",
+      "What's included in the packages?",
+      "Place an order"
+    ],
+    corporate: [
+      "Do you do corporate branding?",
+      "What's the turnaround time?",
+      "Can I get a custom quote?",
+      "Book a consultation"
+    ],
+    consultation: [
+      "What are your prices?",
+      "How does the process work?",
+      "I have an upcoming event",
+      "Track my order"
+    ],
+    how_it_works: [
+      "What packages do you offer?",
+      "How long does it take?",
+      "Can I track my order?",
+      "Book a consultation"
+    ],
+    adinkra: [
+      "Tell me about Gye Nyame",
+      "What about Sankofa?",
+      "Symbols for weddings?",
+      "View pricing"
+    ],
+    festivals: [
+      "When is Homowo?",
+      "Tell me about Akwasidae",
+      "Festival invitation designs?",
+      "Place an order"
+    ],
+    general: [
+      "What services do you offer?",
+      "View pricing packages",
+      "Track my order",
+      "Book a consultation"
+    ]
+  };
+
+  return suggestionSets[topic] || suggestionSets.general;
+}
+
+// Log conversation to analytics
+async function logConversation(
+  supabase: any,
+  sessionId: string,
+  userMessage: string,
+  assistantMessage: string,
+  topic: string,
+  suggestions: string[],
+  responseTimeMs: number
+) {
+  try {
+    // Create or get conversation
+    let { data: conversation } = await supabase
+      .from("chat_conversations")
+      .select("id, message_count")
+      .eq("session_id", sessionId)
+      .order("started_at", { ascending: false })
+      .limit(1)
+      .single();
+
+    let conversationId: string;
+
+    if (!conversation) {
+      // Create new conversation
+      const { data: newConv } = await supabase
+        .from("chat_conversations")
+        .insert({ session_id: sessionId, message_count: 0 })
+        .select()
+        .single();
+      conversationId = newConv?.id;
+    } else {
+      conversationId = conversation.id;
+    }
+
+    if (conversationId) {
+      // Insert user message
+      await supabase.from("chat_messages").insert({
+        conversation_id: conversationId,
+        role: "user",
+        content: userMessage,
+      });
+
+      // Insert assistant message
+      await supabase.from("chat_messages").insert({
+        conversation_id: conversationId,
+        role: "assistant",
+        content: assistantMessage,
+        response_time_ms: responseTimeMs,
+        suggestions: suggestions,
+      });
+
+      // Update message count
+      await supabase
+        .from("chat_conversations")
+        .update({ message_count: (conversation?.message_count || 0) + 2 })
+        .eq("id", conversationId);
+
+      // Update topic analytics
+      const { data: existingTopic } = await supabase
+        .from("chat_analytics")
+        .select("id, count")
+        .eq("topic", topic)
+        .single();
+
+      if (existingTopic) {
+        await supabase
+          .from("chat_analytics")
+          .update({ count: existingTopic.count + 1, last_asked_at: new Date().toISOString() })
+          .eq("id", existingTopic.id);
+      } else {
+        await supabase.from("chat_analytics").insert({
+          topic: topic,
+          question_pattern: userMessage.substring(0, 200),
+        });
+      }
+    }
+  } catch (error) {
+    console.error("Error logging conversation:", error);
+    // Don't throw - logging should not break the chat
+  }
+}
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
@@ -178,19 +389,19 @@ serve(async (req) => {
   }
 
   try {
-    const { messages, action, orderId, customerEmail } = await req.json();
+    const { messages, action, orderId, customerEmail, sessionId } = await req.json();
     
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
     // Handle order tracking action
     if (action === "track_order" && orderId) {
-      const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-      const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-      const supabase = createClient(supabaseUrl, supabaseKey);
-
       let query = supabase
         .from("orders")
         .select("id, event_title, event_type, package_name, order_status, payment_status, total_price, created_at, preferred_delivery_date")
@@ -205,7 +416,8 @@ serve(async (req) => {
       if (error || !order) {
         return new Response(
           JSON.stringify({ 
-            message: "I couldn't find an order with that ID. Please double-check your Order ID and try again, or contact us on WhatsApp for assistance: https://wa.me/233245817973" 
+            message: "I couldn't find an order with that ID. Please double-check your Order ID and try again, or contact us on WhatsApp for assistance: https://wa.me/233245817973",
+            suggestions: ["Try again with correct ID", "Contact via WhatsApp", "View pricing", "Place new order"]
           }),
           { headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
@@ -243,11 +455,26 @@ ${order.preferred_delivery_date ? `**Expected Delivery**: ${new Date(order.prefe
 
 Need help? Chat with us on WhatsApp: https://wa.me/233245817973`;
 
+      // Generate suggestions based on order status
+      let suggestions: string[];
+      if (order.order_status === "completed") {
+        suggestions = ["Place a new order", "Book consultation", "View pricing", "Contact support"];
+      } else if (order.order_status === "draft_ready") {
+        suggestions = ["How do I request revisions?", "Contact support", "Place another order", "View other services"];
+      } else {
+        suggestions = ["When will it be ready?", "Contact support", "View pricing", "Place another order"];
+      }
+
       return new Response(
-        JSON.stringify({ message }),
+        JSON.stringify({ message, suggestions }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
+
+    // Get the last user message for topic detection
+    const lastUserMessage = messages[messages.length - 1]?.content || "";
+    const topic = detectTopic(lastUserMessage);
+    const startTime = Date.now();
 
     // Stream chat response
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -269,13 +496,19 @@ Need help? Chat with us on WhatsApp: https://wa.me/233245817973`;
     if (!response.ok) {
       if (response.status === 429) {
         return new Response(
-          JSON.stringify({ error: "We're experiencing high traffic. Please try again in a moment." }),
+          JSON.stringify({ 
+            error: "We're experiencing high traffic. Please try again in a moment.",
+            suggestions: ["Try again in a minute", "Contact via WhatsApp", "Visit our website"]
+          }),
           { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
       if (response.status === 402) {
         return new Response(
-          JSON.stringify({ error: "Service temporarily unavailable. Please contact us on WhatsApp." }),
+          JSON.stringify({ 
+            error: "Service temporarily unavailable. Please contact us on WhatsApp.",
+            suggestions: ["Contact via WhatsApp", "Visit website", "Try again later"]
+          }),
           { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
@@ -287,7 +520,55 @@ Need help? Chat with us on WhatsApp: https://wa.me/233245817973`;
       );
     }
 
-    return new Response(response.body, {
+    // Generate suggestions for this topic
+    const suggestions = generateSuggestions(topic, lastUserMessage);
+
+    // Create a transform stream to append suggestions at the end
+    const { readable, writable } = new TransformStream();
+    const writer = writable.getWriter();
+    const reader = response.body!.getReader();
+
+    // Process in background
+    (async () => {
+      let fullResponse = "";
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          await writer.write(value);
+          
+          // Decode to capture full response for logging
+          const text = new TextDecoder().decode(value);
+          const lines = text.split("\n");
+          for (const line of lines) {
+            if (line.startsWith("data: ") && line !== "data: [DONE]") {
+              try {
+                const json = JSON.parse(line.slice(6));
+                const content = json.choices?.[0]?.delta?.content;
+                if (content) fullResponse += content;
+              } catch {}
+            }
+          }
+        }
+
+        // Send suggestions as final SSE event
+        const suggestionsEvent = `data: ${JSON.stringify({ suggestions })}\n\n`;
+        await writer.write(new TextEncoder().encode(suggestionsEvent));
+        await writer.write(new TextEncoder().encode("data: [DONE]\n\n"));
+
+        // Log conversation in background (don't block response)
+        const responseTime = Date.now() - startTime;
+        if (sessionId && fullResponse) {
+          logConversation(supabase, sessionId, lastUserMessage, fullResponse, topic, suggestions, responseTime);
+        }
+      } catch (error) {
+        console.error("Stream processing error:", error);
+      } finally {
+        await writer.close();
+      }
+    })();
+
+    return new Response(readable, {
       headers: { ...corsHeaders, "Content-Type": "text/event-stream" },
     });
   } catch (error) {

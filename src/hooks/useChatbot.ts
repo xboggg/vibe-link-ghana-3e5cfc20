@@ -1,21 +1,42 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { toast } from "@/hooks/use-toast";
 
 export type ChatMessage = {
   role: "user" | "assistant";
   content: string;
+  suggestions?: string[];
 };
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/customer-chat`;
 
+// Generate a unique session ID for analytics
+function getSessionId(): string {
+  let sessionId = sessionStorage.getItem("chat_session_id");
+  if (!sessionId) {
+    sessionId = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+    sessionStorage.setItem("chat_session_id", sessionId);
+  }
+  return sessionId;
+}
+
 export function useChatbot() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const sessionIdRef = useRef(getSessionId());
+
+  // Clear suggestions when new message starts
+  useEffect(() => {
+    if (isLoading) {
+      setSuggestions([]);
+    }
+  }, [isLoading]);
 
   const sendMessage = useCallback(async (input: string) => {
     const userMsg: ChatMessage = { role: "user", content: input };
     setMessages(prev => [...prev, userMsg]);
     setIsLoading(true);
+    setSuggestions([]);
 
     let assistantContent = "";
 
@@ -39,11 +60,17 @@ export function useChatbot() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
-        body: JSON.stringify({ messages: [...messages, userMsg] }),
+        body: JSON.stringify({ 
+          messages: [...messages, userMsg],
+          sessionId: sessionIdRef.current
+        }),
       });
 
       if (!resp.ok) {
         const errorData = await resp.json().catch(() => ({}));
+        if (errorData.suggestions) {
+          setSuggestions(errorData.suggestions);
+        }
         throw new Error(errorData.error || "Failed to send message");
       }
 
@@ -75,6 +102,13 @@ export function useChatbot() {
 
           try {
             const parsed = JSON.parse(jsonStr);
+            
+            // Check if this is a suggestions event
+            if (parsed.suggestions && Array.isArray(parsed.suggestions)) {
+              setSuggestions(parsed.suggestions);
+              continue;
+            }
+            
             const content = parsed.choices?.[0]?.delta?.content;
             if (content) updateAssistant(content);
           } catch {
@@ -96,6 +130,10 @@ export function useChatbot() {
           if (jsonStr === "[DONE]") continue;
           try {
             const parsed = JSON.parse(jsonStr);
+            if (parsed.suggestions && Array.isArray(parsed.suggestions)) {
+              setSuggestions(parsed.suggestions);
+              continue;
+            }
             const content = parsed.choices?.[0]?.delta?.content;
             if (content) updateAssistant(content);
           } catch { /* ignore */ }
@@ -117,6 +155,7 @@ export function useChatbot() {
 
   const trackOrder = useCallback(async (orderId: string, email?: string) => {
     setIsLoading(true);
+    setSuggestions([]);
     
     const userMsg: ChatMessage = { 
       role: "user", 
@@ -134,7 +173,8 @@ export function useChatbot() {
         body: JSON.stringify({ 
           action: "track_order", 
           orderId,
-          customerEmail: email 
+          customerEmail: email,
+          sessionId: sessionIdRef.current
         }),
       });
 
@@ -144,12 +184,18 @@ export function useChatbot() {
         role: "assistant", 
         content: data.message || data.error || "Unable to track order" 
       }]);
+
+      // Set suggestions from response
+      if (data.suggestions && Array.isArray(data.suggestions)) {
+        setSuggestions(data.suggestions);
+      }
     } catch (error) {
       console.error("Track order error:", error);
       setMessages(prev => [...prev, { 
         role: "assistant", 
         content: "Sorry, I couldn't track your order. Please try again or contact us on WhatsApp." 
       }]);
+      setSuggestions(["Try again", "Contact via WhatsApp", "View pricing"]);
     } finally {
       setIsLoading(false);
     }
@@ -157,11 +203,17 @@ export function useChatbot() {
 
   const clearMessages = useCallback(() => {
     setMessages([]);
+    setSuggestions([]);
+    // Generate new session ID
+    const newSessionId = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+    sessionStorage.setItem("chat_session_id", newSessionId);
+    sessionIdRef.current = newSessionId;
   }, []);
 
   return {
     messages,
     isLoading,
+    suggestions,
     sendMessage,
     trackOrder,
     clearMessages,

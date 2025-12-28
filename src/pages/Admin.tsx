@@ -48,6 +48,7 @@ import { UserManagement } from "@/components/admin/UserManagement";
 import { TestimonialsManager } from "@/components/admin/TestimonialsManager";
 import { NewsletterManager } from "@/components/admin/NewsletterManager";
 import { SubscriberPreferences } from "@/components/admin/SubscriberPreferences";
+import { ChatAnalytics } from "@/components/admin/ChatAnalytics";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -93,7 +94,7 @@ interface ReminderLog {
   error_message: string | null;
 }
 
-type AdminSection = "dashboard" | "orders" | "analytics" | "blog" | "testimonials" | "newsletter" | "follow-ups" | "email-settings" | "users";
+type AdminSection = "dashboard" | "orders" | "analytics" | "chatbot" | "blog" | "testimonials" | "newsletter" | "follow-ups" | "email-settings" | "users";
 
 const orderStatusColors: Record<OrderStatus, string> = {
   pending: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
@@ -114,6 +115,7 @@ const navItems = [
   { id: "dashboard" as AdminSection, label: "Dashboard", icon: LayoutDashboard },
   { id: "orders" as AdminSection, label: "Orders", icon: Package },
   { id: "analytics" as AdminSection, label: "Analytics", icon: BarChart3 },
+  { id: "chatbot" as AdminSection, label: "Chatbot", icon: MessageCircle },
   { id: "blog" as AdminSection, label: "Blog", icon: FileText },
   { id: "testimonials" as AdminSection, label: "Testimonials", icon: Quote },
   { id: "newsletter" as AdminSection, label: "Newsletter", icon: Newspaper },
