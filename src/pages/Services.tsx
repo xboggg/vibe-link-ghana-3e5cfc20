@@ -19,6 +19,15 @@ import {
   Video,
   Globe,
   Gift,
+  Timer,
+  Image,
+  Music,
+  ClipboardList,
+  BarChart3,
+  Smartphone,
+  Share2,
+  Wallet,
+  Sparkles,
 } from "lucide-react";
 
 import weddingImg from "@/assets/service-wedding.jpg";
@@ -401,49 +410,168 @@ const Services = () => {
         </div>
       </section>
 
-      {/* Quick Features Grid */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4 lg:px-8">
+      {/* Quick Features Grid - Enhanced with animations */}
+      <section className="py-20 bg-gradient-to-b from-background via-muted/30 to-background relative overflow-hidden">
+        {/* Animated background particles */}
+        <div className="absolute inset-0 pointer-events-none">
+          {[...Array(12)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-2 h-2 rounded-full bg-primary/20"
+              style={{
+                left: `${10 + (i * 7) % 80}%`,
+                top: `${15 + (i * 11) % 70}%`,
+              }}
+              animate={{
+                y: [0, -30, 0],
+                opacity: [0.2, 0.6, 0.2],
+                scale: [1, 1.5, 1],
+              }}
+              transition={{
+                duration: 3 + (i % 3),
+                repeat: Infinity,
+                delay: i * 0.3,
+                ease: "easeInOut",
+              }}
+            />
+          ))}
+        </div>
+
+        <div className="container mx-auto px-4 lg:px-8 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-12"
+            className="text-center mb-16"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">At a Glance</h2>
+            <motion.div
+              initial={{ scale: 0 }}
+              whileInView={{ scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary mb-4"
+            >
+              <Sparkles className="h-4 w-4" />
+              <span className="text-sm font-medium">Packed with Features</span>
+            </motion.div>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">At a Glance</h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
               Quick overview of what makes VibeLink special
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 lg:gap-6">
             {[
-              { emoji: "timer", label: "Countdown Timer" },
-              { emoji: "camera", label: "Photo Gallery" },
-              { emoji: "music", label: "Background Music" },
-              { emoji: "clipboard", label: "RSVP Tracking" },
-              { emoji: "map-pin", label: "Google Maps" },
-              { emoji: "calendar", label: "Calendar Sync" },
-              { emoji: "message", label: "Guest Messages" },
-              { emoji: "wallet", label: "MoMo Collection" },
-              { emoji: "chart", label: "Analytics" },
-              { emoji: "globe", label: "Custom Domain" },
-              { emoji: "smartphone", label: "Mobile Ready" },
-              { emoji: "share", label: "WhatsApp Share" },
-            ].map((item, index) => (
-              <motion.div
-                key={item.label}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.03 }}
-                className="flex flex-col items-center gap-2 p-4 bg-card rounded-xl border border-border hover:border-primary/30 hover:shadow-md transition-all duration-200"
-              >
-                <Check className="h-6 w-6 text-accent" />
-                <span className="text-sm font-medium text-foreground text-center">{item.label}</span>
-              </motion.div>
-            ))}
+              { icon: Timer, label: "Countdown Timer", color: "from-orange-500 to-amber-500", delay: 0 },
+              { icon: Image, label: "Photo Gallery", color: "from-pink-500 to-rose-500", delay: 0.05 },
+              { icon: Music, label: "Background Music", color: "from-purple-500 to-indigo-500", delay: 0.1 },
+              { icon: ClipboardList, label: "RSVP Tracking", color: "from-blue-500 to-cyan-500", delay: 0.15 },
+              { icon: MapPin, label: "Google Maps", color: "from-green-500 to-emerald-500", delay: 0.2 },
+              { icon: Calendar, label: "Calendar Sync", color: "from-teal-500 to-cyan-500", delay: 0.25 },
+              { icon: MessageSquare, label: "Guest Messages", color: "from-yellow-500 to-orange-500", delay: 0.3 },
+              { icon: Wallet, label: "MoMo Collection", color: "from-red-500 to-pink-500", delay: 0.35 },
+              { icon: BarChart3, label: "Analytics", color: "from-indigo-500 to-purple-500", delay: 0.4 },
+              { icon: Globe, label: "Custom Domain", color: "from-cyan-500 to-blue-500", delay: 0.45 },
+              { icon: Smartphone, label: "Mobile Ready", color: "from-emerald-500 to-green-500", delay: 0.5 },
+              { icon: Share2, label: "WhatsApp Share", color: "from-green-600 to-emerald-600", delay: 0.55 },
+            ].map((item) => {
+              const IconComponent = item.icon;
+              return (
+                <motion.div
+                  key={item.label}
+                  initial={{ opacity: 0, y: 30, rotateX: -15 }}
+                  whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ 
+                    delay: item.delay,
+                    type: "spring",
+                    stiffness: 100,
+                    damping: 15
+                  }}
+                  whileHover={{ 
+                    scale: 1.08,
+                    y: -8,
+                    transition: { type: "spring", stiffness: 400, damping: 10 }
+                  }}
+                  whileTap={{ scale: 0.95 }}
+                  className="group relative cursor-pointer"
+                >
+                  <div className="relative flex flex-col items-center gap-3 p-5 bg-card rounded-2xl border border-border overflow-hidden transition-all duration-300 hover:border-primary/50 hover:shadow-xl hover:shadow-primary/10">
+                    {/* Gradient glow on hover */}
+                    <div className={`absolute inset-0 bg-gradient-to-br ${item.color} opacity-0 group-hover:opacity-10 transition-opacity duration-300`} />
+                    
+                    {/* Icon container with gradient */}
+                    <motion.div
+                      className={`relative w-14 h-14 rounded-xl bg-gradient-to-br ${item.color} flex items-center justify-center shadow-lg`}
+                      whileHover={{ 
+                        rotate: [0, -10, 10, 0],
+                        transition: { duration: 0.5 }
+                      }}
+                    >
+                      <IconComponent className="h-7 w-7 text-white" />
+                      
+                      {/* Shine effect */}
+                      <motion.div
+                        className="absolute inset-0 rounded-xl bg-gradient-to-tr from-white/0 via-white/30 to-white/0"
+                        initial={{ x: "-100%", opacity: 0 }}
+                        whileHover={{ x: "100%", opacity: 1 }}
+                        transition={{ duration: 0.6 }}
+                      />
+                    </motion.div>
+                    
+                    {/* Label */}
+                    <span className="text-sm font-semibold text-foreground text-center relative z-10 group-hover:text-primary transition-colors duration-300">
+                      {item.label}
+                    </span>
+                    
+                    {/* Check badge */}
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      whileInView={{ scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: item.delay + 0.3, type: "spring", stiffness: 500 }}
+                      className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-accent flex items-center justify-center shadow-md"
+                    >
+                      <Check className="h-3.5 w-3.5 text-accent-foreground" />
+                    </motion.div>
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
+          
+          {/* Interactive CTA */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.6 }}
+            className="mt-12 text-center"
+          >
+            <motion.p 
+              className="text-muted-foreground mb-6"
+              animate={{ opacity: [0.7, 1, 0.7] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              All features designed to make your event unforgettable
+            </motion.p>
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <Button asChild variant="default" size="lg" className="group">
+                <Link to="/get-started" className="gap-2">
+                  Start Creating
+                  <motion.span
+                    animate={{ x: [0, 4, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  >
+                    →
+                  </motion.span>
+                </Link>
+              </Button>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
