@@ -1,28 +1,139 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, X, Send, Package, Phone, DollarSign, Trash2, Copy, Check } from "lucide-react";
+import { MessageCircle, X, Send, Package, Phone, DollarSign, Trash2, Copy, Check, Volume2, VolumeX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useChatbot, type ChatMessage } from "@/hooks/useChatbot";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
+import { format } from "date-fns";
+
+// Store message timestamps
+type MessageWithTime = ChatMessage & { timestamp: Date };
 
 export function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
   const [showTrackInput, setShowTrackInput] = useState(false);
   const [trackOrderId, setTrackOrderId] = useState("");
+  const [soundEnabled, setSoundEnabled] = useState(() => {
+    const stored = localStorage.getItem("chat_sound_enabled");
+    return stored !== "false"; // Default to true
+  });
+  const [messagesWithTime, setMessagesWithTime] = useState<MessageWithTime[]>([]);
+  
   const { messages, isLoading, suggestions, sendMessage, trackOrder, clearMessages } = useChatbot();
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const prevMessageCountRef = useRef(0);
+
+  // Initialize audio
+  useEffect(() => {
+    // Create audio element with a simple notification sound using Web Audio API
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    audioRef.current = new Audio();
+    
+    // Create a simple beep sound
+    const createBeep = () => {
+      const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const oscillator = ctx.createOscillator();
+      const gainNode = ctx.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(ctx.destination);
+      
+      oscillator.frequency.value = 800;
+      oscillator.type = "sine";
+      gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+      
+      oscillator.start(ctx.currentTime);
+      oscillator.stop(ctx.currentTime + 0.3);
+    };
+    
+    audioRef.current.play = createBeep as any;
+    
+    return () => {
+      audioContext.close();
+    };
+  }, []);
+
+  // Play sound on new assistant message
+  useEffect(() => {
+    if (messages.length > prevMessageCountRef.current) {
+      const lastMessage = messages[messages.length - 1];
+      if (lastMessage?.role === "assistant" && soundEnabled && !isLoading) {
+        playNotificationSound();
+      }
+    }
+    prevMessageCountRef.current = messages.length;
+  }, [messages, soundEnabled, isLoading]);
+
+  // Sync messages with timestamps
+  useEffect(() => {
+    if (messages.length > messagesWithTime.length) {
+      const newMessages = messages.slice(messagesWithTime.length);
+      setMessagesWithTime(prev => [
+        ...prev,
+        ...newMessages.map(msg => ({ ...msg, timestamp: new Date() }))
+      ]);
+    } else if (messages.length < messagesWithTime.length) {
+      // Messages were cleared
+      setMessagesWithTime([]);
+    } else if (messages.length > 0) {
+      // Update the last message (streaming)
+      const lastMsg = messages[messages.length - 1];
+      setMessagesWithTime(prev => {
+        const updated = [...prev];
+        if (updated.length > 0) {
+          updated[updated.length - 1] = { ...lastMsg, timestamp: updated[updated.length - 1].timestamp };
+        }
+        return updated;
+      });
+    }
+  }, [messages]);
+
+  const playNotificationSound = () => {
+    try {
+      const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const oscillator = ctx.createOscillator();
+      const gainNode = ctx.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(ctx.destination);
+      
+      oscillator.frequency.value = 800;
+      oscillator.type = "sine";
+      gainNode.gain.setValueAtTime(0.2, ctx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+      
+      oscillator.start(ctx.currentTime);
+      oscillator.stop(ctx.currentTime + 0.2);
+      
+      setTimeout(() => ctx.close(), 500);
+    } catch (e) {
+      console.log("Audio not supported");
+    }
+  };
+
+  const toggleSound = () => {
+    const newValue = !soundEnabled;
+    setSoundEnabled(newValue);
+    localStorage.setItem("chat_sound_enabled", String(newValue));
+    toast({
+      title: newValue ? "Sound enabled" : "Sound muted",
+      description: newValue ? "You'll hear a sound for new messages" : "Notifications are now silent",
+    });
+  };
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages, suggestions]);
+  }, [messagesWithTime, suggestions]);
 
   // Focus input when chat opens
   useEffect(() => {
@@ -62,6 +173,11 @@ export function ChatWidget() {
       e.preventDefault();
       handleTrackOrder();
     }
+  };
+
+  const handleClearMessages = () => {
+    clearMessages();
+    setMessagesWithTime([]);
   };
 
   const quickActions = [
@@ -115,12 +231,23 @@ export function ChatWidget() {
                     <p className="text-xs text-primary-foreground/80">Your Ghanaian event expert</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  {messages.length > 0 && (
+                <div className="flex items-center gap-1">
+                  {/* Sound Toggle */}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={toggleSound}
+                    className="h-8 w-8 text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/20"
+                    title={soundEnabled ? "Mute notifications" : "Enable sound"}
+                  >
+                    {soundEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+                    <span className="sr-only">{soundEnabled ? "Mute" : "Unmute"}</span>
+                  </Button>
+                  {messagesWithTime.length > 0 && (
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={clearMessages}
+                      onClick={handleClearMessages}
                       className="h-8 w-8 text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/20"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -141,7 +268,7 @@ export function ChatWidget() {
 
               {/* Messages Area */}
               <ScrollArea ref={scrollRef} className="flex-1 p-4">
-                {messages.length === 0 ? (
+                {messagesWithTime.length === 0 ? (
                   <div className="space-y-4">
                     <div className="bg-muted rounded-lg p-4">
                       <p className="text-sm text-foreground">
@@ -173,7 +300,7 @@ export function ChatWidget() {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {messages.map((message, index) => (
+                    {messagesWithTime.map((message, index) => (
                       <MessageBubble key={index} message={message} />
                     ))}
                     {isLoading && <TypingIndicator />}
@@ -264,129 +391,152 @@ export function ChatWidget() {
   );
 }
 
-// Parse and render text with clickable links and phone numbers
-function parseMessageContent(content: string) {
-  // Combined regex for URLs, WhatsApp links, phone numbers, and markdown-style links
-  const patterns = [
-    // Markdown links [text](url)
-    /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
-    // Plain URLs
-    /(https?:\/\/[^\s\])<>]+)/g,
-    // WhatsApp wa.me links
-    /(wa\.me\/\d+)/g,
-    // Phone numbers (various formats)
-    /(\+?\d{1,3}[\s.-]?\d{2,3}[\s.-]?\d{3}[\s.-]?\d{4})/g,
-  ];
+// Parse and render text with clickable links, phone numbers, and bold text
+function parseMessageContent(content: string): ReactNode[] {
+  const elements: ReactNode[] = [];
+  let remaining = content;
+  let key = 0;
 
-  // First, handle markdown links
-  let processedContent = content.replace(
-    /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
-    '{{LINK:$2:$1}}'
-  );
-
-  // Handle plain URLs (not already in markdown)
-  processedContent = processedContent.replace(
-    /(?<!\]\()(?<!\{\{LINK:)(https?:\/\/[^\s\])<>]+)/g,
-    '{{URL:$1}}'
-  );
-
-  // Handle wa.me links
-  processedContent = processedContent.replace(
-    /(?<!\{\{URL:)(wa\.me\/\d+)/g,
-    '{{WHATSAPP:$1}}'
-  );
-
-  // Handle phone numbers
-  processedContent = processedContent.replace(
-    /(\+?\d{1,3}[\s.-]?\d{2,3}[\s.-]?\d{3}[\s.-]?\d{4})/g,
-    (match) => {
-      // Don't replace if it's already part of a wa.me link
-      if (processedContent.includes(`wa.me/${match.replace(/[\s.-]/g, '')}`)) {
-        return match;
-      }
-      return `{{PHONE:${match}}}`;
-    }
-  );
-
-  // Split by our markers and create elements
-  const parts = processedContent.split(/(\{\{(?:LINK|URL|WHATSAPP|PHONE):[^}]+\}\})/g);
-  
-  return parts.map((part, index) => {
-    // Check for markdown-style link
-    const linkMatch = part.match(/\{\{LINK:([^:]+):([^}]+)\}\}/);
-    if (linkMatch) {
-      return (
-        <a
-          key={index}
-          href={linkMatch[1]}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-primary underline underline-offset-2 hover:text-primary/80 transition-colors"
-        >
-          {linkMatch[2]}
-        </a>
-      );
-    }
-
-    // Check for plain URL
-    const urlMatch = part.match(/\{\{URL:([^}]+)\}\}/);
-    if (urlMatch) {
-      return (
-        <a
-          key={index}
-          href={urlMatch[1]}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-primary underline underline-offset-2 hover:text-primary/80 transition-colors break-all"
-        >
-          {urlMatch[1]}
-        </a>
-      );
-    }
-
-    // Check for WhatsApp link
-    const whatsappMatch = part.match(/\{\{WHATSAPP:([^}]+)\}\}/);
-    if (whatsappMatch) {
-      return (
-        <a
-          key={index}
-          href={`https://${whatsappMatch[1]}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-green-600 dark:text-green-400 underline underline-offset-2 hover:text-green-500 transition-colors"
-        >
-          {whatsappMatch[1]}
-        </a>
-      );
-    }
-
+  while (remaining.length > 0) {
+    // Check for bold text **text**
+    const boldMatch = remaining.match(/\*\*([^*]+)\*\*/);
+    
+    // Check for markdown link [text](url)
+    const linkMatch = remaining.match(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/);
+    
+    // Check for plain URL (including wa.me)
+    const urlMatch = remaining.match(/(https?:\/\/[^\s<>)\]]+)/);
+    
+    // Check for wa.me without https
+    const waMatch = remaining.match(/(?<![/:])(wa\.me\/\d+)/);
+    
     // Check for phone number
-    const phoneMatch = part.match(/\{\{PHONE:([^}]+)\}\}/);
-    if (phoneMatch) {
-      const cleanPhone = phoneMatch[1].replace(/[\s.-]/g, '');
-      return (
-        <span key={index} className="inline-flex items-center gap-1">
+    const phoneMatch = remaining.match(/(\+\d{1,3}\s?\d{2,3}\s?\d{3}\s?\d{4})/);
+
+    // Find the earliest match
+    const matches = [
+      { type: 'bold', match: boldMatch, index: boldMatch?.index ?? Infinity },
+      { type: 'link', match: linkMatch, index: linkMatch?.index ?? Infinity },
+      { type: 'url', match: urlMatch, index: urlMatch?.index ?? Infinity },
+      { type: 'wa', match: waMatch, index: waMatch?.index ?? Infinity },
+      { type: 'phone', match: phoneMatch, index: phoneMatch?.index ?? Infinity },
+    ].filter(m => m.match !== null).sort((a, b) => a.index - b.index);
+
+    if (matches.length === 0 || matches[0].index === Infinity) {
+      // No more matches, add remaining text
+      if (remaining) elements.push(remaining);
+      break;
+    }
+
+    const first = matches[0];
+    const matchIndex = first.index;
+    const match = first.match!;
+
+    // Add text before the match
+    if (matchIndex > 0) {
+      elements.push(remaining.slice(0, matchIndex));
+    }
+
+    switch (first.type) {
+      case 'bold':
+        elements.push(
+          <strong key={key++} className="font-semibold">
+            {match[1]}
+          </strong>
+        );
+        remaining = remaining.slice(matchIndex + match[0].length);
+        break;
+
+      case 'link':
+        elements.push(
           <a
-            href={`tel:${cleanPhone}`}
-            className="text-primary underline underline-offset-2 hover:text-primary/80 transition-colors"
-          >
-            {phoneMatch[1]}
-          </a>
-          <a
-            href={`https://wa.me/${cleanPhone.replace('+', '')}`}
+            key={key++}
+            href={match[2]}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-green-600 dark:text-green-400 hover:text-green-500 transition-colors text-xs"
-            title="Chat on WhatsApp"
+            className="text-primary underline underline-offset-2 hover:text-primary/80 transition-colors"
           >
-            (WhatsApp)
+            {match[1]}
           </a>
-        </span>
-      );
-    }
+        );
+        remaining = remaining.slice(matchIndex + match[0].length);
+        break;
 
-    return part;
-  });
+      case 'url':
+        const url = match[1];
+        // Check if this is a wa.me URL
+        if (url.includes('wa.me')) {
+          elements.push(
+            <a
+              key={key++}
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-green-600 dark:text-green-400 underline underline-offset-2 hover:text-green-500 transition-colors"
+            >
+              Chat on WhatsApp
+            </a>
+          );
+        } else {
+          // Clean display URL
+          const displayUrl = url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+          elements.push(
+            <a
+              key={key++}
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary underline underline-offset-2 hover:text-primary/80 transition-colors"
+            >
+              {displayUrl}
+            </a>
+          );
+        }
+        remaining = remaining.slice(matchIndex + match[0].length);
+        break;
+
+      case 'wa':
+        elements.push(
+          <a
+            key={key++}
+            href={`https://${match[1]}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-green-600 dark:text-green-400 underline underline-offset-2 hover:text-green-500 transition-colors"
+          >
+            Chat on WhatsApp
+          </a>
+        );
+        remaining = remaining.slice(matchIndex + match[0].length);
+        break;
+
+      case 'phone':
+        const cleanPhone = match[1].replace(/\s/g, '');
+        elements.push(
+          <span key={key++} className="inline-flex items-center gap-1 flex-wrap">
+            <a
+              href={`tel:${cleanPhone}`}
+              className="text-primary underline underline-offset-2 hover:text-primary/80 transition-colors"
+            >
+              {match[1]}
+            </a>
+            <a
+              href={`https://wa.me/${cleanPhone.replace('+', '')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-green-600 dark:text-green-400 hover:text-green-500 transition-colors text-xs"
+              title="Chat on WhatsApp"
+            >
+              (WhatsApp)
+            </a>
+          </span>
+        );
+        remaining = remaining.slice(matchIndex + match[0].length);
+        break;
+    }
+  }
+
+  return elements.length > 0 ? elements : [content];
 }
 
 // Typing indicator with animated dots
@@ -416,7 +566,7 @@ function TypingIndicator() {
   );
 }
 
-function MessageBubble({ message }: { message: ChatMessage }) {
+function MessageBubble({ message }: { message: MessageWithTime }) {
   const isUser = message.role === "user";
   const [copied, setCopied] = useState(false);
 
@@ -439,54 +589,64 @@ function MessageBubble({ message }: { message: ChatMessage }) {
   };
   
   return (
-    <div className={cn("flex group", isUser ? "justify-end" : "justify-start")}>
-      <div className="relative">
-        <div
-          className={cn(
-            "max-w-[85%] rounded-2xl px-4 py-3 text-sm cursor-pointer transition-all",
-            isUser 
-              ? "bg-primary text-primary-foreground rounded-br-md hover:bg-primary/90" 
-              : "bg-muted text-foreground rounded-bl-md hover:bg-muted/80"
-          )}
-          onClick={handleCopy}
-          title="Click to copy"
-        >
-          <div className="space-y-2 leading-relaxed">
-            {message.content.split('\n').map((line, i) => (
-              <p key={i} className={line.trim() === '' ? 'h-2' : ''}>
-                {parseMessageContent(line)}
-              </p>
-            ))}
+    <div className={cn("flex flex-col gap-1", isUser ? "items-end" : "items-start")}>
+      <div className={cn("flex group", isUser ? "justify-end" : "justify-start")}>
+        <div className="relative">
+          <div
+            className={cn(
+              "max-w-[85%] rounded-2xl px-4 py-3 text-sm cursor-pointer transition-all",
+              isUser 
+                ? "bg-primary text-primary-foreground rounded-br-md hover:bg-primary/90" 
+                : "bg-muted text-foreground rounded-bl-md hover:bg-muted/80"
+            )}
+            onClick={handleCopy}
+            title="Click to copy"
+          >
+            <div className="space-y-2 leading-relaxed">
+              {message.content.split('\n').map((line, i) => (
+                <p key={i} className={line.trim() === '' ? 'h-2' : ''}>
+                  {parseMessageContent(line)}
+                </p>
+              ))}
+            </div>
           </div>
+          
+          {/* Copy indicator */}
+          <AnimatePresence>
+            {copied ? (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                className={cn(
+                  "absolute -top-2 -right-2 bg-green-500 text-white rounded-full p-1",
+                  isUser && "-left-2 -right-auto"
+                )}
+              >
+                <Check className="h-3 w-3" />
+              </motion.div>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0 }}
+                className={cn(
+                  "absolute -top-2 -right-2 bg-background border border-border text-muted-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity",
+                  isUser && "-left-2 -right-auto"
+                )}
+              >
+                <Copy className="h-3 w-3" />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
-        
-        {/* Copy indicator */}
-        <AnimatePresence>
-          {copied ? (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              className={cn(
-                "absolute -top-2 -right-2 bg-green-500 text-white rounded-full p-1",
-                isUser && "-left-2 -right-auto"
-              )}
-            >
-              <Check className="h-3 w-3" />
-            </motion.div>
-          ) : (
-            <motion.div
-              initial={{ opacity: 0 }}
-              className={cn(
-                "absolute -top-2 -right-2 bg-background border border-border text-muted-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity",
-                isUser && "-left-2 -right-auto"
-              )}
-            >
-              <Copy className="h-3 w-3" />
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
+      
+      {/* Timestamp */}
+      <span className={cn(
+        "text-[10px] text-muted-foreground/60 px-2",
+        isUser ? "text-right" : "text-left"
+      )}>
+        {format(message.timestamp, "h:mm a")}
+      </span>
     </div>
   );
 }
