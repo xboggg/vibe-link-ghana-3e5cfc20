@@ -17,13 +17,13 @@ const portfolioData: Record<string, {
   highlights: string[];
 }> = {
   "evans-mina-anniversary": {
-    title: "Evans & Mina's 25th Anniversary",
+    title: "Evans & Mina's 15th Anniversary",
     type: "Anniversary",
-    description: "A beautiful silver jubilee celebration with elegant gold accents and heartfelt memories.",
-    image: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80",
+    description: "A beautiful crystal anniversary celebration with elegant gold accents and heartfelt memories.",
+    image: "/blog/evans-mina-anniversary.jpg",
     demoUrl: "https://evmin-rsvp.netlify.app/",
     features: ["Photo gallery with 50+ images", "RSVP tracking", "Background music", "Countdown timer", "Google Maps integration", "WhatsApp sharing", "Mobile responsive"],
-    story: "Evans and Mina wanted to celebrate their 25 years of marriage with family and friends from around the world. We created a stunning digital invitation that showcased their journey together, complete with a photo gallery of their most cherished memories. The invitation was shared on WhatsApp and received over 200 views within the first week.",
+    story: "Evans and Mina wanted to celebrate their 15 years of marriage with family and friends from around the world. We created a stunning digital invitation that showcased their journey together, complete with a photo gallery of their most cherished memories. The invitation was shared on WhatsApp and received over 200 views within the first week.",
     package: "Classic Vibe",
     highlights: ["200+ invitation views", "85 RSVPs received", "Shared across 3 countries"],
   },
