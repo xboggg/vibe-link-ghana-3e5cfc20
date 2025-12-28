@@ -1,12 +1,36 @@
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { Star, Quote } from "lucide-react";
 import { ParallaxBackground } from "@/components/ParallaxBackground";
 import { AnimatedHeading, AnimatedText } from "@/components/AnimatedHeading";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import testimonialWedding from "@/assets/testimonial-wedding.jpg";
 import testimonialFamily from "@/assets/testimonial-family.jpg";
 import testimonialNaming from "@/assets/testimonial-naming.jpg";
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, x: -30, rotateY: 10 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    rotateY: 0,
+    transition: { 
+      duration: 0.7, 
+      ease: "easeOut" as const,
+    },
+  },
+};
 
 interface Testimonial {
   id: string;
@@ -55,6 +79,10 @@ const fallbackTestimonials: Testimonial[] = [
 export function TestimonialsSection() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>(fallbackTestimonials);
   const [loading, setLoading] = useState(true);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const isHeaderInView = useInView(headerRef, { once: true, amount: 0.3 });
+  const isGridInView = useInView(gridRef, { once: true, amount: 0.2 });
 
   useEffect(() => {
     const fetchTestimonials = async () => {
@@ -72,7 +100,6 @@ export function TestimonialsSection() {
         }
       } catch (error) {
         console.error("Error fetching testimonials:", error);
-        // Keep fallback testimonials on error
       } finally {
         setLoading(false);
       }
@@ -93,7 +120,13 @@ export function TestimonialsSection() {
       <ParallaxBackground variant="dots" />
       <div className="container mx-auto px-4 lg:px-8 relative">
         {/* Header */}
-        <div className="text-center mb-12">
+        <motion.div 
+          ref={headerRef}
+          className="text-center mb-12"
+          initial={{ opacity: 0, y: 50 }}
+          animate={isHeaderInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+          transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
+        >
           <AnimatedHeading
             as="span"
             variant="fade-up"
@@ -126,17 +159,20 @@ export function TestimonialsSection() {
             Real stories from real Ghanaian families who trusted us with their
             special moments.
           </AnimatedHeading>
-        </div>
+        </motion.div>
 
         {/* Testimonials Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-          {testimonials.map((testimonial, index) => (
+        <motion.div 
+          ref={gridRef}
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8"
+          variants={containerVariants}
+          initial="hidden"
+          animate={isGridInView ? "visible" : "hidden"}
+        >
+          {testimonials.map((testimonial) => (
             <motion.div
               key={testimonial.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              variants={itemVariants}
               className="relative p-6 lg:p-8 rounded-2xl bg-card border border-border hover:border-secondary/30 hover:shadow-lg transition-all duration-300"
             >
               {/* Quote Icon */}
@@ -175,7 +211,7 @@ export function TestimonialsSection() {
               </div>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

@@ -1,10 +1,35 @@
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ExternalLink } from "lucide-react";
 import { ParallaxBackground } from "@/components/ParallaxBackground";
 import { AnimatedHeading, AnimatedText } from "@/components/AnimatedHeading";
 import { OptimizedImage } from "@/components/OptimizedImage";
+import { useRef } from "react";
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 50, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { 
+      duration: 0.6, 
+      ease: "easeOut" as const,
+    },
+  },
+};
 
 const portfolioItems = [
   {
@@ -42,12 +67,23 @@ const portfolioItems = [
 ];
 
 export function PortfolioPreviewSection() {
+  const headerRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const isHeaderInView = useInView(headerRef, { once: true, amount: 0.3 });
+  const isGridInView = useInView(gridRef, { once: true, amount: 0.15 });
+
   return (
     <section className="py-20 lg:py-28 bg-background relative overflow-hidden">
       <ParallaxBackground variant="gradient" />
       <div className="container mx-auto px-4 lg:px-8 relative">
         {/* Header */}
-        <div className="text-center mb-12">
+        <motion.div 
+          ref={headerRef}
+          className="text-center mb-12"
+          initial={{ opacity: 0, y: 50 }}
+          animate={isHeaderInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+          transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
+        >
           <AnimatedHeading
             as="span"
             variant="fade-up"
@@ -80,17 +116,20 @@ export function PortfolioPreviewSection() {
             See how we've helped Ghanaian families create unforgettable digital
             experiences.
           </AnimatedHeading>
-        </div>
+        </motion.div>
 
         {/* Portfolio Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {portfolioItems.map((item, index) => (
+        <motion.div 
+          ref={gridRef}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+          variants={containerVariants}
+          initial="hidden"
+          animate={isGridInView ? "visible" : "hidden"}
+        >
+          {portfolioItems.map((item) => (
             <motion.div
               key={item.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              variants={itemVariants}
               className="group"
             >
               <div className="relative rounded-2xl overflow-hidden bg-card border border-border hover:border-primary/30 transition-all duration-300">
@@ -139,7 +178,7 @@ export function PortfolioPreviewSection() {
               </div>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         {/* View All Button */}
         <motion.div

@@ -1,8 +1,9 @@
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { ParallaxBackground } from "@/components/ParallaxBackground";
 import { AnimatedHeading, AnimatedText } from "@/components/AnimatedHeading";
+import { useRef } from "react";
 
 const eventTypes = [
   { icon: "💒", title: "Weddings", slug: "wedding" },
@@ -14,13 +15,48 @@ const eventTypes = [
   { icon: "🏢", title: "Corporate Events", slug: "corporate" },
 ];
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.15,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, scale: 0.8, y: 30 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: { 
+      duration: 0.5, 
+      ease: "easeOut" as const,
+    },
+  },
+};
+
 export function EventTypesSection() {
+  const headerRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const isHeaderInView = useInView(headerRef, { once: true, amount: 0.3 });
+  const isGridInView = useInView(gridRef, { once: true, amount: 0.2 });
+
   return (
     <section className="py-20 lg:py-28 bg-muted/50 relative overflow-hidden">
       <ParallaxBackground variant="waves" />
       <div className="container mx-auto px-4 lg:px-8 relative">
         {/* Header */}
-        <div className="text-center mb-12">
+        <motion.div 
+          ref={headerRef}
+          className="text-center mb-12"
+          initial={{ opacity: 0, y: 50 }}
+          animate={isHeaderInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+          transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
+        >
           <AnimatedHeading
             as="span"
             variant="fade-up"
@@ -53,17 +89,20 @@ export function EventTypesSection() {
             From joyful weddings to solemn funerals, we create beautiful digital
             experiences that honor your traditions.
           </AnimatedHeading>
-        </div>
+        </motion.div>
 
         {/* Event Types Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4">
-          {eventTypes.map((event, index) => (
+        <motion.div 
+          ref={gridRef}
+          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4"
+          variants={containerVariants}
+          initial="hidden"
+          animate={isGridInView ? "visible" : "hidden"}
+        >
+          {eventTypes.map((event) => (
             <motion.div
               key={event.title}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: index * 0.05 }}
+              variants={itemVariants}
             >
               <Link
                 to={`/portfolio?type=${event.slug}`}
@@ -79,7 +118,7 @@ export function EventTypesSection() {
               </Link>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

@@ -1,7 +1,8 @@
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { Link, Share2, RefreshCw, Users, Wallet, Smartphone } from "lucide-react";
 import { ParallaxBackground } from "@/components/ParallaxBackground";
 import { AnimatedHeading, AnimatedText } from "@/components/AnimatedHeading";
+import { useRef } from "react";
 
 const features = [
   {
@@ -41,27 +42,43 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
+      staggerChildren: 0.12,
+      delayChildren: 0.1,
     },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 40, scale: 0.95 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5 },
+    scale: 1,
+    transition: { 
+      duration: 0.6, 
+      ease: "easeOut" as const,
+    },
   },
 };
 
 export function FeaturesSection() {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const isHeaderInView = useInView(headerRef, { once: true, amount: 0.3 });
+  const isGridInView = useInView(sectionRef, { once: true, amount: 0.15 });
+
   return (
     <section className="py-20 lg:py-28 bg-background relative overflow-hidden">
       <ParallaxBackground variant="geometric" />
       <div className="container mx-auto px-4 lg:px-8 relative">
         {/* Header */}
-        <div className="text-center mb-16">
+        <motion.div 
+          ref={headerRef}
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 50 }}
+          animate={isHeaderInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+          transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
+        >
           <AnimatedHeading
             as="span"
             variant="fade-up"
@@ -91,14 +108,14 @@ export function FeaturesSection() {
             We've reimagined event invitations for the digital age, with features
             designed specifically for Ghanaian celebrations.
           </AnimatedHeading>
-        </div>
+        </motion.div>
 
         {/* Features Grid */}
         <motion.div
+          ref={sectionRef}
           variants={containerVariants}
           initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
+          animate={isGridInView ? "visible" : "hidden"}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
         >
           {features.map((feature, index) => (
