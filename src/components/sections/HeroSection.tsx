@@ -2,7 +2,61 @@ import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+
+// Typewriter effect component
+const TypewriterText = ({ 
+  text, 
+  className = "",
+  delay = 0 
+}: { 
+  text: string; 
+  className?: string;
+  delay?: number;
+}) => {
+  const [displayedText, setDisplayedText] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const previousTextRef = useRef("");
+
+  useEffect(() => {
+    // Reset when text changes
+    if (text !== previousTextRef.current) {
+      setDisplayedText("");
+      setIsTyping(false);
+      previousTextRef.current = text;
+    }
+
+    const startTimeout = setTimeout(() => {
+      setIsTyping(true);
+    }, delay);
+
+    return () => clearTimeout(startTimeout);
+  }, [text, delay]);
+
+  useEffect(() => {
+    if (!isTyping) return;
+
+    if (displayedText.length < text.length) {
+      const timeout = setTimeout(() => {
+        setDisplayedText(text.slice(0, displayedText.length + 1));
+      }, 50);
+      return () => clearTimeout(timeout);
+    }
+  }, [displayedText, text, isTyping]);
+
+  return (
+    <span className={className}>
+      {displayedText}
+      {displayedText.length < text.length && (
+        <motion.span
+          className="inline-block w-[3px] h-[1em] bg-current ml-1 align-middle"
+          animate={{ opacity: [1, 0] }}
+          transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
+        />
+      )}
+    </span>
+  );
+};
 
 // Floating particle component
 const FloatingParticle = ({ 
@@ -433,9 +487,16 @@ export function HeroSection() {
               transition={{ duration: 0.5 }}
             >
               <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-primary-foreground leading-tight mb-6">
-                {slides[currentSlide].headline}{" "}
-                <span className="text-gradient-gold">{slides[currentSlide].highlight}</span>{" "}
-                {slides[currentSlide].subline}
+                <TypewriterText text={slides[currentSlide].headline} delay={100} />{" "}
+                <TypewriterText 
+                  text={slides[currentSlide].highlight} 
+                  className="text-gradient-gold"
+                  delay={100 + slides[currentSlide].headline.length * 50 + 200}
+                />{" "}
+                <TypewriterText 
+                  text={slides[currentSlide].subline} 
+                  delay={100 + (slides[currentSlide].headline.length + slides[currentSlide].highlight.length) * 50 + 400}
+                />
               </h1>
 
               <p className="text-lg md:text-xl text-primary-foreground/80 leading-relaxed mb-8 max-w-2xl">
