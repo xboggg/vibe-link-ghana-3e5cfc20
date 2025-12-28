@@ -1,9 +1,34 @@
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { FileText, MessageCircle, Sparkles, ArrowRight } from "lucide-react";
 import { ParallaxBackground } from "@/components/ParallaxBackground";
 import { AnimatedHeading, AnimatedText } from "@/components/AnimatedHeading";
+import { useRef } from "react";
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+      delayChildren: 0.15,
+    },
+  },
+};
+
+const stepVariants = {
+  hidden: { opacity: 0, y: 60, scale: 0.9 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { 
+      duration: 0.7, 
+      ease: "easeOut" as const,
+    },
+  },
+};
 
 const steps = [
   {
@@ -27,12 +52,23 @@ const steps = [
 ];
 
 export function HowItWorksPreviewSection() {
+  const headerRef = useRef<HTMLDivElement>(null);
+  const stepsRef = useRef<HTMLDivElement>(null);
+  const isHeaderInView = useInView(headerRef, { once: true, amount: 0.3 });
+  const isStepsInView = useInView(stepsRef, { once: true, amount: 0.2 });
+
   return (
     <section className="py-20 lg:py-28 bg-background relative overflow-hidden">
       <ParallaxBackground variant="geometric" />
       <div className="container mx-auto px-4 lg:px-8 relative">
         {/* Header */}
-        <div className="text-center mb-16">
+        <motion.div 
+          ref={headerRef}
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 50 }}
+          animate={isHeaderInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+          transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
+        >
           <AnimatedHeading
             as="span"
             variant="fade-up"
@@ -61,17 +97,20 @@ export function HowItWorksPreviewSection() {
             From inquiry to celebration, we make creating your digital invitation
             effortless.
           </AnimatedHeading>
-        </div>
+        </motion.div>
 
         {/* Steps */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 mb-12">
+        <motion.div 
+          ref={stepsRef}
+          className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 mb-12"
+          variants={containerVariants}
+          initial="hidden"
+          animate={isStepsInView ? "visible" : "hidden"}
+        >
           {steps.map((step, index) => (
             <motion.div
               key={step.number}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              variants={stepVariants}
               className="relative text-center"
             >
               {/* Connector Line */}
@@ -98,7 +137,7 @@ export function HowItWorksPreviewSection() {
               </p>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         {/* CTA */}
         <motion.div
