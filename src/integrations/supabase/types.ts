@@ -368,6 +368,10 @@ export type Database = {
       orders: {
         Row: {
           add_ons: Json | null
+          balance_amount: number | null
+          balance_paid: boolean | null
+          balance_paid_at: string | null
+          balance_reference: string | null
           client_email: string
           client_name: string
           client_phone: string
@@ -377,6 +381,10 @@ export type Database = {
           created_at: string
           custom_colors: string[] | null
           delivery_type: string
+          deposit_amount: number | null
+          deposit_paid: boolean | null
+          deposit_paid_at: string | null
+          deposit_reference: string | null
           event_date: string | null
           event_time: string | null
           event_title: string
@@ -399,6 +407,10 @@ export type Database = {
         }
         Insert: {
           add_ons?: Json | null
+          balance_amount?: number | null
+          balance_paid?: boolean | null
+          balance_paid_at?: string | null
+          balance_reference?: string | null
           client_email: string
           client_name: string
           client_phone: string
@@ -408,6 +420,10 @@ export type Database = {
           created_at?: string
           custom_colors?: string[] | null
           delivery_type?: string
+          deposit_amount?: number | null
+          deposit_paid?: boolean | null
+          deposit_paid_at?: string | null
+          deposit_reference?: string | null
           event_date?: string | null
           event_time?: string | null
           event_title: string
@@ -430,6 +446,10 @@ export type Database = {
         }
         Update: {
           add_ons?: Json | null
+          balance_amount?: number | null
+          balance_paid?: boolean | null
+          balance_paid_at?: string | null
+          balance_reference?: string | null
           client_email?: string
           client_name?: string
           client_phone?: string
@@ -439,6 +459,10 @@ export type Database = {
           created_at?: string
           custom_colors?: string[] | null
           delivery_type?: string
+          deposit_amount?: number | null
+          deposit_paid?: boolean | null
+          deposit_paid_at?: string | null
+          deposit_reference?: string | null
           event_date?: string | null
           event_time?: string | null
           event_title?: string
