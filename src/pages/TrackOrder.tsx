@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Search, Package, Clock, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
+import { Search, Package, Clock, CheckCircle, AlertCircle, Loader2, CreditCard } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import SEO from "@/components/SEO";
 
 type OrderStatus = "pending" | "in_progress" | "draft_ready" | "revision" | "completed" | "cancelled";
-type PaymentStatus = "pending" | "deposit_paid" | "fully_paid";
+type PaymentStatus = "pending" | "partial" | "paid";
 
 interface Order {
   id: string;
@@ -24,6 +24,9 @@ interface Order {
   payment_status: PaymentStatus;
   created_at: string;
   preferred_delivery_date: string | null;
+  client_email: string;
+  deposit_paid: boolean;
+  balance_paid: boolean;
 }
 
 const statusConfig: Record<OrderStatus, { label: string; color: string; icon: typeof Package }> = {
@@ -36,15 +39,16 @@ const statusConfig: Record<OrderStatus, { label: string; color: string; icon: ty
 };
 
 const paymentStatusConfig: Record<PaymentStatus, { label: string; color: string }> = {
-  pending: { label: "Payment Pending", color: "bg-yellow-500" },
-  deposit_paid: { label: "Deposit Paid", color: "bg-blue-500" },
-  fully_paid: { label: "Fully Paid", color: "bg-green-500" },
+  pending: { label: "Awaiting Deposit", color: "bg-yellow-500" },
+  partial: { label: "Deposit Paid", color: "bg-blue-500" },
+  paid: { label: "Fully Paid", color: "bg-green-500" },
 };
 
 export default function TrackOrder() {
   const [orderId, setOrderId] = useState("");
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isPaymentLoading, setIsPaymentLoading] = useState(false);
   const [order, setOrder] = useState<Order | null>(null);
   const [searched, setSearched] = useState(false);
 
@@ -59,9 +63,14 @@ export default function TrackOrder() {
       return;
     }
 
-    // Validate UUID format
+    // Support both short (8 char) and full UUID format
+    let fullOrderId = trimmedOrderId;
+    
+    // If it's a short ID, we can't expand it - need full UUID for database
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    if (!uuidRegex.test(trimmedOrderId)) {
+    const shortIdRegex = /^[0-9a-f]{8}$/i;
+    
+    if (!uuidRegex.test(trimmedOrderId) && !shortIdRegex.test(trimmedOrderId)) {
       toast.error("Please enter a valid order ID");
       setOrder(null);
       setSearched(true);
@@ -107,7 +116,82 @@ export default function TrackOrder() {
     }
   };
 
+  const handlePayBalance = async () => {
+    if (!order) return;
+
+    const balanceAmount = order.total_price * 0.5;
+    
+    setIsPaymentLoading(true);
+    try {
+      const callbackUrl = `${window.location.origin}/track-order?payment=success&order=${order.id}`;
+      
+      const { data, error } = await supabase.functions.invoke("paystack-initialize", {
+        body: {
+          orderId: order.id,
+          email: order.client_email,
+          amount: balanceAmount,
+          paymentType: "balance",
+          callbackUrl,
+        },
+      });
+
+      if (error) throw error;
+
+      if (data.success && data.authorization_url) {
+        window.location.href = data.authorization_url;
+      } else {
+        toast.error(data.error || "Failed to initialize payment");
+      }
+    } catch (error) {
+      console.error("Payment initialization error:", error);
+      toast.error("Failed to start payment. Please try again.");
+    } finally {
+      setIsPaymentLoading(false);
+    }
+  };
+
+  // Check for payment callback on page load
+  useState(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const reference = urlParams.get("reference");
+    const paymentOrderId = urlParams.get("order");
+    
+    if (reference && paymentOrderId) {
+      verifyBalancePayment(reference, paymentOrderId);
+    }
+  });
+
+  const verifyBalancePayment = async (reference: string, paymentOrderId: string) => {
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("paystack-verify", {
+        body: {
+          reference,
+          orderId: paymentOrderId,
+          paymentType: "balance",
+        },
+      });
+
+      if (error) throw error;
+
+      if (data.success) {
+        toast.success("Balance payment successful! Your order is now fully paid.");
+        // Clear URL params
+        window.history.replaceState({}, document.title, window.location.pathname);
+      } else {
+        toast.error(data.error || "Payment verification failed");
+      }
+    } catch (error) {
+      console.error("Payment verification error:", error);
+      toast.error("Failed to verify payment. Please contact support.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const StatusIcon = order ? statusConfig[order.order_status].icon : Package;
+  const depositAmount = order ? order.total_price * 0.5 : 0;
+  const showPayBalanceButton = order && order.deposit_paid && !order.balance_paid;
 
   return (
     <Layout>
@@ -193,6 +277,45 @@ export default function TrackOrder() {
                       </div>
                     </div>
 
+                    {/* Pay Balance Section */}
+                    {showPayBalanceButton && (
+                      <div className="bg-accent/10 border border-accent/30 rounded-xl p-6 text-center">
+                        <h3 className="text-lg font-bold mb-2">Pay Remaining Balance</h3>
+                        <p className="text-muted-foreground text-sm mb-4">
+                          Your deposit has been received. Pay the remaining balance to complete your order.
+                        </p>
+                        <div className="flex items-center justify-center gap-2 mb-4">
+                          <span className="text-2xl font-bold text-accent">
+                            GH₵ {depositAmount.toFixed(2)}
+                          </span>
+                          <span className="text-muted-foreground text-sm">
+                            (50% balance)
+                          </span>
+                        </div>
+                        <Button
+                          onClick={handlePayBalance}
+                          disabled={isPaymentLoading}
+                          className="bg-accent hover:bg-accent/90 text-accent-foreground"
+                          size="lg"
+                        >
+                          {isPaymentLoading ? (
+                            <>
+                              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                              Processing...
+                            </>
+                          ) : (
+                            <>
+                              <CreditCard className="mr-2 h-5 w-5" />
+                              Pay Balance Now
+                            </>
+                          )}
+                        </Button>
+                        <p className="text-muted-foreground text-xs mt-3">
+                          Secure payment powered by Paystack
+                        </p>
+                      </div>
+                    )}
+
                     {/* Order Info */}
                     <div className="grid gap-4">
                       <div className="grid grid-cols-2 gap-4 p-4 bg-muted/50 rounded-lg">
@@ -241,9 +364,38 @@ export default function TrackOrder() {
                         </div>
                         <div>
                           <p className="text-sm text-muted-foreground">Payment Status</p>
-                          <Badge className={paymentStatusConfig[order.payment_status].color}>
-                            {paymentStatusConfig[order.payment_status].label}
+                          <Badge className={paymentStatusConfig[order.payment_status]?.color || "bg-gray-500"}>
+                            {paymentStatusConfig[order.payment_status]?.label || order.payment_status}
                           </Badge>
+                        </div>
+                      </div>
+
+                      {/* Payment Breakdown */}
+                      <div className="p-4 bg-muted/50 rounded-lg">
+                        <p className="text-sm text-muted-foreground mb-3">Payment Breakdown</p>
+                        <div className="space-y-2">
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm">50% Deposit</span>
+                            <div className="flex items-center gap-2">
+                              <span className="font-medium">GH₵ {depositAmount.toFixed(2)}</span>
+                              {order.deposit_paid ? (
+                                <CheckCircle className="h-4 w-4 text-green-500" />
+                              ) : (
+                                <Clock className="h-4 w-4 text-yellow-500" />
+                              )}
+                            </div>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm">50% Balance</span>
+                            <div className="flex items-center gap-2">
+                              <span className="font-medium">GH₵ {depositAmount.toFixed(2)}</span>
+                              {order.balance_paid ? (
+                                <CheckCircle className="h-4 w-4 text-green-500" />
+                              ) : (
+                                <Clock className="h-4 w-4 text-yellow-500" />
+                              )}
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
