@@ -760,37 +760,24 @@ export type Database = {
         Returns: boolean
       }
       cleanup_rate_limit_logs: { Args: never; Returns: undefined }
-      get_order_by_id:
-        | {
-            Args: { order_id: string }
-            Returns: {
-              created_at: string
-              event_date: string
-              event_title: string
-              event_type: string
-              id: string
-              order_status: string
-              package_name: string
-              payment_status: string
-              preferred_delivery_date: string
-              total_price: number
-            }[]
-          }
-        | {
-            Args: { customer_email?: string; order_id: string }
-            Returns: {
-              created_at: string
-              event_date: string
-              event_title: string
-              event_type: string
-              id: string
-              order_status: string
-              package_name: string
-              payment_status: string
-              preferred_delivery_date: string
-              total_price: number
-            }[]
-          }
+      get_order_by_id: {
+        Args: { customer_email?: string; order_id: string }
+        Returns: {
+          balance_paid: boolean
+          client_email: string
+          created_at: string
+          deposit_paid: boolean
+          event_date: string
+          event_title: string
+          event_type: string
+          id: string
+          order_status: string
+          package_name: string
+          payment_status: string
+          preferred_delivery_date: string
+          total_price: number
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
