@@ -851,6 +851,72 @@ const Admin = () => {
 
               <Separator />
 
+              {/* Payment Status Section */}
+              <div>
+                <h4 className="font-semibold mb-3">Payment Status</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Deposit Status */}
+                  <div className={`p-4 rounded-lg border ${selectedOrder.deposit_paid ? 'bg-green-50 border-green-200 dark:bg-green-950 dark:border-green-800' : 'bg-yellow-50 border-yellow-200 dark:bg-yellow-950 dark:border-yellow-800'}`}>
+                    <div className="flex items-center gap-2 mb-2">
+                      {selectedOrder.deposit_paid ? (
+                        <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
+                      ) : (
+                        <Clock className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />
+                      )}
+                      <span className="font-medium">50% Deposit</span>
+                    </div>
+                    <p className="text-lg font-bold">
+                      ₵{(Number(selectedOrder.total_price) * 0.5).toLocaleString()}
+                    </p>
+                    {selectedOrder.deposit_paid ? (
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Paid on {selectedOrder.deposit_paid_at 
+                          ? format(new Date(selectedOrder.deposit_paid_at), "MMM d, yyyy 'at' h:mm a")
+                          : "Unknown date"}
+                        {selectedOrder.deposit_reference && (
+                          <span className="block mt-0.5">Ref: {selectedOrder.deposit_reference}</span>
+                        )}
+                      </p>
+                    ) : (
+                      <Badge variant="outline" className="mt-2 text-yellow-700 border-yellow-300 dark:text-yellow-400 dark:border-yellow-700">
+                        Pending
+                      </Badge>
+                    )}
+                  </div>
+
+                  {/* Balance Status */}
+                  <div className={`p-4 rounded-lg border ${selectedOrder.balance_paid ? 'bg-green-50 border-green-200 dark:bg-green-950 dark:border-green-800' : 'bg-muted/50 border-border'}`}>
+                    <div className="flex items-center gap-2 mb-2">
+                      {selectedOrder.balance_paid ? (
+                        <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
+                      ) : (
+                        <Clock className="h-5 w-5 text-muted-foreground" />
+                      )}
+                      <span className="font-medium">50% Balance</span>
+                    </div>
+                    <p className="text-lg font-bold">
+                      ₵{(Number(selectedOrder.total_price) * 0.5).toLocaleString()}
+                    </p>
+                    {selectedOrder.balance_paid ? (
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Paid on {selectedOrder.balance_paid_at 
+                          ? format(new Date(selectedOrder.balance_paid_at), "MMM d, yyyy 'at' h:mm a")
+                          : "Unknown date"}
+                        {selectedOrder.balance_reference && (
+                          <span className="block mt-0.5">Ref: {selectedOrder.balance_reference}</span>
+                        )}
+                      </p>
+                    ) : (
+                      <Badge variant="outline" className="mt-2">
+                        {selectedOrder.deposit_paid ? "Due on completion" : "Awaiting deposit"}
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
               {/* Client Info */}
               <div>
                 <h4 className="font-semibold mb-3">Client Information</h4>

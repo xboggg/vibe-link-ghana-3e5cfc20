@@ -41,6 +41,11 @@ const ThankYou = () => {
 
   const verifyPayment = async (reference: string) => {
     const storedOrderId = sessionStorage.getItem("vibelink_order_id");
+    const storedEmail = sessionStorage.getItem("vibelink_order_email");
+    const storedName = sessionStorage.getItem("vibelink_order_name");
+    const storedEventTitle = sessionStorage.getItem("vibelink_order_event_title");
+    const storedTotal = sessionStorage.getItem("vibelink_order_total");
+    
     if (!storedOrderId) {
       toast.error("Order not found. Please contact support.");
       return;
@@ -61,6 +66,27 @@ const ThankYou = () => {
       if (data.success) {
         setDepositPaid(true);
         toast.success("Payment successful! Your deposit has been received.");
+        
+        // Send payment confirmation email
+        if (storedEmail && storedName && storedEventTitle && storedTotal) {
+          try {
+            await supabase.functions.invoke("send-payment-confirmation", {
+              body: {
+                orderId: storedOrderId,
+                clientName: storedName,
+                clientEmail: storedEmail,
+                eventTitle: storedEventTitle,
+                paymentType: "deposit",
+                amountPaid: parseFloat(storedTotal) * 0.5,
+                totalPrice: parseFloat(storedTotal),
+                reference,
+              },
+            });
+          } catch (emailError) {
+            console.error("Failed to send payment confirmation email:", emailError);
+          }
+        }
+        
         // Clear URL params
         window.history.replaceState({}, document.title, window.location.pathname);
       } else {

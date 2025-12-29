@@ -302,12 +302,14 @@ ${formData.designNotes ? `🎯 *Design Notes:* ${formData.designNotes}` : ""}`;
         sendOrderConfirmationEmail(data.id, total, selectedPkg, selectedAddOnsList);
         sendAdminNotification(data.id, total, selectedPkg, selectedAddOnsList);
         
-        // Store WhatsApp URL, order ID, and total for thank you page
+        // Store WhatsApp URL, order ID, and details for thank you page
         const whatsappUrl = getWhatsAppUrl(data.id, total);
         sessionStorage.setItem("vibelink_whatsapp_url", whatsappUrl);
         sessionStorage.setItem("vibelink_order_id", data.id);
         sessionStorage.setItem("vibelink_order_email", formData.email);
         sessionStorage.setItem("vibelink_order_total", total.toString());
+        sessionStorage.setItem("vibelink_order_name", formData.fullName);
+        sessionStorage.setItem("vibelink_order_event_title", formData.eventTitle);
       }
       
       onComplete?.(formData);
