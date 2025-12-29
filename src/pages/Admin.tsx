@@ -80,6 +80,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CalendarView } from "@/components/admin/CalendarView";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
 import type { Database } from "@/integrations/supabase/types";
 
 type Order = Database["public"]["Tables"]["orders"]["Row"];
@@ -140,6 +141,8 @@ const Admin = () => {
   const [activeSection, setActiveSection] = useState<AdminSection>("dashboard");
   const [runningFollowUps, setRunningFollowUps] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [recordingPayment, setRecordingPayment] = useState<"deposit" | "balance" | null>(null);
+  const [paymentReference, setPaymentReference] = useState("");
 
   useEffect(() => {
     if (!loading && !user) {
@@ -312,6 +315,92 @@ const Admin = () => {
   const handleSignOut = async () => {
     await signOut();
     navigate("/admin/auth");
+  };
+
+  const recordManualPayment = async (paymentType: "deposit" | "balance") => {
+    if (!selectedOrder) return;
+    
+    setRecordingPayment(paymentType);
+    
+    const now = new Date().toISOString();
+    const amountPaid = Number(selectedOrder.total_price) * 0.5;
+    const reference = paymentReference.trim() || `MANUAL-${Date.now()}`;
+    
+    try {
+      const updateData = paymentType === "deposit" 
+        ? {
+            deposit_paid: true,
+            deposit_paid_at: now,
+            deposit_reference: reference,
+            deposit_amount: amountPaid,
+            payment_status: "deposit_paid" as PaymentStatus,
+          }
+        : {
+            balance_paid: true,
+            balance_paid_at: now,
+            balance_reference: reference,
+            balance_amount: amountPaid,
+            payment_status: "fully_paid" as PaymentStatus,
+          };
+      
+      const { error } = await supabase
+        .from("orders")
+        .update(updateData)
+        .eq("id", selectedOrder.id);
+      
+      if (error) throw error;
+      
+      toast.success(`${paymentType === "deposit" ? "Deposit" : "Balance"} recorded successfully!`);
+      
+      // Send confirmation email to customer
+      supabase.functions.invoke("send-payment-confirmation", {
+        body: {
+          orderId: selectedOrder.id,
+          clientName: selectedOrder.client_name,
+          clientEmail: selectedOrder.client_email,
+          eventTitle: selectedOrder.event_title,
+          paymentType,
+          amountPaid,
+          totalPrice: Number(selectedOrder.total_price),
+          reference,
+        },
+      }).catch((err) => console.error("Failed to send confirmation:", err));
+      
+      // Send admin notification
+      supabase.functions.invoke("send-admin-payment-notification", {
+        body: {
+          orderId: selectedOrder.id,
+          clientName: selectedOrder.client_name,
+          clientEmail: selectedOrder.client_email,
+          clientPhone: selectedOrder.client_phone,
+          eventTitle: selectedOrder.event_title,
+          paymentType,
+          amountPaid,
+          totalPrice: Number(selectedOrder.total_price),
+          reference,
+          paymentMethod: "Manual (Cash/Bank Transfer)",
+        },
+      }).catch((err) => console.error("Failed to send admin notification:", err));
+      
+      setPaymentReference("");
+      fetchOrders();
+      
+      // Refresh selected order with new data
+      const { data: updatedOrder } = await supabase
+        .from("orders")
+        .select("*")
+        .eq("id", selectedOrder.id)
+        .single();
+      
+      if (updatedOrder) {
+        setSelectedOrder(updatedOrder);
+      }
+    } catch (err) {
+      console.error("Error recording payment:", err);
+      toast.error("Failed to record payment");
+    } finally {
+      setRecordingPayment(null);
+    }
   };
 
   const filteredOrders = orders.filter((order) => {
@@ -913,6 +1002,56 @@ const Admin = () => {
                     )}
                   </div>
                 </div>
+                
+                {/* Manual Payment Recording */}
+                {(!selectedOrder.deposit_paid || !selectedOrder.balance_paid) && (
+                  <div className="bg-muted/30 rounded-lg p-4 mt-4">
+                    <h5 className="text-sm font-medium mb-3">Record Manual Payment (Cash/Bank Transfer)</h5>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <Input
+                        placeholder="Reference (optional)"
+                        value={paymentReference}
+                        onChange={(e) => setPaymentReference(e.target.value)}
+                        className="flex-1"
+                      />
+                      {!selectedOrder.deposit_paid && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => recordManualPayment("deposit")}
+                          disabled={recordingPayment !== null}
+                          className="whitespace-nowrap"
+                        >
+                          {recordingPayment === "deposit" ? (
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          ) : (
+                            <CreditCard className="h-4 w-4 mr-2" />
+                          )}
+                          Record Deposit
+                        </Button>
+                      )}
+                      {selectedOrder.deposit_paid && !selectedOrder.balance_paid && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => recordManualPayment("balance")}
+                          disabled={recordingPayment !== null}
+                          className="whitespace-nowrap"
+                        >
+                          {recordingPayment === "balance" ? (
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          ) : (
+                            <CreditCard className="h-4 w-4 mr-2" />
+                          )}
+                          Record Balance
+                        </Button>
+                      )}
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Use this for payments made outside Paystack (MoMo, bank transfer, cash)
+                    </p>
+                  </div>
+                )}
               </div>
 
               <Separator />

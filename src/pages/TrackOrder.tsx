@@ -177,24 +177,28 @@ export default function TrackOrder() {
       if (data.success) {
         toast.success("Balance payment successful! Your order is now fully paid.");
         
-        // If we have the order loaded, send payment confirmation email
+        // If we have the order loaded, send payment confirmation email and admin notification
         if (order) {
-          try {
-            await supabase.functions.invoke("send-payment-confirmation", {
-              body: {
-                orderId: order.id,
-                clientName: order.event_title, // We don't have client_name in Order type from RPC
-                clientEmail: order.client_email,
-                eventTitle: order.event_title,
-                paymentType: "balance",
-                amountPaid: order.total_price * 0.5,
-                totalPrice: order.total_price,
-                reference,
-              },
-            });
-          } catch (emailError) {
-            console.error("Failed to send payment confirmation email:", emailError);
-          }
+          const paymentData = {
+            orderId: order.id,
+            clientName: order.event_title, // We don't have client_name in Order type from RPC
+            clientEmail: order.client_email,
+            eventTitle: order.event_title,
+            paymentType: "balance" as const,
+            amountPaid: order.total_price * 0.5,
+            totalPrice: order.total_price,
+            reference,
+          };
+          
+          // Send customer confirmation email
+          supabase.functions.invoke("send-payment-confirmation", {
+            body: paymentData,
+          }).catch((err) => console.error("Failed to send payment confirmation:", err));
+          
+          // Send admin notification
+          supabase.functions.invoke("send-admin-payment-notification", {
+            body: paymentData,
+          }).catch((err) => console.error("Failed to send admin notification:", err));
         }
         
         // Clear URL params
