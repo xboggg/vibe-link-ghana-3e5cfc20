@@ -67,24 +67,28 @@ const ThankYou = () => {
         setDepositPaid(true);
         toast.success("Payment successful! Your deposit has been received.");
         
-        // Send payment confirmation email
+        // Send payment confirmation email and admin notification
         if (storedEmail && storedName && storedEventTitle && storedTotal) {
-          try {
-            await supabase.functions.invoke("send-payment-confirmation", {
-              body: {
-                orderId: storedOrderId,
-                clientName: storedName,
-                clientEmail: storedEmail,
-                eventTitle: storedEventTitle,
-                paymentType: "deposit",
-                amountPaid: parseFloat(storedTotal) * 0.5,
-                totalPrice: parseFloat(storedTotal),
-                reference,
-              },
-            });
-          } catch (emailError) {
-            console.error("Failed to send payment confirmation email:", emailError);
-          }
+          const paymentData = {
+            orderId: storedOrderId,
+            clientName: storedName,
+            clientEmail: storedEmail,
+            eventTitle: storedEventTitle,
+            paymentType: "deposit" as const,
+            amountPaid: parseFloat(storedTotal) * 0.5,
+            totalPrice: parseFloat(storedTotal),
+            reference,
+          };
+          
+          // Send customer confirmation email
+          supabase.functions.invoke("send-payment-confirmation", {
+            body: paymentData,
+          }).catch((err) => console.error("Failed to send payment confirmation:", err));
+          
+          // Send admin notification
+          supabase.functions.invoke("send-admin-payment-notification", {
+            body: paymentData,
+          }).catch((err) => console.error("Failed to send admin notification:", err));
         }
         
         // Clear URL params
