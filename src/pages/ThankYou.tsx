@@ -67,7 +67,7 @@ const ThankYou = () => {
         setDepositPaid(true);
         toast.success("Payment successful! Your deposit has been received.");
         
-        // Send payment confirmation email and admin notification
+        // Send payment confirmation email, admin notification, and Telegram notification
         if (storedEmail && storedName && storedEventTitle && storedTotal) {
           const paymentData = {
             orderId: storedOrderId,
@@ -85,10 +85,24 @@ const ThankYou = () => {
             body: paymentData,
           }).catch((err) => console.error("Failed to send payment confirmation:", err));
           
-          // Send admin notification
+          // Send admin notification email
           supabase.functions.invoke("send-admin-payment-notification", {
             body: paymentData,
           }).catch((err) => console.error("Failed to send admin notification:", err));
+          
+          // Send Telegram notification
+          supabase.functions.invoke("send-telegram-notification", {
+            body: {
+              type: "deposit",
+              orderId: storedOrderId,
+              clientName: storedName,
+              clientEmail: storedEmail,
+              eventTitle: storedEventTitle,
+              amount: parseFloat(storedTotal) * 0.5,
+              paymentMethod: "paystack",
+              reference,
+            },
+          }).catch((err) => console.error("Failed to send Telegram notification:", err));
         }
         
         // Clear URL params

@@ -100,6 +100,23 @@ serve(async (req) => {
       );
     }
 
+    // Log payment to payment_history table
+    const { error: historyError } = await supabase
+      .from("payment_history")
+      .insert({
+        order_id: orderId,
+        payment_type: paymentType,
+        payment_method: "paystack",
+        amount: amountPaid,
+        reference: reference,
+        recorded_by: "system",
+      });
+
+    if (historyError) {
+      console.error("Error logging payment history:", historyError);
+      // Don't fail the request, just log the error
+    }
+
     console.log(`Order ${orderId} updated successfully with ${paymentType} payment`);
 
     return new Response(

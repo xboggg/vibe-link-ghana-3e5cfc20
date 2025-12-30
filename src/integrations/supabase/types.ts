@@ -521,6 +521,50 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_history: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          notes: string | null
+          order_id: string
+          payment_method: string
+          payment_type: string
+          recorded_by: string | null
+          reference: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          notes?: string | null
+          order_id: string
+          payment_method: string
+          payment_type: string
+          recorded_by?: string | null
+          reference?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          notes?: string | null
+          order_id?: string
+          payment_method?: string
+          payment_type?: string
+          recorded_by?: string | null
+          reference?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_history_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       payment_reminder_logs: {
         Row: {
           error_message: string | null

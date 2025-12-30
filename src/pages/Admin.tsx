@@ -97,6 +97,18 @@ interface ReminderLog {
   error_message: string | null;
 }
 
+interface PaymentHistoryLog {
+  id: string;
+  order_id: string;
+  payment_type: string;
+  payment_method: string;
+  amount: number;
+  reference: string | null;
+  recorded_by: string | null;
+  notes: string | null;
+  created_at: string;
+}
+
 type AdminSection = "dashboard" | "orders" | "analytics" | "chatbot" | "blog" | "testimonials" | "newsletter" | "follow-ups" | "email-settings" | "users" | "team";
 
 const orderStatusColors: Record<OrderStatus, string> = {
@@ -143,6 +155,8 @@ const Admin = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [recordingPayment, setRecordingPayment] = useState<"deposit" | "balance" | null>(null);
   const [paymentReference, setPaymentReference] = useState("");
+  const [paymentHistory, setPaymentHistory] = useState<PaymentHistoryLog[]>([]);
+  const [loadingPaymentHistory, setLoadingPaymentHistory] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -159,8 +173,10 @@ const Admin = () => {
   useEffect(() => {
     if (selectedOrder) {
       fetchReminderLogs(selectedOrder.id);
+      fetchPaymentHistory(selectedOrder.id);
     } else {
       setReminderLogs([]);
+      setPaymentHistory([]);
     }
   }, [selectedOrder]);
 
@@ -194,6 +210,22 @@ const Admin = () => {
       setReminderLogs((data as ReminderLog[]) || []);
     }
     setLoadingReminders(false);
+  };
+
+  const fetchPaymentHistory = async (orderId: string) => {
+    setLoadingPaymentHistory(true);
+    const { data, error } = await supabase
+      .from("payment_history")
+      .select("*")
+      .eq("order_id", orderId)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching payment history:", error);
+    } else {
+      setPaymentHistory((data as PaymentHistoryLog[]) || []);
+    }
+    setLoadingPaymentHistory(false);
   };
 
   const updateOrderStatus = async (orderId: string, status: OrderStatus) => {
@@ -366,7 +398,7 @@ const Admin = () => {
         },
       }).catch((err) => console.error("Failed to send confirmation:", err));
       
-      // Send admin notification
+      // Send admin notification email
       supabase.functions.invoke("send-admin-payment-notification", {
         body: {
           orderId: selectedOrder.id,
@@ -382,6 +414,32 @@ const Admin = () => {
         },
       }).catch((err) => console.error("Failed to send admin notification:", err));
       
+      // Send Telegram notification
+      supabase.functions.invoke("send-telegram-notification", {
+        body: {
+          type: paymentType,
+          orderId: selectedOrder.id,
+          clientName: selectedOrder.client_name,
+          clientEmail: selectedOrder.client_email,
+          eventTitle: selectedOrder.event_title,
+          amount: amountPaid,
+          paymentMethod: "bank_transfer",
+          reference,
+        },
+      }).catch((err) => console.error("Failed to send Telegram notification:", err));
+      
+      // Log payment to payment_history table
+      await supabase
+        .from("payment_history")
+        .insert({
+          order_id: selectedOrder.id,
+          payment_type: paymentType,
+          payment_method: "bank_transfer",
+          amount: amountPaid,
+          reference: reference,
+          recorded_by: user?.email || "admin",
+        });
+      
       setPaymentReference("");
       fetchOrders();
       
@@ -394,6 +452,7 @@ const Admin = () => {
       
       if (updatedOrder) {
         setSelectedOrder(updatedOrder);
+        fetchPaymentHistory(updatedOrder.id);
       }
     } catch (err) {
       console.error("Error recording payment:", err);
@@ -1102,6 +1161,37 @@ const Admin = () => {
                   </Button>
                 )}
               </div>
+
+              {/* Payment History */}
+              {paymentHistory.length > 0 && (
+                <>
+                  <Separator />
+                  <div>
+                    <h4 className="font-semibold mb-3">Payment History</h4>
+                    <div className="space-y-2">
+                      {paymentHistory.map((payment) => (
+                        <div key={payment.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
+                          <div className="flex items-center gap-3">
+                            <CreditCard className="h-4 w-4 text-green-500" />
+                            <div>
+                              <p className="text-sm font-medium capitalize">
+                                {payment.payment_type} - ₵{Number(payment.amount).toLocaleString()}
+                              </p>
+                              <p className="text-xs text-muted-foreground">
+                                {format(new Date(payment.created_at), "MMM d, yyyy h:mm a")}
+                                {payment.reference && ` • Ref: ${payment.reference}`}
+                              </p>
+                            </div>
+                          </div>
+                          <Badge variant="outline" className="capitalize">
+                            {payment.payment_method.replace('_', ' ')}
+                          </Badge>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
 
               {/* Reminder History */}
               {reminderLogs.length > 0 && (

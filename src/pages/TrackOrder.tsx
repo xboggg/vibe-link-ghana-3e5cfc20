@@ -177,7 +177,7 @@ export default function TrackOrder() {
       if (data.success) {
         toast.success("Balance payment successful! Your order is now fully paid.");
         
-        // If we have the order loaded, send payment confirmation email and admin notification
+        // If we have the order loaded, send payment confirmation email, admin notification, and Telegram
         if (order) {
           const paymentData = {
             orderId: order.id,
@@ -195,10 +195,24 @@ export default function TrackOrder() {
             body: paymentData,
           }).catch((err) => console.error("Failed to send payment confirmation:", err));
           
-          // Send admin notification
+          // Send admin notification email
           supabase.functions.invoke("send-admin-payment-notification", {
             body: paymentData,
           }).catch((err) => console.error("Failed to send admin notification:", err));
+          
+          // Send Telegram notification
+          supabase.functions.invoke("send-telegram-notification", {
+            body: {
+              type: "balance",
+              orderId: order.id,
+              clientName: order.event_title,
+              clientEmail: order.client_email,
+              eventTitle: order.event_title,
+              amount: order.total_price * 0.5,
+              paymentMethod: "paystack",
+              reference,
+            },
+          }).catch((err) => console.error("Failed to send Telegram notification:", err));
         }
         
         // Clear URL params
