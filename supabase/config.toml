@@ -53,3 +53,12 @@ verify_jwt = false
 
 [functions.paystack-verify]
 verify_jwt = false
+
+[functions.send-payment-confirmation]
+verify_jwt = false
+
+[functions.send-admin-payment-notification]
+verify_jwt = false
+
+[functions.send-telegram-notification]
+verify_jwt = false
