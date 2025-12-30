@@ -1,59 +1,19 @@
 project_id = "tggurgtvpplkyomsdbwt"
 
-[functions.send-status-email]
-verify_jwt = false
+# =====================================================
+# PUBLIC FUNCTIONS (No JWT required)
+# These are called from the public website
+# =====================================================
 
-[functions.send-order-confirmation]
-verify_jwt = false
-
-[functions.send-payment-reminder]
-verify_jwt = false
-
-[functions.auto-payment-reminder]
-verify_jwt = false
-
-[functions.verify-captcha]
-verify_jwt = false
-
-[functions.send-admin-notification]
-verify_jwt = false
-
-[functions.send-follow-up-emails]
-verify_jwt = false
-
-[functions.totp-manage]
-verify_jwt = false
-
-[functions.publish-scheduled-posts]
-verify_jwt = false
-
-[functions.send-newsletter]
-verify_jwt = false
-
-[functions.track-newsletter]
-verify_jwt = false
-
-[functions.send-scheduled-newsletters]
-verify_jwt = false
-
-[functions.unsubscribe-newsletter]
-verify_jwt = false
-
-[functions.newsletter-preferences]
-verify_jwt = false
-
-[functions.send-welcome-email]
-verify_jwt = false
-
-[functions.customer-chat]
-verify_jwt = false
-
+# Payment flow - must be public for customers
 [functions.paystack-initialize]
 verify_jwt = false
 
 [functions.paystack-verify]
 verify_jwt = false
 
+# Payment notifications - called after successful payment
+# These should validate the payment reference internally
 [functions.send-payment-confirmation]
 verify_jwt = false
 
@@ -62,3 +22,58 @@ verify_jwt = false
 
 [functions.send-telegram-notification]
 verify_jwt = false
+
+# Customer-facing features
+[functions.customer-chat]
+verify_jwt = false
+
+[functions.verify-captcha]
+verify_jwt = false
+
+# Newsletter public endpoints
+[functions.unsubscribe-newsletter]
+verify_jwt = false
+
+[functions.newsletter-preferences]
+verify_jwt = false
+
+[functions.track-newsletter]
+verify_jwt = false
+
+[functions.send-welcome-email]
+verify_jwt = false
+
+# Order confirmation - sent after order creation
+[functions.send-order-confirmation]
+verify_jwt = false
+
+[functions.send-admin-notification]
+verify_jwt = false
+
+# =====================================================
+# ADMIN FUNCTIONS (JWT required - admin only)
+# =====================================================
+
+[functions.send-status-email]
+verify_jwt = true
+
+[functions.send-payment-reminder]
+verify_jwt = true
+
+[functions.auto-payment-reminder]
+verify_jwt = true
+
+[functions.send-follow-up-emails]
+verify_jwt = true
+
+[functions.totp-manage]
+verify_jwt = true
+
+[functions.publish-scheduled-posts]
+verify_jwt = true
+
+[functions.send-newsletter]
+verify_jwt = true
+
+[functions.send-scheduled-newsletters]
+verify_jwt = true
