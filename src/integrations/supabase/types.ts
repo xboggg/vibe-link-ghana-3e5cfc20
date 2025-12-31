@@ -746,36 +746,54 @@ export type Database = {
       }
       page_views: {
         Row: {
+          browser: string | null
           city: string | null
           country: string | null
           created_at: string
+          device_type: string | null
           id: string
+          os: string | null
           page_path: string
           page_title: string | null
           referrer: string | null
+          screen_height: number | null
+          screen_width: number | null
           session_id: string | null
+          time_spent: number | null
           user_agent: string | null
         }
         Insert: {
+          browser?: string | null
           city?: string | null
           country?: string | null
           created_at?: string
+          device_type?: string | null
           id?: string
+          os?: string | null
           page_path: string
           page_title?: string | null
           referrer?: string | null
+          screen_height?: number | null
+          screen_width?: number | null
           session_id?: string | null
+          time_spent?: number | null
           user_agent?: string | null
         }
         Update: {
+          browser?: string | null
           city?: string | null
           country?: string | null
           created_at?: string
+          device_type?: string | null
           id?: string
+          os?: string | null
           page_path?: string
           page_title?: string | null
           referrer?: string | null
+          screen_height?: number | null
+          screen_width?: number | null
           session_id?: string | null
+          time_spent?: number | null
           user_agent?: string | null
         }
         Relationships: []
