@@ -17,7 +17,7 @@ import {
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Eye, Users, Clock, TrendingUp, Loader2, Globe, Radio } from "lucide-react";
+import { Eye, Users, Clock, TrendingUp, Loader2, Globe, Radio, Monitor, Smartphone, Tablet } from "lucide-react";
 import { useRealtimeVisitors } from "@/hooks/useRealtimeVisitors";
 
 interface PageView {
@@ -27,6 +27,10 @@ interface PageView {
   referrer: string | null;
   session_id: string | null;
   created_at: string;
+  device_type?: string | null;
+  browser?: string | null;
+  os?: string | null;
+  time_spent?: number | null;
 }
 
 interface DailyStats {
@@ -45,6 +49,11 @@ interface ReferrerStats {
   count: number;
 }
 
+interface DeviceStats {
+  name: string;
+  value: number;
+}
+
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
 
 // Parse referrer to get source name
@@ -53,7 +62,7 @@ const parseReferrer = (referrer: string | null): string => {
   try {
     const url = new URL(referrer);
     const hostname = url.hostname.replace("www.", "");
-    
+
     // Map common referrers to friendly names
     if (hostname.includes("google")) return "Google";
     if (hostname.includes("facebook") || hostname.includes("fb.")) return "Facebook";
@@ -67,7 +76,7 @@ const parseReferrer = (referrer: string | null): string => {
     if (hostname.includes("reddit")) return "Reddit";
     if (hostname.includes("bing")) return "Bing";
     if (hostname.includes("yahoo")) return "Yahoo";
-    
+
     return hostname;
   } catch {
     return "Other";
@@ -108,15 +117,27 @@ export const AnalyticsDashboard = () => {
   const uniqueSessions = new Set(pageViews.map((pv) => pv.session_id)).size;
   const avgViewsPerSession = uniqueSessions > 0 ? (totalViews / uniqueSessions).toFixed(1) : "0";
 
+  // Calculate average time spent (only from views that have time_spent data)
+  const viewsWithTime = pageViews.filter(pv => pv.time_spent && pv.time_spent > 0);
+  const avgTimeSpent = viewsWithTime.length > 0
+    ? Math.round(viewsWithTime.reduce((sum, pv) => sum + (pv.time_spent || 0), 0) / viewsWithTime.length)
+    : 0;
+  const formatTime = (seconds: number): string => {
+    if (seconds < 60) return `${seconds}s`;
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}m ${secs}s`;
+  };
+
   // Daily stats for chart
   const dailyStats: DailyStats[] = [];
   const days = dateRange === "7d" ? 7 : dateRange === "30d" ? 30 : 90;
-  
+
   for (let i = days - 1; i >= 0; i--) {
     const date = subDays(new Date(), i);
     const dayStart = startOfDay(date);
     const dayEnd = endOfDay(date);
-    
+
     const dayViews = pageViews.filter((pv) => {
       const pvDate = new Date(pv.created_at);
       return pvDate >= dayStart && pvDate <= dayEnd;
@@ -155,11 +176,55 @@ export const AnalyticsDashboard = () => {
     .sort((a, b) => b.count - a.count)
     .slice(0, 8);
 
+  // Device stats
+  const deviceStats: DeviceStats[] = Object.entries(
+    pageViews.reduce((acc: Record<string, number>, pv) => {
+      const device = pv.device_type || "unknown";
+      acc[device] = (acc[device] || 0) + 1;
+      return acc;
+    }, {})
+  )
+    .map(([name, value]) => ({ name: name.charAt(0).toUpperCase() + name.slice(1), value }))
+    .sort((a, b) => b.value - a.value);
+
+  // Browser stats
+  const browserStats: DeviceStats[] = Object.entries(
+    pageViews.reduce((acc: Record<string, number>, pv) => {
+      const browser = pv.browser || "Unknown";
+      acc[browser] = (acc[browser] || 0) + 1;
+      return acc;
+    }, {})
+  )
+    .map(([name, value]) => ({ name, value }))
+    .sort((a, b) => b.value - a.value)
+    .slice(0, 6);
+
+  // OS stats
+  const osStats: DeviceStats[] = Object.entries(
+    pageViews.reduce((acc: Record<string, number>, pv) => {
+      const os = pv.os || "Unknown";
+      acc[os] = (acc[os] || 0) + 1;
+      return acc;
+    }, {})
+  )
+    .map(([name, value]) => ({ name, value }))
+    .sort((a, b) => b.value - a.value)
+    .slice(0, 6);
+
   // Page distribution for pie chart
   const pieData = pageStats.slice(0, 5).map((ps) => ({
     name: ps.path === "/" ? "Home" : ps.path.replace("/", "").charAt(0).toUpperCase() + ps.path.slice(2),
     value: ps.views,
   }));
+
+  // Device icon helper
+  const getDeviceIcon = (device: string) => {
+    switch (device.toLowerCase()) {
+      case "mobile": return <Smartphone className="h-4 w-4" />;
+      case "tablet": return <Tablet className="h-4 w-4" />;
+      default: return <Monitor className="h-4 w-4" />;
+    }
+  };
 
   if (loading) {
     return (
@@ -181,7 +246,7 @@ export const AnalyticsDashboard = () => {
       </Tabs>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
         {/* Real-time Visitors */}
         <Card className="border-accent/50 bg-accent/5">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -222,10 +287,21 @@ export const AnalyticsDashboard = () => {
             <CardTitle className="text-sm font-medium text-muted-foreground">
               Avg. Pages/Visit
             </CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{avgViewsPerSession}</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Avg. Time on Page
+            </CardTitle>
+            <Clock className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{formatTime(avgTimeSpent)}</div>
           </CardContent>
         </Card>
         <Card>
@@ -255,14 +331,14 @@ export const AnalyticsDashboard = () => {
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={dailyStats}>
                   <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                  <XAxis 
-                    dataKey="date" 
+                  <XAxis
+                    dataKey="date"
                     tick={{ fontSize: 12 }}
                     className="text-muted-foreground"
                   />
                   <YAxis tick={{ fontSize: 12 }} className="text-muted-foreground" />
-                  <Tooltip 
-                    contentStyle={{ 
+                  <Tooltip
+                    contentStyle={{
                       backgroundColor: "hsl(var(--card))",
                       border: "1px solid hsl(var(--border))",
                       borderRadius: "8px"
@@ -291,14 +367,14 @@ export const AnalyticsDashboard = () => {
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={dailyStats}>
                   <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                  <XAxis 
-                    dataKey="date" 
+                  <XAxis
+                    dataKey="date"
                     tick={{ fontSize: 12 }}
                     className="text-muted-foreground"
                   />
                   <YAxis tick={{ fontSize: 12 }} className="text-muted-foreground" />
-                  <Tooltip 
-                    contentStyle={{ 
+                  <Tooltip
+                    contentStyle={{
                       backgroundColor: "hsl(var(--card))",
                       border: "1px solid hsl(var(--border))",
                       borderRadius: "8px"
@@ -307,6 +383,117 @@ export const AnalyticsDashboard = () => {
                   <Bar dataKey="sessions" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Device & Browser Stats Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Device Types */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Monitor className="h-4 w-4" />
+              Device Types
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {deviceStats.length === 0 || (deviceStats.length === 1 && deviceStats[0].name === "Unknown") ? (
+                <p className="text-muted-foreground text-center py-4">No device data yet</p>
+              ) : (
+                deviceStats.filter(d => d.name !== "Unknown").map((device, index) => (
+                  <div key={device.name} className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      {getDeviceIcon(device.name)}
+                      <span className="text-sm font-medium">{device.name}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div
+                        className="h-2 rounded-full"
+                        style={{
+                          width: `${Math.max(20, (device.value / deviceStats[0].value) * 80)}px`,
+                          backgroundColor: COLORS[index % COLORS.length]
+                        }}
+                      />
+                      <span className="text-sm text-muted-foreground w-12 text-right">
+                        {Math.round((device.value / totalViews) * 100)}%
+                      </span>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Browsers */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Globe className="h-4 w-4" />
+              Browsers
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {browserStats.length === 0 || (browserStats.length === 1 && browserStats[0].name === "Unknown") ? (
+                <p className="text-muted-foreground text-center py-4">No browser data yet</p>
+              ) : (
+                browserStats.filter(b => b.name !== "Unknown").map((browser, index) => (
+                  <div key={browser.name} className="flex items-center justify-between">
+                    <span className="text-sm font-medium truncate max-w-[120px]">{browser.name}</span>
+                    <div className="flex items-center gap-2">
+                      <div
+                        className="h-2 rounded-full"
+                        style={{
+                          width: `${Math.max(20, (browser.value / browserStats[0].value) * 80)}px`,
+                          backgroundColor: COLORS[index % COLORS.length]
+                        }}
+                      />
+                      <span className="text-sm text-muted-foreground w-12 text-right">
+                        {Math.round((browser.value / totalViews) * 100)}%
+                      </span>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Operating Systems */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Monitor className="h-4 w-4" />
+              Operating Systems
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {osStats.length === 0 || (osStats.length === 1 && osStats[0].name === "Unknown") ? (
+                <p className="text-muted-foreground text-center py-4">No OS data yet</p>
+              ) : (
+                osStats.filter(o => o.name !== "Unknown").map((os, index) => (
+                  <div key={os.name} className="flex items-center justify-between">
+                    <span className="text-sm font-medium truncate max-w-[120px]">{os.name}</span>
+                    <div className="flex items-center gap-2">
+                      <div
+                        className="h-2 rounded-full"
+                        style={{
+                          width: `${Math.max(20, (os.value / osStats[0].value) * 80)}px`,
+                          backgroundColor: COLORS[index % COLORS.length]
+                        }}
+                      />
+                      <span className="text-sm text-muted-foreground w-12 text-right">
+                        {Math.round((os.value / totalViews) * 100)}%
+                      </span>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </CardContent>
         </Card>
@@ -335,10 +522,10 @@ export const AnalyticsDashboard = () => {
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div 
+                      <div
                         className="h-2 bg-primary rounded-full"
-                        style={{ 
-                          width: `${Math.max(20, (page.views / pageStats[0].views) * 80)}px` 
+                        style={{
+                          width: `${Math.max(20, (page.views / pageStats[0].views) * 80)}px`
                         }}
                       />
                       <span className="text-sm text-muted-foreground w-10 text-right">
@@ -376,9 +563,9 @@ export const AnalyticsDashboard = () => {
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div 
+                      <div
                         className="h-2 rounded-full"
-                        style={{ 
+                        style={{
                           width: `${Math.max(20, (ref.count / referrerStats[0].count) * 80)}px`,
                           backgroundColor: COLORS[index % COLORS.length]
                         }}
@@ -422,8 +609,8 @@ export const AnalyticsDashboard = () => {
                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                       ))}
                     </Pie>
-                    <Tooltip 
-                      contentStyle={{ 
+                    <Tooltip
+                      contentStyle={{
                         backgroundColor: "hsl(var(--card))",
                         border: "1px solid hsl(var(--border))",
                         borderRadius: "8px"
@@ -439,3 +626,4 @@ export const AnalyticsDashboard = () => {
     </div>
   );
 };
+

@@ -1,13 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { CTASection } from "@/components/sections/CTASection";
 import { ExternalLink } from "lucide-react";
 import SEO from "@/components/SEO";
 
-const categories = ["All", "Weddings", "Funerals", "Naming", "Anniversaries", "Other"];
+const categories = ["All", "Weddings", "Funerals", "Naming", "Anniversaries", "Graduations", "Other"];
 
 const portfolioItems = [
   {
@@ -132,8 +132,44 @@ const portfolioItems = [
   },
 ];
 
+const slugToCategoryMap: Record<string, string> = {
+  wedding: "Weddings",
+  funeral: "Funerals",
+  naming: "Naming",
+  anniversary: "Anniversaries",
+  graduation: "Graduations",
+  corporate: "Other",
+};
+
 const Portfolio = () => {
-  const [activeCategory, setActiveCategory] = useState("All");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const typeParam = searchParams.get("type");
+  
+  const initialCategory = typeParam ? (slugToCategoryMap[typeParam] || "All") : "All";
+  const [activeCategory, setActiveCategory] = useState(initialCategory);
+
+  useEffect(() => {
+    if (typeParam) {
+      const mappedCategory = slugToCategoryMap[typeParam];
+      if (mappedCategory) {
+        setActiveCategory(mappedCategory);
+      }
+    }
+  }, [typeParam]);
+
+  const handleCategoryChange = (category: string) => {
+    setActiveCategory(category);
+    if (category === "All") {
+      setSearchParams({});
+    } else {
+      const slug = Object.entries(slugToCategoryMap).find(([_, cat]) => cat === category)?.[0];
+      if (slug) {
+        setSearchParams({ type: slug });
+      } else {
+        setSearchParams({});
+      }
+    }
+  };
 
   const filteredItems =
     activeCategory === "All"
@@ -178,7 +214,7 @@ const Portfolio = () => {
             {categories.map((category) => (
               <button
                 key={category}
-                onClick={() => setActiveCategory(category)}
+                onClick={() => handleCategoryChange(category)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                   activeCategory === category
                     ? "bg-primary text-primary-foreground"
