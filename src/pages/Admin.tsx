@@ -37,6 +37,9 @@ import {
   Quote,
   Newspaper,
   UsersRound,
+  Gift,
+  ShoppingCart,
+  Tag,
 } from "lucide-react";
 import { AnalyticsDashboard } from "@/components/admin/AnalyticsDashboard";
 import { OrderAnalytics } from "@/components/admin/OrderAnalytics";
@@ -51,6 +54,9 @@ import { NewsletterManager } from "@/components/admin/NewsletterManager";
 import { SubscriberPreferences } from "@/components/admin/SubscriberPreferences";
 import { ChatAnalytics } from "@/components/admin/ChatAnalytics";
 import { TeamManager } from "@/components/admin/TeamManager";
+import { AbandonedCartRecovery } from "@/components/admin/AbandonedCartRecovery";
+import { CouponManagerAdmin } from "@/components/admin/CouponManagerAdmin";
+import { ReferralsAdmin } from "@/components/admin/ReferralsAdmin";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -109,7 +115,7 @@ interface PaymentHistoryLog {
   created_at: string;
 }
 
-type AdminSection = "dashboard" | "orders" | "analytics" | "chatbot" | "blog" | "testimonials" | "newsletter" | "follow-ups" | "email-settings" | "users" | "team";
+type AdminSection = "dashboard" | "orders" | "analytics" | "chatbot" | "blog" | "testimonials" | "newsletter" | "follow-ups" | "email-settings" | "users" | "team" | "abandoned-carts" | "coupons" | "referrals";
 
 const orderStatusColors: Record<OrderStatus, string> = {
   pending: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
@@ -138,6 +144,9 @@ const navItems = [
   { id: "follow-ups" as AdminSection, label: "Follow-ups", icon: Send },
   { id: "email-settings" as AdminSection, label: "Email Settings", icon: Mail },
   { id: "users" as AdminSection, label: "User Management", icon: Shield },
+  { id: "abandoned-carts" as AdminSection, label: "Abandoned Carts", icon: ShoppingCart },
+  { id: "coupons" as AdminSection, label: "Coupons", icon: Tag },
+  { id: "referrals" as AdminSection, label: "Referrals", icon: Gift },
 ];
 
 const Admin = () => {
@@ -848,6 +857,15 @@ const Admin = () => {
 
       case "users":
         return <UserManagement />;
+
+      case "abandoned-carts":
+        return <AbandonedCartRecovery />;
+
+      case "coupons":
+        return <CouponManagerAdmin />;
+
+      case "referrals":
+        return <ReferralsAdmin />;
 
       case "team":
         return <TeamManager />;

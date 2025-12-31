@@ -25,6 +25,7 @@ import TermsOfService from "./pages/TermsOfService";
 import RefundPolicy from "./pages/RefundPolicy";
 import CookiePolicy from "./pages/CookiePolicy";
 import TrackOrder from "./pages/TrackOrder";
+import CustomerPortal from "./pages/CustomerPortal";
 import { ScrollToTop } from "@/components/ScrollToTop";
 
 const queryClient = new QueryClient();
@@ -64,6 +65,7 @@ const App = () => (
               <Route path="/refund-policy" element={<RefundPolicy />} />
               <Route path="/cookie-policy" element={<CookiePolicy />} />
               <Route path="/track-order" element={<TrackOrder />} />
+              <Route path="/my-orders" element={<CustomerPortal />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </PageTracker>
