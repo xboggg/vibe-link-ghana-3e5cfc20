@@ -835,6 +835,9 @@ const Admin = () => {
           </div>
         );
 
+      case "chatbot":
+        return <ChatAnalytics />;
+
       case "blog":
         return <BlogManager />;
 
