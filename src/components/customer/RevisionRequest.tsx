@@ -19,10 +19,10 @@ interface RevisionEntry {
   id: string;
   order_id: string;
   request_text: string;
-  status: "pending" | "in_progress" | "completed";
-  admin_response?: string;
-  created_at: string;
-  updated_at: string;
+  status: string;
+  admin_response?: string | null;
+  created_at: string | null;
+  updated_at: string | null;
 }
 
 interface RevisionRequestProps {
@@ -195,7 +195,7 @@ export function RevisionRequest({ order }: RevisionRequestProps) {
                   <div className="flex justify-between items-start">
                     <div>
                       <p className="text-xs text-muted-foreground">
-                        {format(new Date(revision.created_at), "MMM d, yyyy 'at' h:mm a")}
+                        {revision.created_at ? format(new Date(revision.created_at), "MMM d, yyyy 'at' h:mm a") : 'Unknown'}
                       </p>
                     </div>
                     {getStatusBadge(revision.status)}

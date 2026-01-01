@@ -15,16 +15,16 @@ import { format } from "date-fns";
 interface Coupon {
   id: string;
   code: string;
-  discount_type: "percentage" | "fixed";
+  discount_type: string;
   discount_value: number;
   min_order_amount: number | null;
   max_discount: number | null;
   description: string | null;
   usage_limit: number | null;
-  times_used: number;
+  times_used: number | null;
   valid_until: string | null;
-  is_active: boolean;
-  created_at: string;
+  is_active: boolean | null;
+  created_at: string | null;
 }
 
 interface CouponFormData {
@@ -77,8 +77,11 @@ export function CouponManagerAdmin() {
     if (coupon) {
       setEditingCoupon(coupon);
       setFormData({
-        code: coupon.code, discount_type: coupon.discount_type, discount_value: coupon.discount_value,
-        min_order_amount: coupon.min_order_amount || 0, max_discount: coupon.max_discount || 0,
+        code: coupon.code, 
+        discount_type: (coupon.discount_type === "percentage" || coupon.discount_type === "fixed") ? coupon.discount_type : "percentage", 
+        discount_value: coupon.discount_value,
+        min_order_amount: coupon.min_order_amount || 0, 
+        max_discount: coupon.max_discount || 0,
         usage_limit: coupon.usage_limit || 0,
         valid_until: coupon.valid_until ? coupon.valid_until.split("T")[0] : "",
         description: coupon.description || ""
@@ -139,13 +142,13 @@ export function CouponManagerAdmin() {
   const getStatusBadge = (coupon: Coupon) => {
     if (!coupon.is_active) return <Badge variant="secondary">Inactive</Badge>;
     if (coupon.valid_until && new Date(coupon.valid_until) < new Date()) return <Badge variant="destructive">Expired</Badge>;
-    if (coupon.usage_limit && coupon.times_used >= coupon.usage_limit) return <Badge variant="outline">Limit Reached</Badge>;
+    if (coupon.usage_limit && (coupon.times_used || 0) >= coupon.usage_limit) return <Badge variant="outline">Limit Reached</Badge>;
     return <Badge className="bg-green-500">Active</Badge>;
   };
 
   const totalCoupons = coupons.length;
   const activeCoupons = coupons.filter(c => c.is_active).length;
-  const totalUsage = coupons.reduce((sum, c) => sum + c.times_used, 0);
+  const totalUsage = coupons.reduce((sum, c) => sum + (c.times_used || 0), 0);
 
   return (
     <div className="space-y-6">
@@ -198,7 +201,7 @@ export function CouponManagerAdmin() {
                   <TableRow key={coupon.id}>
                     <TableCell><div className="flex items-center gap-2"><Tag className="h-4 w-4 text-primary" /><span className="font-mono font-bold">{coupon.code}</span></div>{coupon.description && <p className="text-xs text-muted-foreground mt-1">{coupon.description}</p>}</TableCell>
                     <TableCell><span className="font-medium">{coupon.discount_type === "percentage" ? coupon.discount_value + "%" : "GHS " + coupon.discount_value}</span>{coupon.min_order_amount && <p className="text-xs text-muted-foreground">Min: GHS {coupon.min_order_amount}</p>}</TableCell>
-                    <TableCell><span className="font-medium">{coupon.times_used}</span>{coupon.usage_limit && <span className="text-muted-foreground">/{coupon.usage_limit}</span>}</TableCell>
+                    <TableCell><span className="font-medium">{coupon.times_used || 0}</span>{coupon.usage_limit && <span className="text-muted-foreground">/{coupon.usage_limit}</span>}</TableCell>
                     <TableCell>{getStatusBadge(coupon)}</TableCell>
                     <TableCell>{coupon.valid_until ? format(new Date(coupon.valid_until), "MMM d, yyyy") : "Never"}</TableCell>
                     <TableCell className="text-right">

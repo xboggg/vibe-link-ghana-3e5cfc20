@@ -34,10 +34,10 @@ interface InstallmentSchedule {
 interface OrderInstallment {
   id: string;
   order_id: string;
-  plan_id: string;
+  plan_id: string | null;
   total_amount: number;
-  installments: InstallmentSchedule[];
-  created_at: string;
+  installments: unknown;
+  created_at: string | null;
 }
 
 interface InstallmentPaymentSelectorProps {
@@ -254,7 +254,12 @@ export function InstallmentTracker({ orderId }: { orderId: string }) {
         .single();
 
       if (error && error.code !== "PGRST116") throw error;
-      setInstallment(data);
+      if (data) {
+        setInstallment({
+          ...data,
+          installments: Array.isArray(data.installments) ? data.installments : []
+        } as OrderInstallment);
+      }
     } catch (err) {
       console.error("Error fetching installment:", err);
     } finally {
@@ -276,12 +281,13 @@ export function InstallmentTracker({ orderId }: { orderId: string }) {
     return null; // No installment plan for this order
   }
 
-  const paidCount = installment.installments.filter(i => i.status === "paid").length;
-  const totalCount = installment.installments.length;
-  const paidAmount = installment.installments
+  const installmentsList = (Array.isArray(installment.installments) ? installment.installments : []) as InstallmentSchedule[];
+  const paidCount = installmentsList.filter(i => i.status === "paid").length;
+  const totalCount = installmentsList.length;
+  const paidAmount = installmentsList
     .filter(i => i.status === "paid")
     .reduce((sum, i) => sum + i.amount, 0);
-  const progressPercent = (paidAmount / installment.total_amount) * 100;
+  const progressPercent = installment.total_amount > 0 ? (paidAmount / installment.total_amount) * 100 : 0;
 
   return (
     <Card>
@@ -304,7 +310,7 @@ export function InstallmentTracker({ orderId }: { orderId: string }) {
         </div>
 
         <div className="space-y-2">
-          {installment.installments.map((inst) => {
+          {installmentsList.map((inst) => {
             const isOverdue = inst.status === "pending" && new Date(inst.due_date) < new Date();
 
             return (
@@ -350,7 +356,7 @@ export function InstallmentTracker({ orderId }: { orderId: string }) {
           })}
         </div>
 
-        {installment.installments.some(i => i.status === "pending") && (
+        {installmentsList.some(i => i.status === "pending") && (
           <Button className="w-full">
             <CreditCard className="h-4 w-4 mr-2" />
             Pay Next Installment

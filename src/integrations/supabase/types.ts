@@ -65,6 +65,48 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_generated_content: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          content: string
+          content_type: string
+          created_at: string | null
+          id: string
+          metadata: Json | null
+          prompt_used: string | null
+          status: string
+          title: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          content: string
+          content_type: string
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          prompt_used?: string | null
+          status?: string
+          title?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          content?: string
+          content_type?: string
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          prompt_used?: string | null
+          status?: string
+          title?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       app_settings: {
         Row: {
           key: string
@@ -241,6 +283,57 @@ export type Database = {
           },
         ]
       }
+      chatbot_escalations: {
+        Row: {
+          assigned_to: string | null
+          conversation_summary: string | null
+          created_at: string | null
+          customer_email: string | null
+          customer_name: string | null
+          customer_phone: string | null
+          escalation_reason: string
+          id: string
+          priority: string
+          resolution_notes: string | null
+          resolved_at: string | null
+          session_id: string
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          assigned_to?: string | null
+          conversation_summary?: string | null
+          created_at?: string | null
+          customer_email?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          escalation_reason: string
+          id?: string
+          priority?: string
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          session_id: string
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          assigned_to?: string | null
+          conversation_summary?: string | null
+          created_at?: string | null
+          customer_email?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          escalation_reason?: string
+          id?: string
+          priority?: string
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          session_id?: string
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       coupons: {
         Row: {
           code: string
@@ -316,6 +409,183 @@ export type Database = {
         }
         Relationships: []
       }
+      data_exports: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          expires_at: string | null
+          export_type: string
+          file_size: number | null
+          file_url: string | null
+          filters: Json | null
+          format: string
+          id: string
+          records_count: number | null
+          requested_by: string | null
+          status: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          expires_at?: string | null
+          export_type: string
+          file_size?: number | null
+          file_url?: string | null
+          filters?: Json | null
+          format: string
+          id?: string
+          records_count?: number | null
+          requested_by?: string | null
+          status?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          expires_at?: string | null
+          export_type?: string
+          file_size?: number | null
+          file_url?: string | null
+          filters?: Json | null
+          format?: string
+          id?: string
+          records_count?: number | null
+          requested_by?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
+      expense_categories: {
+        Row: {
+          color: string | null
+          created_at: string | null
+          icon: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+        }
+        Relationships: []
+      }
+      expenses: {
+        Row: {
+          amount: number
+          category_id: string | null
+          created_at: string | null
+          created_by: string | null
+          description: string
+          expense_date: string
+          id: string
+          notes: string | null
+          order_id: string | null
+          payment_method: string | null
+          receipt_url: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          amount: number
+          category_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description: string
+          expense_date?: string
+          id?: string
+          notes?: string | null
+          order_id?: string | null
+          payment_method?: string | null
+          receipt_url?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          amount?: number
+          category_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string
+          expense_date?: string
+          id?: string
+          notes?: string | null
+          order_id?: string | null
+          payment_method?: string | null
+          receipt_url?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expenses_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "expense_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "expenses_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      financial_reports: {
+        Row: {
+          created_at: string | null
+          generated_at: string | null
+          id: string
+          net_profit: number | null
+          orders_count: number | null
+          period_end: string
+          period_start: string
+          report_data: Json | null
+          report_type: string
+          sent_to_email: string | null
+          total_expenses: number | null
+          total_revenue: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          generated_at?: string | null
+          id?: string
+          net_profit?: number | null
+          orders_count?: number | null
+          period_end: string
+          period_start: string
+          report_data?: Json | null
+          report_type: string
+          sent_to_email?: string | null
+          total_expenses?: number | null
+          total_revenue?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          generated_at?: string | null
+          id?: string
+          net_profit?: number | null
+          orders_count?: number | null
+          period_end?: string
+          period_start?: string
+          report_data?: Json | null
+          report_type?: string
+          sent_to_email?: string | null
+          total_expenses?: number | null
+          total_revenue?: number | null
+        }
+        Relationships: []
+      }
       follow_up_logs: {
         Row: {
           error_message: string | null
@@ -383,6 +653,118 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      invoice_items: {
+        Row: {
+          created_at: string | null
+          description: string
+          id: string
+          invoice_id: string
+          quantity: number
+          total: number
+          unit_price: number
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          id?: string
+          invoice_id: string
+          quantity?: number
+          total: number
+          unit_price: number
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          id?: string
+          invoice_id?: string
+          quantity?: number
+          total?: number
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoice_items_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      invoices: {
+        Row: {
+          created_at: string | null
+          customer_address: string | null
+          customer_email: string
+          customer_name: string
+          customer_phone: string | null
+          discount: number | null
+          due_date: string | null
+          id: string
+          invoice_number: string
+          notes: string | null
+          order_id: string | null
+          paid_at: string | null
+          sent_at: string | null
+          status: string
+          subtotal: number
+          tax: number | null
+          total: number
+          updated_at: string | null
+          viewed_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          customer_address?: string | null
+          customer_email: string
+          customer_name: string
+          customer_phone?: string | null
+          discount?: number | null
+          due_date?: string | null
+          id?: string
+          invoice_number: string
+          notes?: string | null
+          order_id?: string | null
+          paid_at?: string | null
+          sent_at?: string | null
+          status?: string
+          subtotal: number
+          tax?: number | null
+          total: number
+          updated_at?: string | null
+          viewed_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          customer_address?: string | null
+          customer_email?: string
+          customer_name?: string
+          customer_phone?: string | null
+          discount?: number | null
+          due_date?: string | null
+          id?: string
+          invoice_number?: string
+          notes?: string | null
+          order_id?: string | null
+          paid_at?: string | null
+          sent_at?: string | null
+          status?: string
+          subtotal?: number
+          tax?: number | null
+          total?: number
+          updated_at?: string | null
+          viewed_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoices_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       newsletter_campaigns: {
         Row: {
@@ -588,6 +970,57 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      order_templates: {
+        Row: {
+          base_price: number | null
+          created_at: string | null
+          created_by: string | null
+          customer_email: string | null
+          customer_name: string | null
+          default_options: Json | null
+          description: string | null
+          event_type: string
+          id: string
+          is_active: boolean | null
+          name: string
+          package_name: string
+          updated_at: string | null
+          usage_count: number | null
+        }
+        Insert: {
+          base_price?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          customer_email?: string | null
+          customer_name?: string | null
+          default_options?: Json | null
+          description?: string | null
+          event_type: string
+          id?: string
+          is_active?: boolean | null
+          name: string
+          package_name: string
+          updated_at?: string | null
+          usage_count?: number | null
+        }
+        Update: {
+          base_price?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          customer_email?: string | null
+          customer_name?: string | null
+          default_options?: Json | null
+          description?: string | null
+          event_type?: string
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          package_name?: string
+          updated_at?: string | null
+          usage_count?: number | null
+        }
+        Relationships: []
       }
       order_timeline: {
         Row: {
@@ -1079,6 +1512,100 @@ export type Database = {
           preview_url?: string | null
         }
         Relationships: []
+      }
+      survey_responses: {
+        Row: {
+          allow_testimonial: boolean | null
+          communication: number | null
+          created_at: string | null
+          delivery_speed: number | null
+          design_quality: number | null
+          feedback_text: string | null
+          id: string
+          overall_rating: number
+          survey_id: string
+          value_for_money: number | null
+        }
+        Insert: {
+          allow_testimonial?: boolean | null
+          communication?: number | null
+          created_at?: string | null
+          delivery_speed?: number | null
+          design_quality?: number | null
+          feedback_text?: string | null
+          id?: string
+          overall_rating: number
+          survey_id: string
+          value_for_money?: number | null
+        }
+        Update: {
+          allow_testimonial?: boolean | null
+          communication?: number | null
+          created_at?: string | null
+          delivery_speed?: number | null
+          design_quality?: number | null
+          feedback_text?: string | null
+          id?: string
+          overall_rating?: number
+          survey_id?: string
+          value_for_money?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "survey_responses_survey_id_fkey"
+            columns: ["survey_id"]
+            isOneToOne: false
+            referencedRelation: "surveys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      surveys: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          customer_email: string
+          customer_name: string
+          expires_at: string | null
+          id: string
+          order_id: string | null
+          sent_at: string | null
+          status: string
+          token: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          customer_email: string
+          customer_name: string
+          expires_at?: string | null
+          id?: string
+          order_id?: string | null
+          sent_at?: string | null
+          status?: string
+          token: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          customer_email?: string
+          customer_name?: string
+          expires_at?: string | null
+          id?: string
+          order_id?: string | null
+          sent_at?: string | null
+          status?: string
+          token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "surveys_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       team_members: {
         Row: {

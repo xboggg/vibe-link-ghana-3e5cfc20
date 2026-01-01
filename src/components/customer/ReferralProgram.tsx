@@ -22,10 +22,10 @@ interface ReferralStats {
 interface Referral {
   id: string;
   referred_email: string;
-  status: "pending" | "completed" | "expired";
-  reward_amount: number;
-  created_at: string;
-  completed_at?: string;
+  status: string;
+  reward_amount: number | null;
+  created_at: string | null;
+  completed_at?: string | null;
 }
 
 interface ReferralProgramProps {
@@ -256,13 +256,13 @@ export function ReferralProgram({ customerEmail, customerName }: ReferralProgram
                   <div>
                     <p className="font-medium">{referral.referred_email}</p>
                     <p className="text-xs text-muted-foreground">
-                      {format(new Date(referral.created_at), "MMM d, yyyy")}
+                      {referral.created_at ? format(new Date(referral.created_at), "MMM d, yyyy") : 'Unknown'}
                     </p>
                   </div>
                   <div className="flex items-center gap-3">
-                    {referral.status === "completed" && (
+                    {referral.status === "completed" && referral.reward_amount && (
                       <span className="text-green-600 font-medium">
-                        +GH???{referral.reward_amount}
+                        +GH₵{referral.reward_amount}
                       </span>
                     )}
                     {getStatusBadge(referral.status)}

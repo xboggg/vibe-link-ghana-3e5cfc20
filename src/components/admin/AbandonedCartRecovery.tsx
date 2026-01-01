@@ -12,22 +12,23 @@ import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { format, formatDistanceToNow } from "date-fns";
+import type { Json } from "@/integrations/supabase/types";
 
 interface AbandonedCart {
   id: string;
   session_id: string;
-  customer_email?: string;
-  customer_name?: string;
-  event_type: string;
-  package_name: string;
-  total_price: number;
-  cart_data: Record<string, unknown>;
-  created_at: string;
-  updated_at: string;
-  reminder_sent: boolean;
-  reminder_sent_at?: string;
-  recovered: boolean;
-  recovered_at?: string;
+  customer_email: string | null;
+  customer_name: string | null;
+  event_type: string | null;
+  package_name: string | null;
+  total_price: number | null;
+  cart_data: unknown;
+  created_at: string | null;
+  updated_at: string | null;
+  reminder_sent: boolean | null;
+  reminder_sent_at: string | null;
+  recovered: boolean | null;
+  recovered_at: string | null;
 }
 
 interface RecoveryStats {
@@ -102,9 +103,10 @@ export function AbandonedCartRecovery() {
         .eq("key", "abandoned_cart_settings")
         .single();
 
-      if (data?.value) {
-        setAutoReminders(data.value.auto_reminders ?? true);
-        setReminderDelay(data.value.reminder_delay_hours ?? 24);
+      if (data?.value && typeof data.value === 'object' && data.value !== null) {
+        const settings = data.value as Record<string, unknown>;
+        setAutoReminders((settings.auto_reminders as boolean) ?? true);
+        setReminderDelay((settings.reminder_delay_hours as number) ?? 24);
       }
     } catch (err) {
       console.error("Error fetching settings:", err);
@@ -132,7 +134,7 @@ export function AbandonedCartRecovery() {
   };
 
   const sendReminder = async (cart: AbandonedCart) => {
-    if (!cart.customer_email) {
+    if (!cart.customer_email || !cart.event_type || !cart.package_name) {
       toast.error("No email address for this cart");
       return;
     }
@@ -321,11 +323,11 @@ export function AbandonedCartRecovery() {
                       )}
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      {cart.event_type} ?? {cart.package_name} ?? GH₵{cart.total_price}
+                      {cart.event_type || 'N/A'} • {cart.package_name || 'N/A'} • GH₵{cart.total_price || 0}
                     </div>
                     <div className="text-xs text-muted-foreground mt-1">
                       <Clock className="h-3 w-3 inline mr-1" />
-                      {formatDistanceToNow(new Date(cart.created_at), { addSuffix: true })}
+                      {cart.created_at ? formatDistanceToNow(new Date(cart.created_at), { addSuffix: true }) : 'Unknown'}
                     </div>
                   </div>
                   <div className="flex gap-2">
@@ -364,23 +366,25 @@ export function useCartTracking() {
     eventType: string;
     packageName: string;
     totalPrice: number;
-    formData: Record<string, unknown>;
+    formData: Json;
   }) => {
     try {
-      await supabase
+      const { error } = await supabase
         .from("abandoned_carts")
-        .upsert({
-          session_id: cartData.sessionId,
-          customer_email: cartData.email?.toLowerCase(),
-          customer_name: cartData.name,
-          event_type: cartData.eventType,
-          package_name: cartData.packageName,
-          total_price: cartData.totalPrice,
-          cart_data: cartData.formData,
-          updated_at: new Date().toISOString()
-        }, {
-          onConflict: "session_id"
-        });
+        .upsert(
+          [{
+            session_id: cartData.sessionId,
+            customer_email: cartData.email?.toLowerCase(),
+            customer_name: cartData.name,
+            event_type: cartData.eventType,
+            package_name: cartData.packageName,
+            total_price: cartData.totalPrice,
+            cart_data: cartData.formData,
+            updated_at: new Date().toISOString()
+          }],
+          { onConflict: "session_id" }
+        );
+      if (error) throw error;
     } catch (err) {
       console.error("Error saving cart:", err);
     }
@@ -404,4 +408,3 @@ export function useCartTracking() {
 }
 
 export default AbandonedCartRecovery;
-
