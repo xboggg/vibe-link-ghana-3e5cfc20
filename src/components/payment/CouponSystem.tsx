@@ -8,12 +8,12 @@ import { toast } from "sonner";
 interface CouponDetails {
   id: string;
   code: string;
-  discount_type: "percentage" | "fixed";
+  discount_type: string;
   discount_value: number;
-  min_order_amount?: number;
-  max_discount?: number;
-  description?: string;
-  valid_until?: string;
+  min_order_amount?: number | null;
+  max_discount?: number | null;
+  description?: string | null;
+  valid_until?: string | null;
 }
 
 interface CouponSystemProps {

@@ -22,8 +22,8 @@ interface TimelineEvent {
   id: string;
   status: string;
   message: string;
-  created_at: string;
-  metadata?: Record<string, unknown>;
+  created_at: string | null;
+  metadata?: unknown;
 }
 
 interface OrderTimelineProps {
@@ -161,7 +161,7 @@ export function OrderTimeline({ order }: OrderTimelineProps) {
                   <div className="flex-1 pb-4">
                     <p className="text-sm font-medium">{event.message}</p>
                     <p className="text-xs text-muted-foreground">
-                      {format(new Date(event.created_at), "MMM d, yyyy 'at' h:mm a")}
+                      {event.created_at ? format(new Date(event.created_at), "MMM d, yyyy 'at' h:mm a") : 'Unknown'}
                     </p>
                   </div>
                 </div>
