@@ -26,8 +26,9 @@ import {
   BarChart3,
   Smartphone,
   Share2,
-  Wallet,
   Sparkles,
+  ArrowRight,
+  Link2,
 } from "lucide-react";
 
 import weddingImg from "@/assets/service-wedding.jpg";
@@ -42,7 +43,14 @@ const services = [
     icon: Heart,
     title: "Wedding Invitations",
     description: "Beautiful digital invitations for your traditional, white wedding, or both.",
-    features: ["Dual ceremony support", "Love story timeline", "RSVP with meal preferences", "Wedding party introductions", "Photo gallery", "Google Maps (Multiple venues)"],
+    features: [
+      { name: "Dual ceremony support", desc: "Traditional & white wedding" },
+      { name: "Love story timeline", desc: "Your journey together" },
+      { name: "RSVP with meal preferences", desc: "Guest management" },
+      { name: "Wedding party introductions", desc: "Bridal party profiles" },
+      { name: "Photo gallery", desc: "Engagement & pre-wedding" },
+      { name: "Google Maps", desc: "Multiple venue directions" }
+    ],
     slug: "wedding",
     image: weddingImg,
     stats: { created: "500+", satisfaction: "98%", label: "Weddings Created" },
@@ -51,7 +59,14 @@ const services = [
     icon: Users,
     title: "Funeral Programs",
     description: "Dignified memorial pages that honor your loved ones with respect.",
-    features: ["Memory tribute wall", "Donation links", "Program timeline", "Photo memories gallery", "Memorial page", "Funeral-specific designs"],
+    features: [
+      { name: "Memory tribute wall", desc: "Condolences & messages" },
+      { name: "Donation links", desc: "Support family or charity" },
+      { name: "Program timeline", desc: "Order of service" },
+      { name: "Photo memories gallery", desc: "Life in pictures" },
+      { name: "Memorial page", desc: "Long-term remembrance" },
+      { name: "Funeral-specific designs", desc: "Solemn, respectful layouts" }
+    ],
     slug: "funeral",
     image: funeralImg,
     stats: { created: "200+", satisfaction: "100%", label: "Families Served" },
@@ -60,7 +75,14 @@ const services = [
     icon: Baby,
     title: "Naming Ceremonies",
     description: "Celebrate the arrival of new life with joyful digital invitations.",
-    features: ["Baby introduction", "Name meaning display", "Godparents section", "Photo gallery", "Event details & venue", "Guest messaging wall"],
+    features: [
+      { name: "Baby introduction", desc: "Welcome the new arrival" },
+      { name: "Name meaning display", desc: "Cultural significance" },
+      { name: "Godparents section", desc: "Honor godparents" },
+      { name: "Photo gallery", desc: "Baby & family photos" },
+      { name: "Event details & venue", desc: "Date, time, location" },
+      { name: "Guest messaging wall", desc: "Blessings & wishes" }
+    ],
     slug: "naming",
     image: namingImg,
     stats: { created: "300+", satisfaction: "99%", label: "Babies Welcomed" },
@@ -69,7 +91,14 @@ const services = [
     icon: Cake,
     title: "Anniversary & Vow Renewal",
     description: "Mark your milestones with elegant digital celebrations.",
-    features: ["Journey timeline", "Photo memories", "Love quotes", "Guest messaging", "Celebration countdown", "Event details & venue"],
+    features: [
+      { name: "Journey timeline", desc: "Years together" },
+      { name: "Photo memories", desc: "Through the years" },
+      { name: "Love quotes", desc: "Meaningful messages" },
+      { name: "Guest messaging", desc: "Wishes from loved ones" },
+      { name: "Celebration countdown", desc: "Build excitement" },
+      { name: "Event details & venue", desc: "Date, time, location" }
+    ],
     slug: "anniversary",
     image: anniversaryImg,
     stats: { created: "150+", satisfaction: "97%", label: "Milestones Celebrated" },
@@ -78,7 +107,14 @@ const services = [
     icon: GraduationCap,
     title: "Graduation Celebrations",
     description: "Share your academic achievements with family and friends.",
-    features: ["Achievement showcase", "Ceremony details", "Party information", "Photo gallery", "Thank you messages", "Countdown timer"],
+    features: [
+      { name: "Achievement showcase", desc: "Degree, honors, awards" },
+      { name: "Ceremony details", desc: "Date, time, venue" },
+      { name: "Party information", desc: "After-party details" },
+      { name: "Photo gallery", desc: "Academic journey" },
+      { name: "Thank you messages", desc: "Gratitude section" },
+      { name: "Countdown timer", desc: "To graduation day" }
+    ],
     slug: "graduation",
     image: graduationImg,
     stats: { created: "400+", satisfaction: "99%", label: "Graduates Honored" },
@@ -87,7 +123,14 @@ const services = [
     icon: Building,
     title: "Church & Corporate Events",
     description: "Professional digital invitations for church programs, conferences, and corporate events.",
-    features: ["Event schedule", "Speaker profiles", "Registration forms", "Venue information", "Program agenda", "Live stream embed"],
+    features: [
+      { name: "Event schedule", desc: "Program agenda" },
+      { name: "Speaker profiles", desc: "Who's presenting" },
+      { name: "Registration forms", desc: "Attendee sign-up" },
+      { name: "Venue information", desc: "Location details" },
+      { name: "Program agenda", desc: "Detailed itinerary" },
+      { name: "Live stream embed", desc: "Hybrid attendance" }
+    ],
     slug: "corporate",
     image: corporateImg,
     stats: { created: "250+", satisfaction: "98%", label: "Events Hosted" },
@@ -113,6 +156,7 @@ const featureCategories = [
     features: [
       { name: "Google Maps Integration", description: "One-tap navigation to your venue" },
       { name: "Multiple Venue Support", description: "Separate directions for ceremony and reception" },
+      { name: "Lost & Found Page", description: "Help guests find the venue easily" },
     ]
   },
   {
@@ -123,7 +167,7 @@ const featureCategories = [
       { name: "RSVP Tracking", description: "Know exactly who is attending your event" },
       { name: "Meal Preferences", description: "Collect dietary requirements and food choices" },
       { name: "Guest Analytics", description: "See views, RSVPs, and engagement in real-time" },
-      { name: "Better Planning", description: "Helps families, churches, and planners prepare accurately" },
+      { name: "Host Dashboard", description: "Manage your event from one central place (Royal)" },
     ]
   },
   {
@@ -131,10 +175,10 @@ const featureCategories = [
     title: "Media & Experience",
     color: "bg-pink-100 text-pink-600",
     features: [
-      { name: "Photo Gallery", description: "Showcase beautiful images before and after your event" },
-      { name: "Background Music", description: "Set the mood with ambient music that plays automatically" },
-      { name: "Video Background", description: "Premium cinematic feel with video headers" },
-      { name: "Photo Booth Frame", description: "Custom frames for event photos guests can share" },
+      { name: "Photo Gallery", description: "2-Unlimited photos depending on package" },
+      { name: "Background Music", description: "Set the mood with ambient music (Classic+)" },
+      { name: "Video Integration", description: "Add videos to your invitation (Royal)" },
+      { name: "Hero Banners", description: "1-5 banner images based on package" },
     ]
   },
   {
@@ -143,9 +187,9 @@ const featureCategories = [
     color: "bg-orange-100 text-orange-600",
     features: [
       { name: "Guest Messaging Wall", description: "Collect wishes, prayers, and heartfelt messages" },
-      { name: "Perfect for Celebrations", description: "Ideal for weddings, anniversaries, and church events" },
-      { name: "Contact Cards", description: "Let guests save your details directly to their phones" },
+      { name: "Contact Cards (vCard)", description: "Let guests save your details to their phones" },
       { name: "WhatsApp Sharing", description: "Easy one-click sharing to family and friends" },
+      { name: "Digital Guestbook", description: "Guest messages & photos (Add-on)" },
     ]
   },
   {
@@ -153,7 +197,8 @@ const featureCategories = [
     title: "Live & Hybrid Events",
     color: "bg-red-100 text-red-600",
     features: [
-      { name: "Live Stream Embed", description: "Let guests who cannot attend watch in real-time" },
+      { name: "Live Stream Embed", description: "Let guests who cannot attend watch in real-time (Royal)" },
+      { name: "Video Integration", description: "Add event videos and highlights (Royal)" },
       { name: "Diaspora Friendly", description: "Perfect for family members abroad" },
       { name: "International Reach", description: "Connect with guests anywhere in the world" },
     ]
@@ -186,26 +231,11 @@ const featureCategories = [
     color: "bg-amber-100 text-amber-600",
     features: [
       { name: "Thank You Page", description: "Express gratitude after your event beautifully" },
-      { name: "MoMo Collection", description: "Receive contributions directly via Mobile Money" },
-      { name: "Calendar Integration", description: "Guests can add your event to their calendar" },
-      { name: "Custom Domain", description: "Get a personalized URL like yournames.vibelinkgh.com" },
+      { name: "MoMo Collection", description: "Display (Prestige) or Track (Royal) contributions" },
+      { name: "Program Booklet Page", description: "Full event program details (Royal)" },
+      { name: "Custom Domain", description: "Get a personalized URL (Prestige+)" },
     ]
   },
-];
-
-const quickFeatures = [
-  { icon: "clock", label: "Countdown Timer" },
-  { icon: "camera", label: "Photo Gallery" },
-  { icon: "music", label: "Background Music" },
-  { icon: "clipboard", label: "RSVP Tracking" },
-  { icon: "map-pin", label: "Google Maps" },
-  { icon: "calendar", label: "Calendar Sync" },
-  { icon: "message", label: "Guest Messages" },
-  { icon: "wallet", label: "MoMo Collection" },
-  { icon: "chart", label: "Analytics" },
-  { icon: "globe", label: "Custom Domain" },
-  { icon: "smartphone", label: "Mobile Ready" },
-  { icon: "share", label: "WhatsApp Share" },
 ];
 
 const servicesSchema = createServiceSchema(
@@ -284,9 +314,12 @@ const Services = () => {
 
                     <ul className="space-y-3">
                       {service.features.map((feature) => (
-                        <li key={feature} className="flex items-center gap-3">
-                          <Check className="h-5 w-5 text-accent flex-shrink-0" />
-                          <span className="text-foreground">{feature}</span>
+                        <li key={feature.name} className="flex items-start gap-3">
+                          <Check className="h-5 w-5 text-accent flex-shrink-0 mt-0.5" />
+                          <div>
+                            <span className="font-medium text-foreground">{feature.name}</span>
+                            
+                          </div>
                         </li>
                       ))}
                     </ul>
@@ -468,7 +501,7 @@ const Services = () => {
               { icon: MapPin, label: "Google Maps", color: "from-green-500 to-emerald-500", delay: 0.2 },
               { icon: Calendar, label: "Calendar Sync", color: "from-teal-500 to-cyan-500", delay: 0.25 },
               { icon: MessageSquare, label: "Guest Messages", color: "from-yellow-500 to-orange-500", delay: 0.3 },
-              { icon: Wallet, label: "MoMo Collection", color: "from-red-500 to-pink-500", delay: 0.35 },
+              { icon: Link2, label: "Donation Link", color: "from-red-500 to-pink-500", delay: 0.35 },
               { icon: BarChart3, label: "Analytics", color: "from-indigo-500 to-purple-500", delay: 0.4 },
               { icon: Globe, label: "Custom Domain", color: "from-cyan-500 to-blue-500", delay: 0.45 },
               { icon: Smartphone, label: "Mobile Ready", color: "from-emerald-500 to-green-500", delay: 0.5 },
@@ -481,13 +514,13 @@ const Services = () => {
                   initial={{ opacity: 0, y: 30, rotateX: -15 }}
                   whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
                   viewport={{ once: true }}
-                  transition={{ 
+                  transition={{
                     delay: item.delay,
                     type: "spring",
                     stiffness: 100,
                     damping: 15
                   }}
-                  whileHover={{ 
+                  whileHover={{
                     scale: 1.08,
                     y: -8,
                     transition: { type: "spring", stiffness: 400, damping: 10 }
@@ -498,17 +531,17 @@ const Services = () => {
                   <div className="relative flex flex-col items-center gap-3 p-5 bg-card rounded-2xl border border-border overflow-hidden transition-all duration-300 hover:border-primary/50 hover:shadow-xl hover:shadow-primary/10">
                     {/* Gradient glow on hover */}
                     <div className={`absolute inset-0 bg-gradient-to-br ${item.color} opacity-0 group-hover:opacity-10 transition-opacity duration-300`} />
-                    
+
                     {/* Icon container with gradient */}
                     <motion.div
                       className={`relative w-14 h-14 rounded-xl bg-gradient-to-br ${item.color} flex items-center justify-center shadow-lg`}
-                      whileHover={{ 
+                      whileHover={{
                         rotate: [0, -10, 10, 0],
                         transition: { duration: 0.5 }
                       }}
                     >
                       <IconComponent className="h-7 w-7 text-white" />
-                      
+
                       {/* Shine effect */}
                       <motion.div
                         className="absolute inset-0 rounded-xl bg-gradient-to-tr from-white/0 via-white/30 to-white/0"
@@ -517,12 +550,12 @@ const Services = () => {
                         transition={{ duration: 0.6 }}
                       />
                     </motion.div>
-                    
+
                     {/* Label */}
                     <span className="text-sm font-semibold text-foreground text-center relative z-10 group-hover:text-primary transition-colors duration-300">
                       {item.label}
                     </span>
-                    
+
                     {/* Check badge */}
                     <motion.div
                       initial={{ scale: 0 }}
@@ -538,7 +571,7 @@ const Services = () => {
               );
             })}
           </div>
-          
+
           {/* Interactive CTA */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -547,7 +580,7 @@ const Services = () => {
             transition={{ delay: 0.6 }}
             className="mt-12 text-center"
           >
-            <motion.p 
+            <motion.p
               className="text-muted-foreground mb-6"
               animate={{ opacity: [0.7, 1, 0.7] }}
               transition={{ duration: 2, repeat: Infinity }}
@@ -564,8 +597,9 @@ const Services = () => {
                   <motion.span
                     animate={{ x: [0, 4, 0] }}
                     transition={{ duration: 1.5, repeat: Infinity }}
+                    className="inline-flex"
                   >
-                    →
+                    <ArrowRight className="h-5 w-5" />
                   </motion.span>
                 </Link>
               </Button>
