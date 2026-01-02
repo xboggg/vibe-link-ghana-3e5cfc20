@@ -49,7 +49,7 @@ const services = [
       { name: "RSVP with meal preferences", desc: "Guest management" },
       { name: "Wedding party introductions", desc: "Bridal party profiles" },
       { name: "Photo gallery", desc: "Engagement & pre-wedding" },
-      { name: "Google", desc: "Multiple venue directions" }
+      { name: "Google Map Integration", desc: "Multiple venue directions" }
     ],
     slug: "wedding",
     image: weddingImg,
