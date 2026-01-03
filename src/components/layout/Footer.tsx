@@ -158,7 +158,7 @@ export function Footer() {
           </div>
 
           {/* Quick Links */}
-          <div className="mx-[60px]">
+          <div className="mx-0">
             <h4 className="text-sm font-semibold uppercase tracking-wider text-secondary mb-4">
               Quick Links
             </h4>
@@ -172,7 +172,7 @@ export function Footer() {
           </div>
 
           {/* Event Types - Clickable */}
-          <div className="mx-[10px]">
+          <div className="mx-0">
             <h4 className="text-sm font-semibold uppercase tracking-wider text-secondary mb-4">
               Event Types
             </h4>
