@@ -499,7 +499,7 @@ const Pricing = () => {
                 </table>
               </div>
               <p className="text-center text-muted-foreground text-xs mt-2">
-                ??? Swipe to compare all packages ???
+                ← Swipe to compare all packages →
               </p>
             </div>
           </motion.div>
