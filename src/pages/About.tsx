@@ -70,14 +70,14 @@ const stats = [
   { value: 48, suffix: "hrs", label: "Fastest Delivery" },
 ];
 
-// Carousel images - unique African/Ghanaian celebration images (NOT used elsewhere on site)
+// Carousel images - authentic Ghanaian celebration images
 const carouselImages = [
-  { src: "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?auto=format&fit=crop&w=800&q=80", label: "Weddings" },
-  { src: "https://images.unsplash.com/photo-1578318257212-6ae5b2082890?auto=format&fit=crop&w=800&q=80", label: "Naming Ceremonies" },
-  { src: "https://images.unsplash.com/photo-1627556704302-624286467c65?auto=format&fit=crop&w=800&q=80", label: "Graduations" },
-  { src: "https://images.unsplash.com/photo-1601823984263-b87b59798b70?auto=format&fit=crop&w=800&q=80", label: "Church Events" },
-  { src: "https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?auto=format&fit=crop&w=800&q=80", label: "Corporate Events" },
-  { src: "https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=800&q=80", label: "Memorials" },
+  { src: "/assets/carousel/wedding.png", label: "Weddings" },
+  { src: "/assets/carousel/naming.png", label: "Naming Ceremonies" },
+  { src: "/assets/carousel/graduation.png", label: "Graduations" },
+  { src: "/assets/carousel/church.png", label: "Church Events" },
+  { src: "/assets/carousel/coporate.png", label: "Corporate Events" },
+  { src: "/assets/carousel/memorial.png", label: "Memorials" },
 ];
 
 // Why Choose VibeLink features
