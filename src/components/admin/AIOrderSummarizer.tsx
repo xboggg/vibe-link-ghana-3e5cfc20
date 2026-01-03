@@ -36,20 +36,19 @@ import { format, formatDistanceToNow, differenceInDays } from "date-fns";
 
 interface Order {
   id: string;
-  order_number: string;
   client_name: string;
   client_email: string;
   client_phone: string;
-  client_whatsapp: string;
+  client_whatsapp: string | null;
   event_type: string;
-  event_date: string;
+  event_date: string | null;
+  event_title: string;
   package_name: string;
   total_price: number;
-  deposit_amount: number;
-  balance_due: number;
-  status: string;
-  priority: string;
-  notes: string;
+  deposit_amount: number | null;
+  balance_amount: number | null;
+  order_status: string;
+  special_requests: string | null;
   created_at: string;
 }
 
@@ -104,63 +103,65 @@ export function AIOrderSummarizer() {
   };
 
   const generateSummary = (order: Order, type: SummaryType): string => {
-    const daysUntilEvent = differenceInDays(new Date(order.event_date), new Date());
+    const daysUntilEvent = order.event_date ? differenceInDays(new Date(order.event_date), new Date()) : 0;
     const isUrgent = daysUntilEvent <= 3 && daysUntilEvent >= 0;
-    const isPaid = order.balance_due <= 0;
+    const balanceDue = (order.balance_amount || 0);
+    const isPaid = balanceDue <= 0;
+    const orderNumber = order.id.slice(0, 8).toUpperCase();
 
     switch (type) {
       case "brief":
-        return `ORDER SUMMARY - ${order.order_number}
-????????????????????????????????????????????????????????????????????????????????????
+        return `ORDER SUMMARY - ${orderNumber}
+————————————————————————————————
 Client: ${order.client_name}
 Event: ${order.event_type} | ${order.package_name}
-Date: ${format(new Date(order.event_date), "EEEE, MMMM d, yyyy")}
+Date: ${order.event_date ? format(new Date(order.event_date), "EEEE, MMMM d, yyyy") : 'TBD'}
 ${daysUntilEvent > 0 ? `(${daysUntilEvent} days away)` : daysUntilEvent === 0 ? '(TODAY!)' : '(Past event)'}
 
-Status: ${order.status.toUpperCase()}${isUrgent ? ' ?????? URGENT' : ''}
-Payment: ${isPaid ? '??? Fully Paid' : `GHS ${order.balance_due} pending`}
+Status: ${order.order_status.toUpperCase()}${isUrgent ? ' ⚠️ URGENT' : ''}
+Payment: ${isPaid ? '✓ Fully Paid' : `GHS ${balanceDue} pending`}
 Total: GHS ${order.total_price.toLocaleString()}
 
 Contact: ${order.client_phone}`;
 
       case "detailed":
         return `DETAILED ORDER REPORT
-?????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
-ORDER #${order.order_number}
+═══════════════════════════════════════════════════════
+ORDER #${orderNumber}
 Created: ${format(new Date(order.created_at), "PPP 'at' p")}
 
 CLIENT INFORMATION
-???????????????????????????????????????????????????????????????????????????????????????
+———————————————————————————————
 Name: ${order.client_name}
 Email: ${order.client_email}
 Phone: ${order.client_phone}
 WhatsApp: ${order.client_whatsapp || order.client_phone}
 
 EVENT DETAILS
-???????????????????????????????????????????????????????????????????????????????????????
+———————————————————————————————
 Type: ${order.event_type}
-Date: ${format(new Date(order.event_date), "EEEE, MMMM d, yyyy")}
+Title: ${order.event_title}
+Date: ${order.event_date ? format(new Date(order.event_date), "EEEE, MMMM d, yyyy") : 'TBD'}
 Time Until Event: ${daysUntilEvent > 0 ? `${daysUntilEvent} days` : daysUntilEvent === 0 ? 'TODAY' : `${Math.abs(daysUntilEvent)} days ago`}
 Package: ${order.package_name}
 
 FINANCIAL SUMMARY
-???????????????????????????????????????????????????????????????????????????????????????
+———————————————————————————————
 Total Price: GHS ${order.total_price.toLocaleString()}
-Deposit Paid: GHS ${order.deposit_amount.toLocaleString()}
-Balance Due: GHS ${order.balance_due.toLocaleString()}
+Deposit Paid: GHS ${(order.deposit_amount || 0).toLocaleString()}
+Balance Due: GHS ${balanceDue.toLocaleString()}
 Payment Status: ${isPaid ? 'PAID IN FULL' : 'PENDING BALANCE'}
 
 ORDER STATUS
-???????????????????????????????????????????????????????????????????????????????????????
-Current Status: ${order.status.toUpperCase()}
-Priority: ${order.priority || 'Normal'}
-${isUrgent ? '?????? URGENT: Event is within 3 days!' : ''}
+———————————————————————————————
+Current Status: ${order.order_status.toUpperCase()}
+${isUrgent ? '⚠️ URGENT: Event is within 3 days!' : ''}
 
-NOTES
-???????????????????????????????????????????????????????????????????????????????????????
-${order.notes || 'No additional notes'}
+SPECIAL REQUESTS
+———————————————————————————————
+${order.special_requests || 'No additional notes'}
 
-?????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
+═══════════════════════════════════════════════════════
 Generated by VibeLink Ghana | ${format(new Date(), "PPP")}`;
 
       case "client_facing":
@@ -170,14 +171,14 @@ Thank you for choosing VibeLink Ghana for your ${order.event_type}!
 
 Here's a summary of your order:
 
-???? Order Number: ${order.order_number}
-???? Event Date: ${format(new Date(order.event_date), "EEEE, MMMM d, yyyy")}
-???? Package: ${order.package_name}
+📋 Order Number: ${orderNumber}
+📅 Event Date: ${order.event_date ? format(new Date(order.event_date), "EEEE, MMMM d, yyyy") : 'TBD'}
+📦 Package: ${order.package_name}
 
-???? Order Total: GHS ${order.total_price.toLocaleString()}
-${!isPaid ? `???? Balance Due: GHS ${order.balance_due.toLocaleString()}` : '??? Payment Complete - Thank you!'}
+💰 Order Total: GHS ${order.total_price.toLocaleString()}
+${!isPaid ? `💳 Balance Due: GHS ${balanceDue.toLocaleString()}` : '✅ Payment Complete - Thank you!'}
 
-Your order status: ${order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+Your order status: ${order.order_status.charAt(0).toUpperCase() + order.order_status.slice(1)}
 
 ${daysUntilEvent > 0 && daysUntilEvent <= 7 ? `We're getting everything ready for your event in ${daysUntilEvent} days!` : ''}
 
@@ -188,10 +189,10 @@ VibeLink Ghana Team`;
 
       case "production":
         return `PRODUCTION BRIEF
-????????????????????????????????????????????????????????????????????????????????????
+————————————————————————————————
 
-ORDER: ${order.order_number}
-DEADLINE: ${format(new Date(order.event_date), "EEE, MMM d")} ${isUrgent ? '?????? RUSH' : ''}
+ORDER: ${orderNumber}
+DEADLINE: ${order.event_date ? format(new Date(order.event_date), "EEE, MMM d") : 'TBD'} ${isUrgent ? '⚠️ RUSH' : ''}
 
 PACKAGE: ${order.package_name}
 EVENT: ${order.event_type}
@@ -199,29 +200,28 @@ EVENT: ${order.event_type}
 CLIENT: ${order.client_name}
 CONTACT: ${order.client_phone}
 
-PAYMENT: ${isPaid ? 'CLEARED ???' : 'PENDING'}
-${order.priority === 'high' || order.priority === 'urgent' ? 'PRIORITY: HIGH' : ''}
+PAYMENT: ${isPaid ? 'CLEARED ✓' : 'PENDING'}
 
-SPECIAL NOTES:
-${order.notes || 'None'}
+SPECIAL REQUESTS:
+${order.special_requests || 'None'}
 
-???????????????????????????????????????????????????????????????????????????????????????
+———————————————————————————————
 Days to deadline: ${daysUntilEvent > 0 ? daysUntilEvent : 'OVERDUE'}`;
 
       case "whatsapp":
-        return `Hi ${order.client_name.split(' ')[0]}! ????
+        return `Hi ${order.client_name.split(' ')[0]}! 👋
 
-Quick update on your order #${order.order_number}:
+Quick update on your order #${orderNumber}:
 
-???? ${order.event_type} - ${format(new Date(order.event_date), "MMM d, yyyy")}
-???? ${order.package_name}
-${!isPaid ? `???? Balance: GHS ${order.balance_due.toLocaleString()}` : '??? Paid'}
+📅 ${order.event_type} - ${order.event_date ? format(new Date(order.event_date), "MMM d, yyyy") : 'TBD'}
+📦 ${order.package_name}
+${!isPaid ? `💳 Balance: GHS ${balanceDue.toLocaleString()}` : '✅ Paid'}
 
-Status: ${order.status}
+Status: ${order.order_status}
 
-${daysUntilEvent > 0 && daysUntilEvent <= 5 ? `Only ${daysUntilEvent} days to go! ????` : ''}
+${daysUntilEvent > 0 && daysUntilEvent <= 5 ? `Only ${daysUntilEvent} days to go! 🎉` : ''}
 
-Any questions? Just reply! ????
+Any questions? Just reply! 💬
 
 - VibeLink Ghana`;
 
@@ -257,13 +257,14 @@ Any questions? Just reply! ????
     if (!selectedOrder || !generatedSummary) return;
 
     try {
+      const orderNumber = selectedOrder.id.slice(0, 8).toUpperCase();
       await supabase.from("ai_generated_content").insert({
         content_type: "order_summary",
-        title: `${summaryTypeConfig[summaryType].label} - ${selectedOrder.order_number}`,
+        title: `${summaryTypeConfig[summaryType].label} - ${orderNumber}`,
         content: generatedSummary,
         metadata: {
           order_id: selectedOrder.id,
-          order_number: selectedOrder.order_number,
+          order_number: orderNumber,
           summary_type: summaryType
         },
         status: "approved"
@@ -290,10 +291,11 @@ Any questions? Just reply! ????
   const printSummary = () => {
     const printWindow = window.open('', '_blank');
     if (printWindow) {
+      const orderNumber = selectedOrder?.id.slice(0, 8).toUpperCase() || '';
       printWindow.document.write(`
         <html>
           <head>
-            <title>Order Summary - ${selectedOrder?.order_number}</title>
+            <title>Order Summary - ${orderNumber}</title>
             <style>
               body { font-family: monospace; padding: 20px; white-space: pre-wrap; }
             </style>
@@ -388,7 +390,7 @@ Any questions? Just reply! ????
                   return (
                     <TableRow key={order.id}>
                       <TableCell className="font-mono font-medium">
-                        {order.order_number}
+                        {order.id.slice(0, 8).toUpperCase()}
                       </TableCell>
                       <TableCell>
                         <div>
@@ -404,15 +406,15 @@ Any questions? Just reply! ????
                       </TableCell>
                       <TableCell>
                         <div>
-                          <p>{format(new Date(order.event_date), "MMM d, yyyy")}</p>
+                          <p>{order.event_date ? format(new Date(order.event_date), "MMM d, yyyy") : 'TBD'}</p>
                           <p className={`text-xs ${daysUntil <= 3 && daysUntil >= 0 ? 'text-red-500 font-medium' : 'text-muted-foreground'}`}>
                             {daysUntil > 0 ? `${daysUntil} days` : daysUntil === 0 ? 'Today!' : 'Past'}
                           </p>
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge className={getStatusColor(order.status)}>
-                          {order.status}
+                        <Badge className={getStatusColor(order.order_status)}>
+                          {order.order_status}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">
@@ -442,7 +444,7 @@ Any questions? Just reply! ????
               {summaryTypeConfig[summaryType].label}
               {selectedOrder && (
                 <Badge variant="outline" className="ml-2">
-                  {selectedOrder.order_number}
+                  {selectedOrder.id.slice(0, 8).toUpperCase()}
                 </Badge>
               )}
             </DialogTitle>

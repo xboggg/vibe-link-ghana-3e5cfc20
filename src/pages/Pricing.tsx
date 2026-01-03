@@ -155,7 +155,7 @@ const addOns = [
   { name: "Additional Language", price: "GHS 150", desc: "Add Twi, French, or others" },
   { name: "Background Music", price: "GHS 50", desc: "Add music to your invitation" },
   { name: "Memorial Page Renewal", price: "GHS 100/yr", desc: "Keep tribute pages live yearly" },
-  { name: "Obituary Section", price: "Free", desc: "Add obituary for funeral invites" },
+  { name: "Obituary Section", price: "Free", desc: "Add obituary for funeral invites (on request)" },
   { name: "Lost & Found", price: "GHS 100", desc: "Help guests find lost items" },
   { name: "Nearby Accommodation", price: "GHS 100", desc: "Show hotels near your venue" },
   { name: "Book a Ride", price: "GHS 100", desc: "Let guests request transport" },

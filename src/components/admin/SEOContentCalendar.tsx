@@ -53,7 +53,7 @@ export const SEOContentCalendar = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("all");
-  const [formData, setFormData] = useState({ title: "", description: "", content_type: "blog" as const, status: "draft" as const, scheduled_date: "", keywords: "", target_audience: "" });
+  const [formData, setFormData] = useState<{ title: string; description: string; content_type: "blog" | "social" | "email" | "video"; status: "draft" | "scheduled" | "published" | "archived"; scheduled_date: string; keywords: string; target_audience: string }>({ title: "", description: "", content_type: "blog", status: "draft", scheduled_date: "", keywords: "", target_audience: "" });
 
   useEffect(() => {
     const stored = localStorage.getItem("seo_content_calendar");

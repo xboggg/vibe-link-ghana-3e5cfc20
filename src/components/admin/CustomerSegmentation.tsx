@@ -70,14 +70,14 @@ export const CustomerSegmentation = () => {
       const { data: orders } = await supabase.from("orders").select("*").order("created_at", { ascending: false });
       const customerMap = new Map<string, Customer>();
       orders?.forEach((order) => {
-        const email = order.customer_email;
+        const email = order.client_email;
         if (!email) return;
         if (!customerMap.has(email)) {
-          customerMap.set(email, { id: email, email, name: order.customer_name || "Unknown", phone: order.customer_phone || "", total_orders: 0, total_spent: 0, last_order_date: order.created_at, segments: [] });
+          customerMap.set(email, { id: email, email, name: order.client_name || "Unknown", phone: order.client_phone || "", total_orders: 0, total_spent: 0, last_order_date: order.created_at, segments: [] });
         }
         const customer = customerMap.get(email)!;
         customer.total_orders += 1;
-        customer.total_spent += order.total_amount || 0;
+        customer.total_spent += order.total_price || 0;
         if (new Date(order.created_at) > new Date(customer.last_order_date)) customer.last_order_date = order.created_at;
       });
       const customerList = Array.from(customerMap.values());
