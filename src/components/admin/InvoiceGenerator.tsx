@@ -69,7 +69,6 @@ interface InvoiceItem {
 
 interface Order {
   id: string;
-  order_number: string;
   client_name: string;
   client_email: string;
   client_phone: string;
@@ -139,7 +138,7 @@ export function InvoiceGenerator() {
     try {
       const { data } = await supabase
         .from("orders")
-        .select("id, order_number, client_name, client_email, client_phone, event_type, package_name, total_price")
+        .select("id, client_name, client_email, client_phone, event_type, package_name, total_price")
         .order("created_at", { ascending: false })
         .limit(100);
       setOrders(data || []);
@@ -453,7 +452,7 @@ export function InvoiceGenerator() {
                 <SelectContent>
                   {orders.map(order => (
                     <SelectItem key={order.id} value={order.id}>
-                      {order.order_number} - {order.client_name} (GHS {order.total_price})
+                      {order.id.slice(0, 8).toUpperCase()} - {order.client_name} (GHS {order.total_price})
                     </SelectItem>
                   ))}
                 </SelectContent>

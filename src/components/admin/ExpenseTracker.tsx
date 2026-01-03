@@ -131,7 +131,7 @@ export function ExpenseTracker() {
         .select("total_price")
         .gte("created_at", dateRange.start)
         .lte("created_at", dateRange.end + "T23:59:59")
-        .in("status", ["completed", "delivered"]);
+        .in("order_status", ["completed"]);
 
       const total = (data || []).reduce((sum, order) => sum + (order.total_price || 0), 0);
       setRevenue({ total, count: data?.length || 0 });

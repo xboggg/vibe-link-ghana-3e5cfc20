@@ -64,11 +64,10 @@ interface SurveyResponse {
 
 interface Order {
   id: string;
-  order_number: string;
   client_name: string;
   client_email: string;
   client_phone: string;
-  status: string;
+  order_status: string;
 }
 
 const statusConfig: Record<string, { color: string; icon: React.ReactNode }> = {
@@ -143,8 +142,8 @@ export function CustomerSurveys() {
     try {
       const { data } = await supabase
         .from("orders")
-        .select("id, order_number, client_name, client_email, client_phone, status")
-        .in("status", ["completed", "delivered"])
+        .select("id, client_name, client_email, client_phone, order_status")
+        .in("order_status", ["completed"])
         .order("created_at", { ascending: false })
         .limit(50);
       setOrders(data || []);
@@ -486,7 +485,7 @@ export function CustomerSurveys() {
                 <SelectContent>
                   {orders.map(order => (
                     <SelectItem key={order.id} value={order.id}>
-                      {order.order_number} - {order.client_name}
+                      {order.id.slice(0, 8).toUpperCase()} - {order.client_name}
                     </SelectItem>
                   ))}
                 </SelectContent>

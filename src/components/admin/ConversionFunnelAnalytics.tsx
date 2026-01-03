@@ -52,7 +52,7 @@ export const ConversionFunnelAnalytics = () => {
       const cartCount = (carts?.length || 0) + orderCount;
       const estimatedLeads = Math.floor(cartCount * 1.5);
       const estimatedVisitors = Math.floor(estimatedLeads * 3);
-      const totalRevenue = orders?.reduce((sum, o) => sum + (o.total_amount || 0), 0) || 0;
+      const totalRevenue = orders?.reduce((sum, o) => sum + (o.total_price || 0), 0) || 0;
 
       const funnel: FunnelStage[] = [
         { name: "Visitors", icon: Eye, count: estimatedVisitors, value: 0, conversionRate: 100, dropoffRate: 0, color: "bg-blue-500" },
@@ -76,7 +76,7 @@ export const ConversionFunnelAnalytics = () => {
       for (let i = parseInt(dateRange); i >= 0; i--) {
         const date = subDays(new Date(), i);
         const dayOrders = orders?.filter((o) => format(new Date(o.created_at), "yyyy-MM-dd") === format(date, "yyyy-MM-dd")) || [];
-        const dayRevenue = dayOrders.reduce((sum, o) => sum + (o.total_amount || 0), 0);
+        const dayRevenue = dayOrders.reduce((sum, o) => sum + (o.total_price || 0), 0);
         const dayVisitors = Math.floor(Math.random() * 100) + 50;
         history.push({
           date: format(date, "yyyy-MM-dd"),

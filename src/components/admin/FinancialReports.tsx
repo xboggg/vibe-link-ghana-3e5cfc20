@@ -147,7 +147,7 @@ export function FinancialReports() {
             .select("total_price")
             .gte("created_at", startStr)
             .lte("created_at", endStr + "T23:59:59")
-            .in("status", ["completed", "delivered"]),
+            .in("order_status", ["completed"]),
           supabase
             .from("expenses")
             .select("amount")
@@ -211,7 +211,7 @@ export function FinancialReports() {
           break;
       }
 
-      const { error } = await supabase.from("financial_reports").insert({
+      const { error } = await supabase.from("financial_reports").insert([{
         report_type: reportPeriod,
         period_start: format(periodStart, "yyyy-MM-dd"),
         period_end: format(periodEnd, "yyyy-MM-dd"),
@@ -219,8 +219,8 @@ export function FinancialReports() {
         total_expenses: summary.totalExpenses,
         net_profit: summary.totalProfit,
         orders_count: summary.totalOrders,
-        report_data: { periods: reportData, summary }
-      });
+        report_data: JSON.parse(JSON.stringify({ periods: reportData, summary }))
+      }]);
 
       if (error) throw error;
       toast.success("Report saved successfully");
