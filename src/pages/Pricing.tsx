@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { CTASection } from "@/components/sections/CTASection";
-import { Check, X, Star, MessageCircle, Plus, Sparkles } from "lucide-react";
+import { Check, X, Star, MessageCircle, Sparkles, Crown, Percent } from "lucide-react";
 import SEO, { createBreadcrumbSchema } from "@/components/SEO";
 
 const pricingBreadcrumb = createBreadcrumbSchema([
@@ -70,7 +70,7 @@ const packages = [
       { name: "30-day hosting", included: true },
       { name: "1 revision round", included: true },
     ],
-    excluded: ["Photo gallery", "RSVP tracking", "Background music"],
+    excluded: ["Photo gallery", "RSVP tracking", "Background music", "Calendar sync"],
   },
   {
     name: "Classic Vibe",
@@ -82,15 +82,14 @@ const packages = [
       { name: "2 hero banner images", included: true },
       { name: "Everything in Starter", included: true, highlight: true },
       { name: "Custom color scheme", included: true },
-      { name: "Photo gallery (15 photos)", included: true },
-      { name: "Background music", included: true },
+      { name: "Photo gallery (5 photos)", included: true },
       { name: "RSVP tracking", included: true },
-      { name: "Add to calendar button", included: true },
-      { name: "Contact cards (vCard)", included: true },
+      { name: "Background music", included: true },
+      { name: "White-label", included: true },
       { name: "90-day hosting", included: true },
       { name: "2 revision rounds", included: true },
     ],
-    excluded: ["Video integration", "MoMo collection"],
+    excluded: ["Video integration", "Calendar sync", "MoMo donation link", "Priority WhatsApp support"],
   },
   {
     name: "Prestige Vibe",
@@ -101,17 +100,15 @@ const packages = [
     features: [
       { name: "3 hero banner images", included: true },
       { name: "Everything in Classic", included: true, highlight: true },
-      { name: "Fully custom design", included: true },
-      { name: "Unlimited photos", included: true },
+      { name: "Photo gallery (10 photos)", included: true },
       { name: "Video integration", included: true },
-      { name: "MoMo collection (display)", included: true },
-      { name: "Guest messaging wall", included: true },
-      { name: "Custom domain option", included: true },
-      { name: "1-year hosting", included: true },
-      { name: "Unlimited revisions", included: true },
+      { name: "Calendar sync", included: true },
+      { name: "MoMo donation link", included: true },
       { name: "Priority WhatsApp support", included: true },
+      { name: "6-month hosting", included: true },
+      { name: "5 revisions", included: true },
     ],
-    excluded: [],
+    excluded: ["MoMo tracking dashboard", "Guest messaging wall", "Custom domain", "Host dashboard"],
   },
   {
     name: "Royal Vibe",
@@ -123,12 +120,16 @@ const packages = [
       { name: "5 hero banner images", included: true },
       { name: "Everything in Prestige", included: true, highlight: true },
       { name: "Multiple event pages", included: true },
-      { name: "White-label (no branding)", included: true },
       { name: "Advanced animations", included: true },
       { name: "MoMo tracking dashboard", included: true },
       { name: "Program booklet page", included: true },
       { name: "Host dashboard", included: true },
-      { name: "2-year hosting", included: true },
+      { name: "Custom domain", included: true },
+      { name: "Book a ride", included: true },
+      { name: "Lost & found", included: true },
+      { name: "White-label (no branding)", included: true },
+      { name: "1-year hosting", included: true },
+      { name: "Unlimited revisions", included: true },
       { name: "Dedicated account manager", included: true },
       { name: "Professional consultation", included: true },
     ],
@@ -137,57 +138,75 @@ const packages = [
 ];
 
 const addOns = [
-  { name: "RSVP Tracking", price: "GHS 100", desc: "For Starter package" },
-  { name: "Video Integration", price: "GHS 200", desc: "Add video to any package" },
-  { name: "MoMo Tracking Dashboard", price: "GHS 200", desc: "For Prestige package" },
-  { name: "Program Booklet Page", price: "GHS 150", desc: "For Prestige package" },
-  { name: "Host Dashboard", price: "GHS 200", desc: "For Prestige package" },
-  { name: "Event Statistics", price: "GHS 200", desc: "Analytics & insights" },
-  { name: "QR Check-in System", price: "GHS 150", desc: "Guest attendance tracking" },
-  { name: "Digital Guestbook", price: "GHS 150", desc: "Guest messages & photos" },
-  { name: "Gift Acknowledgment Page", price: "GHS 150", desc: "Thank contributors" },
-  { name: "Live Stream Embed", price: "GHS 200", desc: "Stream your event" },
-  { name: "Extended Hosting (6 months)", price: "GHS 250", desc: "Additional hosting" },
-  { name: "Extended Hosting (1 year)", price: "GHS 500", desc: "Additional hosting" },
-  { name: "Express Delivery (24h)", price: "GHS 500", desc: "Rush service" },
-  { name: "Custom Domain", price: "GHS 200/yr", desc: "yourname.com" },
-  { name: "Extra Photos (+15)", price: "GHS 100", desc: "More gallery space" },
-  { name: "Additional Language", price: "GHS 150", desc: "Twi, French, etc." },
-  { name: "Background Music", price: "GHS 50", desc: "For Starter package" },
-  { name: "Memorial Page Renewal", price: "GHS 100/yr", desc: "Keep memorial alive" },
+  { name: "Video Integration", price: "GHS 200", desc: "Embed videos on your invite" },
+  { name: "Calendar Sync", price: "GHS 100", desc: "Guests save the date to their calendar" },
+  { name: "MoMo Tracking Dashboard", price: "GHS 200", desc: "Track donations in real-time" },
+  { name: "Program Booklet Page", price: "GHS 150", desc: "Digital event program for guests" },
+  { name: "Host Dashboard", price: "GHS 200", desc: "Manage RSVPs & view analytics" },
+  { name: "RSVP Tracking", price: "GHS 100", desc: "Track guest responses & attendance" },
+  { name: "QR Check-in System", price: "GHS 150", desc: "Scan guests on arrival" },
+  { name: "Digital Guestbook", price: "GHS 150", desc: "Guests leave messages & photos" },
+  { name: "Gift Acknowledgment Page", price: "GHS 150", desc: "Publicly thank gift contributors" },
+  { name: "Live Stream Embed", price: "GHS 200", desc: "Stream your event live to guests" },
+  { name: "Extended Hosting (6 months)", price: "GHS 250", desc: "Keep your invite live longer" },
+  { name: "Extended Hosting (1 year)", price: "GHS 500", desc: "Full year of hosting" },
+  { name: "Custom Domain", price: "GHS 200/yr", desc: "Use your own domain name" },
+  { name: "Extra Photos (+10)", price: "GHS 100", desc: "Expand your photo gallery" },
+  { name: "Additional Language", price: "GHS 150", desc: "Add Twi, French, or others" },
+  { name: "Background Music", price: "GHS 50", desc: "Add music to your invitation" },
+  { name: "Memorial Page Renewal", price: "GHS 100/yr", desc: "Keep tribute pages live yearly" },
+  { name: "Obituary Section", price: "Free", desc: "Add obituary for funeral invites" },
+  { name: "Lost & Found", price: "GHS 100", desc: "Help guests find lost items" },
+  { name: "Nearby Accommodation", price: "GHS 100", desc: "Show hotels near your venue" },
+  { name: "Book a Ride", price: "GHS 100", desc: "Let guests request transport" },
 ];
 
+// Full comparison table with all features
 const comparisonFeatures = [
-  { feature: "Hero Banner Images", starter: "1", classic: "2", prestige: "3", royal: "5" },
-  { feature: "Custom Color Scheme", starter: false, classic: true, prestige: true, royal: true },
-  { feature: "Photo Gallery", starter: false, classic: "15", prestige: "Unlimited", royal: "Unlimited" },
+  { feature: "Hero Banners", starter: "1", classic: "2", prestige: "3", royal: "5" },
+  { feature: "Photo Gallery", starter: false, classic: "5 photos", prestige: "10 photos", royal: "Unlimited" },
+  { feature: "Custom Colors", starter: false, classic: true, prestige: true, royal: true },
   { feature: "Background Music", starter: false, classic: true, prestige: true, royal: true },
   { feature: "RSVP Tracking", starter: false, classic: true, prestige: true, royal: true },
   { feature: "Countdown Timer", starter: true, classic: true, prestige: true, royal: true },
   { feature: "Google Maps", starter: true, classic: true, prestige: true, royal: true },
-  { feature: "Add to Calendar", starter: false, classic: true, prestige: true, royal: true },
+  { feature: "WhatsApp Share", starter: true, classic: true, prestige: true, royal: true },
+  { feature: "Calendar Sync", starter: false, classic: false, prestige: true, royal: true },
   { feature: "Video Integration", starter: false, classic: false, prestige: true, royal: true },
-  { feature: "MoMo Collection", starter: false, classic: false, prestige: "Display", royal: "Tracking" },
-  { feature: "Guest Messaging Wall", starter: false, classic: false, prestige: true, royal: true },
-  { feature: "Custom Domain", starter: false, classic: false, prestige: true, royal: true },
+  { feature: "MoMo Donation Link", starter: false, classic: false, prestige: "Display", royal: "Tracking" },
+  { feature: "Guest Messaging Wall", starter: false, classic: false, prestige: false, royal: true },
+  { feature: "Custom Domain", starter: false, classic: false, prestige: false, royal: true },
   { feature: "Program Booklet", starter: false, classic: false, prestige: false, royal: true },
   { feature: "Host Dashboard", starter: false, classic: false, prestige: false, royal: true },
-  { feature: "White-label", starter: false, classic: false, prestige: false, royal: true },
-  { feature: "Hosting Duration", starter: "30 days", classic: "90 days", prestige: "1 year", royal: "2 years" },
-  { feature: "Revisions", starter: "1", classic: "2", prestige: "Unlimited", royal: "Unlimited" },
-  { feature: "Delivery Time", starter: "5-7 days", classic: "5-7 days", prestige: "5-7 days", royal: "5-7 days" },
+  { feature: "Book a Ride", starter: false, classic: false, prestige: false, royal: true },
+  { feature: "Lost & Found", starter: false, classic: false, prestige: false, royal: true },
+  { feature: "Multi-Event Pages", starter: false, classic: false, prestige: false, royal: true },
+  { feature: "Advanced Animations", starter: false, classic: false, prestige: false, royal: true },
+  { feature: "White-label", starter: false, classic: true, prestige: true, royal: "No branding" },
+  { feature: "Hosting Duration", starter: "30 days", classic: "90 days", prestige: "6 months", royal: "1 year" },
+  { feature: "Revisions", starter: "1", classic: "2", prestige: "5", royal: "Unlimited" },
+  { feature: "Account Manager", starter: false, classic: false, prestige: false, royal: true },
+  { feature: "Delivery Time", starter: "5-7 days", classic: "5-7 days", prestige: "5-7 days", royal: "7-10 days" },
 ];
 
 const Pricing = () => {
   const renderCellValue = (value: boolean | string) => {
     if (typeof value === "boolean") {
       return value ? (
-        <Check className="h-4 w-4 text-green-500 mx-auto" />
+        <div className="flex items-center justify-center">
+          <div className="w-6 h-6 rounded-full bg-green-500/15 flex items-center justify-center">
+            <Check className="h-4 w-4 text-green-500" />
+          </div>
+        </div>
       ) : (
-        <X className="h-4 w-4 text-muted-foreground/30 mx-auto" />
+        <div className="flex items-center justify-center">
+          <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center">
+            <X className="h-3 w-3 text-muted-foreground/40" />
+          </div>
+        </div>
       );
     }
-    return <span className="text-foreground text-xs sm:text-sm font-medium">{value}</span>;
+    return <span className="text-foreground font-semibold text-xs">{value}</span>;
   };
 
   return (
@@ -275,7 +294,7 @@ const Pricing = () => {
                   className="w-full"
                   size="sm"
                 >
-                  <Link to="/get-started">
+                  <Link to={pkg.name === "Royal Vibe" ? "/contact" : "/get-started"}>
                     {pkg.name === "Royal Vibe" ? "Contact Us" : "Get Started"}
                   </Link>
                 </Button>
@@ -286,7 +305,7 @@ const Pricing = () => {
       </section>
 
       {/* Comparison Table */}
-      <section className="py-12 lg:py-16 bg-muted/30">
+      <section className="py-14 lg:py-18 bg-gradient-to-b from-muted/40 to-background">
         <div className="container mx-auto px-4 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -294,8 +313,8 @@ const Pricing = () => {
             viewport={{ once: true }}
             className="text-center mb-8"
           >
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">Compare Packages</h2>
-            <p className="text-muted-foreground text-sm">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-2">Compare Packages</h2>
+            <p className="text-muted-foreground text-sm md:text-base max-w-xl mx-auto">
               Find your perfect fit at a glance
             </p>
           </motion.div>
@@ -304,45 +323,185 @@ const Pricing = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="overflow-x-auto rounded-xl border border-border bg-card"
+            className="max-w-5xl mx-auto"
           >
-            <table className="w-full min-w-[600px]">
-              <thead>
-                <tr className="border-b border-border bg-muted/50">
-                  <th className="text-left py-3 px-3 text-foreground font-semibold text-sm">Feature</th>
-                  <th className="text-center py-3 px-2 text-foreground font-semibold text-xs sm:text-sm min-w-[70px]">
-                    <div>Starter</div>
-                    <div className="text-xs font-normal text-muted-foreground">GHS 500</div>
-                  </th>
-                  <th className="text-center py-3 px-2 font-semibold text-xs sm:text-sm bg-secondary/10 min-w-[70px]">
-                    <div className="text-secondary">Classic</div>
-                    <div className="text-xs font-normal text-secondary/80">GHS 1,200</div>
-                  </th>
-                  <th className="text-center py-3 px-2 text-foreground font-semibold text-xs sm:text-sm min-w-[70px]">
-                    <div>Prestige</div>
-                    <div className="text-xs font-normal text-muted-foreground">GHS 2,500</div>
-                  </th>
-                  <th className="text-center py-3 px-2 text-foreground font-semibold text-xs sm:text-sm min-w-[70px]">
-                    <div>Royal</div>
-                    <div className="text-xs font-normal text-muted-foreground">GHS 5,000+</div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
+            {/* Desktop Table */}
+            <div className="hidden md:block overflow-visible rounded-2xl border border-border/50 shadow-2xl bg-card mt-4">
+              {/* Table Header */}
+              <div className="grid grid-cols-5 bg-gradient-to-r from-[#6B46C1] via-[#553C9A] to-[#44337A] rounded-t-2xl">
+                <div className="p-4 flex items-center">
+                  <span className="text-white font-bold text-sm">Feature</span>
+                </div>
+                <div className="p-3 text-center border-l border-white/10">
+                  <div className="text-white/80 font-medium text-xs mb-0.5">Starter</div>
+                  <div className="text-secondary font-bold text-sm">GHS 500</div>
+                </div>
+                <div className="p-3 pt-5 text-center border-l border-white/10 bg-white/10 relative">
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground text-[10px] font-bold shadow-lg">
+                      <Star className="h-2.5 w-2.5 fill-current" />
+                      POPULAR
+                    </span>
+                  </div>
+                  <div className="text-white font-medium text-xs mb-0.5">Classic</div>
+                  <div className="text-secondary font-bold text-sm">GHS 1,200</div>
+                </div>
+                <div className="p-3 text-center border-l border-white/10">
+                  <div className="text-white/80 font-medium text-xs mb-0.5">Prestige</div>
+                  <div className="text-secondary font-bold text-sm">GHS 2,500</div>
+                </div>
+                <div className="p-3 text-center border-l border-white/10">
+                  <div className="flex items-center justify-center gap-1 text-white/80 font-medium text-xs mb-0.5">
+                    <Crown className="h-3 w-3 text-amber-400" />
+                    Royal
+                  </div>
+                  <div className="text-secondary font-bold text-sm">GHS 5,000+</div>
+                </div>
+              </div>
+
+              {/* Table Body */}
+              <div className="divide-y divide-border/30">
                 {comparisonFeatures.map((row, index) => (
-                  <tr
+                  <div
                     key={row.feature}
-                    className={`border-b border-border/50 ${index % 2 === 0 ? "bg-background/50" : ""}`}
+                    className={`grid grid-cols-5 ${index % 2 === 0 ? "bg-card" : "bg-muted/20"} hover:bg-primary/5 transition-colors`}
                   >
-                    <td className="py-2.5 px-3 text-foreground text-xs sm:text-sm">{row.feature}</td>
-                    <td className="py-2.5 px-2 text-center">{renderCellValue(row.starter)}</td>
-                    <td className="py-2.5 px-2 text-center bg-secondary/5">{renderCellValue(row.classic)}</td>
-                    <td className="py-2.5 px-2 text-center">{renderCellValue(row.prestige)}</td>
-                    <td className="py-2.5 px-2 text-center">{renderCellValue(row.royal)}</td>
-                  </tr>
+                    <div className="py-2.5 px-4 text-foreground font-medium text-sm flex items-center">
+                      {row.feature}
+                    </div>
+                    <div className="py-2.5 px-2 flex items-center justify-center border-l border-border/20">
+                      {renderCellValue(row.starter)}
+                    </div>
+                    <div className="py-2.5 px-2 flex items-center justify-center border-l border-border/20 bg-secondary/5">
+                      {renderCellValue(row.classic)}
+                    </div>
+                    <div className="py-2.5 px-2 flex items-center justify-center border-l border-border/20">
+                      {renderCellValue(row.prestige)}
+                    </div>
+                    <div className="py-2.5 px-2 flex items-center justify-center border-l border-border/20">
+                      {renderCellValue(row.royal)}
+                    </div>
+                  </div>
                 ))}
-              </tbody>
-            </table>
+              </div>
+
+              {/* Table Footer - CTA */}
+              <div className="grid grid-cols-5 bg-muted/40 border-t border-border/50">
+                <div className="p-3"></div>
+                <div className="p-3 flex justify-center border-l border-border/20">
+                  <Button asChild variant="outline" size="sm" className="text-xs h-8">
+                    <Link to="/get-started">Get Started</Link>
+                  </Button>
+                </div>
+                <div className="p-3 flex justify-center border-l border-border/20 bg-secondary/5">
+                  <Button asChild variant="gold" size="sm" className="text-xs h-8">
+                    <Link to="/get-started">Get Started</Link>
+                  </Button>
+                </div>
+                <div className="p-3 flex justify-center border-l border-border/20">
+                  <Button asChild variant="outline" size="sm" className="text-xs h-8">
+                    <Link to="/get-started">Get Started</Link>
+                  </Button>
+                </div>
+                <div className="p-3 flex justify-center border-l border-border/20">
+                  <Button asChild variant="outline" size="sm" className="text-xs h-8">
+                    <Link to="/contact">Contact Us</Link>
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Mobile Horizontal Scroll Table */}
+            <div className="md:hidden">
+              <div className="overflow-x-auto pb-4 rounded-xl border border-border/50 shadow-lg" style={{ WebkitOverflowScrolling: 'touch' }}>
+                <table className="w-full border-collapse" style={{ minWidth: '650px' }}>
+                  {/* Table Header */}
+                  <thead>
+                    <tr className="bg-gradient-to-r from-[#6B46C1] via-[#553C9A] to-[#44337A]">
+                      <th className="p-2 text-left text-white font-bold text-xs w-[130px]">
+                        Feature
+                      </th>
+                      <th className="p-2 text-center border-l border-white/10 w-[115px]">
+                        <div className="text-white/80 font-medium text-[10px]">Starter</div>
+                        <div className="text-secondary font-bold text-xs">GHS 500</div>
+                      </th>
+                      <th className="p-2 text-center border-l border-white/10 bg-white/10 w-[115px] relative">
+                        <div className="absolute -top-1 left-1/2 -translate-x-1/2">
+                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-secondary text-secondary-foreground text-[8px] font-bold shadow-lg whitespace-nowrap">
+                            <Star className="h-2 w-2 fill-current" />
+                            POPULAR
+                          </span>
+                        </div>
+                        <div className="text-white font-medium text-[10px] mt-3">Classic</div>
+                        <div className="text-secondary font-bold text-xs">GHS 1,200</div>
+                      </th>
+                      <th className="p-2 text-center border-l border-white/10 w-[115px]">
+                        <div className="text-white/80 font-medium text-[10px]">Prestige</div>
+                        <div className="text-secondary font-bold text-xs">GHS 2,500</div>
+                      </th>
+                      <th className="p-2 text-center border-l border-white/10 w-[115px]">
+                        <div className="flex items-center justify-center gap-0.5 text-white/80 font-medium text-[10px]">
+                          <Crown className="h-2.5 w-2.5 text-amber-400" />
+                          Royal
+                        </div>
+                        <div className="text-secondary font-bold text-xs">GHS 5,000+</div>
+                      </th>
+                    </tr>
+                  </thead>
+                  {/* Table Body */}
+                  <tbody>
+                    {comparisonFeatures.map((row, index) => (
+                      <tr key={row.feature} className={index % 2 === 0 ? "bg-card" : "bg-muted/20"}>
+                        <td className="py-2 px-2 text-foreground font-medium text-xs">
+                          {row.feature}
+                        </td>
+                        <td className="py-2 px-1 text-center border-l border-border/20">
+                          {renderCellValue(row.starter)}
+                        </td>
+                        <td className="py-2 px-1 text-center border-l border-border/20 bg-secondary/5">
+                          {renderCellValue(row.classic)}
+                        </td>
+                        <td className="py-2 px-1 text-center border-l border-border/20">
+                          {renderCellValue(row.prestige)}
+                        </td>
+                        <td className="py-2 px-1 text-center border-l border-border/20">
+                          {renderCellValue(row.royal)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                  {/* Table Footer */}
+                  <tfoot>
+                    <tr className="bg-muted/40 border-t border-border/50">
+                      <td className="p-2"></td>
+                      <td className="p-2 text-center border-l border-border/20">
+                        <Button asChild variant="outline" size="sm" className="text-[10px] h-7 px-2">
+                          <Link to="/get-started">Select</Link>
+                        </Button>
+                      </td>
+                      <td className="p-2 text-center border-l border-border/20 bg-secondary/5">
+                        <Button asChild variant="gold" size="sm" className="text-[10px] h-7 px-2">
+                          <Link to="/get-started">Select</Link>
+                        </Button>
+                      </td>
+                      <td className="p-2 text-center border-l border-border/20">
+                        <Button asChild variant="outline" size="sm" className="text-[10px] h-7 px-2">
+                          <Link to="/get-started">Select</Link>
+                        </Button>
+                      </td>
+                      <td className="p-2 text-center border-l border-border/20">
+                        <Button asChild variant="outline" size="sm" className="text-[10px] h-7 px-2">
+                          <Link to="/contact">Contact</Link>
+                        </Button>
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+              <p className="text-center text-muted-foreground text-xs mt-2">
+                ??? Swipe to compare all packages ???
+              </p>
+            </div>
           </motion.div>
         </div>
       </section>
@@ -362,7 +521,7 @@ const Pricing = () => {
             <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
               Enhance Your Invitation
             </h2>
-            <p className="text-muted-foreground text-sm max-w-xl mx-auto">
+            <p className="text-muted-foreground max-w-xl mx-auto">
               Add extra features to make your invitation even more special
             </p>
           </motion.div>
@@ -393,35 +552,136 @@ const Pricing = () => {
       </section>
 
       {/* Payment Plans */}
-      <section className="py-10 bg-muted/30">
+      <section className="py-14 bg-gradient-to-b from-muted/30 via-background to-muted/20 overflow-hidden">
         <div className="container mx-auto px-4 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="max-w-3xl mx-auto"
+            className="text-center mb-10"
           >
-            <div className="text-center mb-6">
-              <h3 className="text-xl font-bold text-foreground mb-2">Flexible Payment Plans</h3>
-              <p className="text-muted-foreground text-sm">Choose how you want to pay</p>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {[
-                { plan: "Full Payment", split: "100%", note: "Save the Date in 24h" },
-                { plan: "50/50 Split", split: "50% + 50%", note: "Balance before delivery" },
-                { plan: "40/60 Split", split: "40% + 60%", note: "Balance before delivery" },
-                { plan: "30/70 Split", split: "30% + 70%", note: "Balance before delivery" },
-              ].map((item) => (
-                <div
-                  key={item.plan}
-                  className="p-3 rounded-lg bg-card border border-border text-center"
-                >
-                  <div className="text-lg font-bold text-foreground">{item.split}</div>
-                  <div className="text-xs text-muted-foreground mt-1">{item.note}</div>
-                </div>
-              ))}
-            </div>
+            <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-3">
+              Pay Your Way
+            </span>
+            <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-2">Flexible Payment Options</h3>
+            <p className="text-muted-foreground max-w-lg mx-auto">
+              We understand budgets. Choose a payment plan that works best for you.
+            </p>
           </motion.div>
+
+          <div className="max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Full Payment Card */}
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5 }}
+                whileHover={{ scale: 1.02, y: -5 }}
+                className="relative group"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all opacity-50" />
+                <div className="relative p-6 rounded-2xl bg-card border-2 border-green-500/30 hover:border-green-500/50 transition-all">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-12 h-12 rounded-full bg-green-500/10 flex items-center justify-center">
+                      <Check className="h-6 w-6 text-green-500" />
+                    </div>
+                    <span className="px-3 py-1 rounded-full bg-green-500/10 text-green-600 text-xs font-semibold">
+                      RECOMMENDED
+                    </span>
+                  </div>
+                  <h4 className="text-2xl font-bold text-foreground mb-1">Full Payment</h4>
+                  <div className="text-4xl font-bold text-green-500 mb-3">100%</div>
+                  <p className="text-muted-foreground text-sm mb-4">
+                    Pay once and relax. Your invitation gets priority processing.
+                  </p>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-sm">
+                      <Check className="h-4 w-4 text-green-500" />
+                      <span>Priority queue - we start immediately</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <Check className="h-4 w-4 text-green-500" />
+                      <span>Free "Save the Date" teaser in 24 hours</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <Check className="h-4 w-4 text-green-500" />
+                      <span>No follow-up payments to worry about</span>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* 50/50 Split Card */}
+              <motion.div
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+                whileHover={{ scale: 1.02, y: -5 }}
+                className="relative group"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all opacity-50" />
+                <div className="relative p-6 rounded-2xl bg-card border-2 border-purple-500/30 hover:border-purple-500/50 transition-all">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-12 h-12 rounded-full bg-purple-500/10 flex items-center justify-center">
+                      <Percent className="h-6 w-6 text-purple-500" />
+                    </div>
+                    <span className="px-3 py-1 rounded-full bg-purple-500/10 text-purple-600 text-xs font-semibold">
+                      FLEXIBLE
+                    </span>
+                  </div>
+                  <h4 className="text-2xl font-bold text-foreground mb-1">Split Payment</h4>
+                  <div className="text-4xl font-bold text-purple-500 mb-3">50% + 50%</div>
+                  <p className="text-muted-foreground text-sm mb-4">
+                    Split your payment in two. Pay half now, half before delivery.
+                  </p>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-sm">
+                      <Check className="h-4 w-4 text-purple-500" />
+                      <span>50% deposit to start your project</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <Check className="h-4 w-4 text-purple-500" />
+                      <span>Review draft before final payment</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <Check className="h-4 w-4 text-purple-500" />
+                      <span>Balance due before final delivery</span>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Animated Trust Badges */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3 }}
+              className="mt-8 flex flex-wrap items-center justify-center gap-4 text-sm text-muted-foreground"
+            >
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-green-500/10 flex items-center justify-center">
+                  <Check className="h-4 w-4 text-green-500" />
+                </div>
+                <span>Secure MoMo & Card Payments</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center">
+                  <Check className="h-4 w-4 text-blue-500" />
+                </div>
+                <span>No Hidden Fees</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-purple-500/10 flex items-center justify-center">
+                  <Check className="h-4 w-4 text-purple-500" />
+                </div>
+                <span>Money-Back Guarantee</span>
+              </div>
+            </motion.div>
+          </div>
         </div>
       </section>
 

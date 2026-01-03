@@ -29,6 +29,11 @@ import {
   Sparkles,
   ArrowRight,
   Link2,
+  Car,
+  Radio,
+  Frame,
+  Wallet,
+  Search,
 } from "lucide-react";
 
 import weddingImg from "@/assets/service-wedding.jpg";
@@ -49,7 +54,7 @@ const services = [
       { name: "RSVP with meal preferences", desc: "Guest management" },
       { name: "Wedding party introductions", desc: "Bridal party profiles" },
       { name: "Photo gallery", desc: "Engagement & pre-wedding" },
-      { name: "Google Map Integration", desc: "Multiple venue directions" }
+      { name: "Google Map Integration", desc: "Easy venue navigation" }
     ],
     slug: "wedding",
     image: weddingImg,
@@ -124,7 +129,7 @@ const services = [
     title: "Church & Corporate Events",
     description: "Professional digital invitations for church programs, conferences, and corporate events.",
     features: [
-      { name: "Event schedule", desc: "Program agenda" },
+      { name: "QR check-in system", desc: "Track attendance" },
       { name: "Speaker profiles", desc: "Who's presenting" },
       { name: "Registration forms", desc: "Attendee sign-up" },
       { name: "Venue information", desc: "Location details" },
@@ -145,8 +150,8 @@ const featureCategories = [
     features: [
       { name: "Date, Time & Venue", description: "Display all essential event information beautifully" },
       { name: "Dress Code Display", description: "Let guests know the appropriate attire" },
-      { name: "Event Timeline", description: "Show the program schedule so guests know what happens when" },
-      { name: "Live Countdown", description: "Build excitement with a countdown to your ceremony day" },
+      { name: "Event Timeline", description: "Display the full program schedule for your event" },
+      { name: "Live Countdown", description: "Build excitement with a countdown to your event" },
     ]
   },
   {
@@ -156,7 +161,8 @@ const featureCategories = [
     features: [
       { name: "Google Maps Integration", description: "One-tap navigation to your venue" },
       { name: "Multiple Venue Support", description: "Separate directions for ceremony and reception" },
-      { name: "Lost & Found Page", description: "Help guests find the venue easily" },
+      { name: "Book a Ride", description: "Quick access to Uber, Bolt, Yango & more" },
+      { name: "Nearby Accommodation", description: "Hotel suggestions for out-of-town guests" },
     ]
   },
   {
@@ -167,7 +173,7 @@ const featureCategories = [
       { name: "RSVP Tracking", description: "Know exactly who is attending your event" },
       { name: "Meal Preferences", description: "Collect dietary requirements and food choices" },
       { name: "Guest Analytics", description: "See views, RSVPs, and engagement in real-time" },
-      { name: "Host Dashboard", description: "Manage your event from one central place (Royal)" },
+      { name: "Better Planning", description: "Helps families, churches, and planners prepare accurately" },
     ]
   },
   {
@@ -175,10 +181,10 @@ const featureCategories = [
     title: "Media & Experience",
     color: "bg-pink-100 text-pink-600",
     features: [
-      { name: "Photo Gallery", description: "2-Unlimited photos depending on package" },
-      { name: "Background Music", description: "Set the mood with ambient music (Classic+)" },
-      { name: "Video Integration", description: "Add videos to your invitation (Royal)" },
-      { name: "Hero Banners", description: "1-5 banner images based on package" },
+      { name: "Photo Gallery", description: "Showcase beautiful images before and after your event" },
+      { name: "Background Music", description: "Set the mood with ambient music that plays automatically" },
+      { name: "Video Background", description: "Add cinematic videos to your invitation" },
+      { name: "Photo Booth Frame", description: "Custom frames for event photos guests can share" },
     ]
   },
   {
@@ -187,9 +193,9 @@ const featureCategories = [
     color: "bg-orange-100 text-orange-600",
     features: [
       { name: "Guest Messaging Wall", description: "Collect wishes, prayers, and heartfelt messages" },
-      { name: "Contact Cards (vCard)", description: "Let guests save your details to their phones" },
+      { name: "Digital Guestbook", description: "Guest messages & photos" },
+      { name: "Contact Cards", description: "Let guests save your details directly to their phones" },
       { name: "WhatsApp Sharing", description: "Easy one-click sharing to family and friends" },
-      { name: "Digital Guestbook", description: "Guest messages & photos (Add-on)" },
     ]
   },
   {
@@ -197,10 +203,10 @@ const featureCategories = [
     title: "Live & Hybrid Events",
     color: "bg-red-100 text-red-600",
     features: [
-      { name: "Live Stream Embed", description: "Let guests who cannot attend watch in real-time (Royal)" },
-      { name: "Video Integration", description: "Add event videos and highlights (Royal)" },
+      { name: "Live Stream Embed", description: "Let guests who cannot attend watch in real-time" },
       { name: "Diaspora Friendly", description: "Perfect for family members abroad" },
       { name: "International Reach", description: "Connect with guests anywhere in the world" },
+      { name: "Video Integration", description: "Add event videos and highlights" },
     ]
   },
   {
@@ -212,6 +218,7 @@ const featureCategories = [
       { name: "Respectful Design", description: "Dignified layouts specifically for memorial services" },
       { name: "Donation Links", description: "Allow guests to contribute to family or charity" },
       { name: "Memorial Page Renewal", description: "Keep memories alive with annual renewals" },
+      { name: "Obituary Section", description: "Share the life story and achievements of your loved one" },
     ]
   },
   {
@@ -223,6 +230,7 @@ const featureCategories = [
       { name: "English + French", description: "Perfect for Francophone guests" },
       { name: "Additional Languages", description: "Custom translations available on request" },
       { name: "International Families", description: "Great for mixed-culture celebrations" },
+      { name: "RTL Support", description: "Arabic, Hebrew & other right-to-left languages" },
     ]
   },
   {
@@ -231,9 +239,10 @@ const featureCategories = [
     color: "bg-amber-100 text-amber-600",
     features: [
       { name: "Thank You Page", description: "Express gratitude after your event beautifully" },
-      { name: "MoMo Collection", description: "Display (Prestige) or Track (Royal) contributions" },
-      { name: "Program Booklet Page", description: "Full event program details (Royal)" },
-      { name: "Custom Domain", description: "Get a personalized URL (Prestige+)" },
+      { name: "Calendar Integration", description: "Guests can add your event to their calendar" },
+      { name: "Custom Domain", description: "Get a personalized URL" },
+      { name: "Host Dashboard", description: "Manage your event from one central place" },
+      { name: "Lost & Found", description: "Report and recover misplaced items after your event" },
     ]
   },
 ];
@@ -318,7 +327,6 @@ const Services = () => {
                           <Check className="h-5 w-5 text-accent flex-shrink-0 mt-0.5" />
                           <div>
                             <span className="font-medium text-foreground">{feature.name}</span>
-                            
                           </div>
                         </li>
                       ))}
@@ -506,6 +514,12 @@ const Services = () => {
               { icon: Globe, label: "Custom Domain", color: "from-cyan-500 to-blue-500", delay: 0.45 },
               { icon: Smartphone, label: "Mobile Ready", color: "from-emerald-500 to-green-500", delay: 0.5 },
               { icon: Share2, label: "WhatsApp Share", color: "from-green-600 to-emerald-600", delay: 0.55 },
+              { icon: Search, label: "Lost & Found", color: "from-slate-500 to-gray-600", delay: 0.6 },
+              { icon: Car, label: "Book a Ride", color: "from-yellow-500 to-amber-600", delay: 0.65 },
+              { icon: Radio, label: "Live Streaming", color: "from-red-600 to-rose-600", delay: 0.7 },
+              { icon: Video, label: "Video Background", color: "from-violet-500 to-purple-600", delay: 0.75 },
+              { icon: Frame, label: "Photo Booth Frame", color: "from-fuchsia-500 to-pink-600", delay: 0.8 },
+              { icon: Wallet, label: "QR Check-in", color: "from-orange-600 to-red-500", delay: 0.85 },
             ].map((item) => {
               const IconComponent = item.icon;
               return (

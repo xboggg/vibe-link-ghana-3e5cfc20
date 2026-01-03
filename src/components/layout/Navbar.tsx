@@ -38,41 +38,25 @@ export function Navbar() {
   const isDark = theme === "dark";
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  useEffect(() => {
-    setIsOpen(false);
-  }, [location]);
+  useEffect(() => setIsOpen(false), [location]);
 
   const isHomePage = location.pathname === "/";
-
-  // Determine navbar background based on scroll, page, and theme
   const getNavbarClasses = () => {
     if (isScrolled || !isHomePage) {
-      if (isDark) {
-        return "bg-background/95 backdrop-blur-md shadow-lg border-b border-border/50";
-      }
-      return "bg-[#6B46C1]/95 backdrop-blur-md shadow-lg";
+      return isDark ? "bg-background/95 backdrop-blur-md shadow-lg border-b border-border/50" : "bg-[#6B46C1]/95 backdrop-blur-md shadow-lg";
     }
     return "bg-transparent";
   };
 
   return (
-    <nav
-      className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        getNavbarClasses()
-      )}
-    >
+    <nav className={cn("fixed top-0 left-0 right-0 z-50 transition-all duration-300", getNavbarClasses())}>
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
-          {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
             <div className="relative">
               <Sparkles className="h-7 w-7 text-secondary transition-transform duration-300 group-hover:scale-110" />
@@ -83,191 +67,65 @@ export function Navbar() {
             </span>
           </Link>
 
-          {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-1">
             {navItems.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={cn(
-                  "px-3 py-2 text-sm font-medium transition-colors rounded-lg",
-                  location.pathname === item.href
-                    ? "text-secondary"
-                    : "text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10"
-                )}
-              >
+              <Link key={item.name} to={item.href} className={cn("px-3 py-2 text-sm font-medium transition-colors rounded-lg", location.pathname === item.href ? "text-secondary" : "text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10")}>
                 {item.name}
               </Link>
             ))}
           </div>
 
-          {/* Right Side: Theme Toggle + Socials + CTA */}
           <div className="hidden lg:flex items-center gap-3">
-            {/* Theme Toggle */}
             <ThemeToggle />
-            
-            {/* Social Links */}
             <div className="flex items-center gap-1 border-r border-primary-foreground/20 pr-4">
               {socialLinks.map((social) => (
-                <a
-                  key={social.name}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-1.5 text-primary-foreground/60 hover:text-secondary transition-colors"
-                  aria-label={social.name}
-                >
+                <a key={social.name} href={social.href} target="_blank" rel="noopener noreferrer" className="p-1.5 text-primary-foreground/60 hover:text-secondary transition-colors" aria-label={social.name}>
                   <social.icon className="h-4 w-4" />
                 </a>
               ))}
             </div>
-
-            {/* Track Order Button */}
             <Button asChild variant="outline" size="sm" className="border-secondary/50 text-primary-foreground hover:bg-secondary/20 hover:border-secondary">
-              <Link to="/track-order" className="flex items-center gap-2">
-                <Package className="h-4 w-4" />
-                Track Order
-              </Link>
+              <Link to="/track-order" className="flex items-center gap-2"><Package className="h-4 w-4" />Track Order</Link>
             </Button>
-
-            {/* CTA Button */}
             <Button asChild variant="nav" size="default">
               <Link to="/get-started">Get Started</Link>
             </Button>
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="lg:hidden p-2 text-primary-foreground hover:text-secondary transition-colors relative w-10 h-10 flex items-center justify-center"
-            aria-label="Toggle menu"
-          >
+          <button onClick={() => setIsOpen(!isOpen)} className="lg:hidden p-2 text-primary-foreground hover:text-secondary transition-colors w-10 h-10 flex items-center justify-center" aria-label="Toggle menu">
             <AnimatePresence mode="wait">
-              {isOpen ? (
-                <motion.div
-                  key="close"
-                  initial={{ opacity: 0, rotate: -90 }}
-                  animate={{ opacity: 1, rotate: 0 }}
-                  exit={{ opacity: 0, rotate: 90 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <X className="h-6 w-6" />
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="menu"
-                  initial={{ opacity: 0, rotate: 90 }}
-                  animate={{ opacity: 1, rotate: 0 }}
-                  exit={{ opacity: 0, rotate: -90 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <Menu className="h-6 w-6" />
-                </motion.div>
-              )}
+              {isOpen ? <motion.div key="close" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><X className="h-6 w-6" /></motion.div> : <motion.div key="menu" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><Menu className="h-6 w-6" /></motion.div>}
             </AnimatePresence>
           </button>
         </div>
       </div>
 
-      {/* Mobile Menu */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ 
-              duration: 0.3, 
-              ease: [0.4, 0, 0.2, 1],
-              opacity: { duration: 0.2 }
-            }}
-            className={cn(
-              "lg:hidden backdrop-blur-md border-t overflow-hidden",
-              isDark 
-                ? "bg-background/95 border-border/50" 
-                : "bg-[#6B46C1]/95 border-primary-foreground/10"
-            )}
-          >
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2, delay: 0.1 }}
-              className="container mx-auto px-4 py-4 space-y-1"
-            >
-              {navItems.map((item, index) => (
-                <motion.div
-                  key={item.name}
-                  initial={{ opacity: 0, x: -30, y: -10 }}
-                  animate={{ opacity: 1, x: 0, y: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={{ 
-                    delay: index * 0.05,
-                    duration: 0.3,
-                    ease: [0.4, 0, 0.2, 1]
-                  }}
-                >
-                  <Link
-                    to={item.href}
-                    className={cn(
-                      "block px-4 py-3 text-base font-medium rounded-lg transition-all duration-200",
-                      location.pathname === item.href
-                        ? "text-secondary bg-primary-foreground/10"
-                        : "text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10 hover:translate-x-1"
-                    )}
-                  >
-                    {item.name}
-                  </Link>
-                </motion.div>
+          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className={cn("lg:hidden backdrop-blur-md border-t overflow-hidden", isDark ? "bg-background/95 border-border/50" : "bg-[#6B46C1]/95 border-primary-foreground/10")}>
+            <div className="container mx-auto px-4 py-4 space-y-1">
+              {navItems.map((item) => (
+                <Link key={item.name} to={item.href} className={cn("block px-4 py-3 text-base font-medium rounded-lg", location.pathname === item.href ? "text-secondary bg-primary-foreground/10" : "text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10")}>
+                  {item.name}
+                </Link>
               ))}
-              {/* Mobile Social Links + Theme Toggle */}
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ delay: navItems.length * 0.05, duration: 0.3 }}
-                className="flex items-center justify-center gap-4 pt-4"
-              >
+              <div className="flex items-center justify-center gap-4 pt-4">
                 <ThemeToggle />
-                {socialLinks.map((social, index) => (
-                  <motion.a
-                    key={social.name}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-2 text-primary-foreground/70 hover:text-secondary transition-colors"
-                    aria-label={social.name}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: (navItems.length + index) * 0.05 + 0.1 }}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
+                {socialLinks.map((social) => (
+                  <a key={social.name} href={social.href} target="_blank" rel="noopener noreferrer" className="p-2 text-primary-foreground/70 hover:text-secondary transition-colors" aria-label={social.name}>
                     <social.icon className="h-5 w-5" />
-                  </motion.a>
+                  </a>
                 ))}
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ 
-                  delay: (navItems.length + socialLinks.length) * 0.05 + 0.1,
-                  duration: 0.3 
-                }}
-                className="pt-4 space-y-3"
-              >
-                <Button asChild variant="outline" size="lg" className="w-full border-secondary/50 text-primary-foreground hover:bg-secondary/20 hover:text-primary-foreground">
-                  <Link to="/track-order" className="flex items-center gap-2">
-                    <Package className="h-4 w-4" />
-                    Track Order
-                  </Link>
+              </div>
+              <div className="pt-4 space-y-3">
+                <Button asChild variant="outline" size="lg" className="w-full border-secondary/50 text-primary-foreground hover:bg-secondary/20">
+                  <Link to="/track-order" className="flex items-center gap-2"><Package className="h-4 w-4" />Track Order</Link>
                 </Button>
                 <Button asChild variant="gold" size="lg" className="w-full">
                   <Link to="/get-started">Get Started</Link>
                 </Button>
-              </motion.div>
-            </motion.div>
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

@@ -40,19 +40,6 @@ import {
   Gift,
   ShoppingCart,
   Tag,
-  Receipt,
-  Wallet,
-  PieChart,
-  ClipboardList,
-  FileStack,
-  Download,
-  Sparkles,
-  Brain,
-  AlertTriangle,
-  PenTool,
-  Target,
-  Globe,
-  Gauge,
 } from "lucide-react";
 import { AnalyticsDashboard } from "@/components/admin/AnalyticsDashboard";
 import { OrderAnalytics } from "@/components/admin/OrderAnalytics";
@@ -70,21 +57,6 @@ import { TeamManager } from "@/components/admin/TeamManager";
 import { AbandonedCartRecovery } from "@/components/admin/AbandonedCartRecovery";
 import { CouponManagerAdmin } from "@/components/admin/CouponManagerAdmin";
 import { ReferralsAdmin } from "@/components/admin/ReferralsAdmin";
-import { InvoiceGenerator } from "@/components/admin/InvoiceGenerator";
-import { ExpenseTracker } from "@/components/admin/ExpenseTracker";
-import { FinancialReports } from "@/components/admin/FinancialReports";
-import { CustomerSurveys } from "@/components/admin/CustomerSurveys";
-import { OrderTemplates } from "@/components/admin/OrderTemplates";
-import { BackupExportSystem } from "@/components/admin/BackupExportSystem";
-import { AIEmailTemplates } from "@/components/admin/AIEmailTemplates";
-import { AIOrderSummarizer } from "@/components/admin/AIOrderSummarizer";
-import { ChatbotEscalation } from "@/components/admin/ChatbotEscalation";
-import { AIBlogWriter } from "@/components/admin/AIBlogWriter";
-import { CustomerSegmentation } from "@/components/admin/CustomerSegmentation";
-import { SEOContentCalendar } from "@/components/admin/SEOContentCalendar";
-import { ConversionFunnelAnalytics } from "@/components/admin/ConversionFunnelAnalytics";
-import { MultiCurrencySupport } from "@/components/admin/MultiCurrencySupport";
-import { MultiLanguageSupport } from "@/components/admin/MultiLanguageSupport";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -143,7 +115,7 @@ interface PaymentHistoryLog {
   created_at: string;
 }
 
-type AdminSection = "dashboard" | "orders" | "analytics" | "chatbot" | "blog" | "testimonials" | "newsletter" | "follow-ups" | "email-settings" | "users" | "team" | "abandoned-carts" | "coupons" | "referrals" | "invoices" | "expenses" | "reports" | "surveys" | "templates" | "backup" | "ai-emails" | "ai-summary" | "escalations" | "segmentation" | "seo-calendar" | "funnel" | "currency" | "languages";
+type AdminSection = "dashboard" | "orders" | "analytics" | "chatbot" | "blog" | "testimonials" | "newsletter" | "follow-ups" | "email-settings" | "users" | "team" | "abandoned-carts" | "coupons" | "referrals";
 
 const orderStatusColors: Record<OrderStatus, string> = {
   pending: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
@@ -175,20 +147,6 @@ const navItems = [
   { id: "abandoned-carts" as AdminSection, label: "Abandoned Carts", icon: ShoppingCart },
   { id: "coupons" as AdminSection, label: "Coupons", icon: Tag },
   { id: "referrals" as AdminSection, label: "Referrals", icon: Gift },
-  { id: "invoices" as AdminSection, label: "Invoices", icon: Receipt },
-  { id: "expenses" as AdminSection, label: "Expenses", icon: Wallet },
-  { id: "reports" as AdminSection, label: "Reports", icon: PieChart },
-  { id: "surveys" as AdminSection, label: "Surveys", icon: ClipboardList },
-  { id: "templates" as AdminSection, label: "Templates", icon: FileStack },
-  { id: "backup" as AdminSection, label: "Backup", icon: Download },
-  { id: "ai-emails" as AdminSection, label: "AI Emails", icon: Sparkles },
-  { id: "ai-summary" as AdminSection, label: "AI Summary", icon: Brain },
-  { id: "escalations" as AdminSection, label: "Escalations", icon: AlertTriangle },
-  { id: "segmentation" as AdminSection, label: "Segments", icon: Target },
-  { id: "seo-calendar" as AdminSection, label: "SEO Calendar", icon: Calendar },
-  { id: "funnel" as AdminSection, label: "Funnel", icon: Gauge },
-  { id: "currency" as AdminSection, label: "Currency", icon: DollarSign },
-  { id: "languages" as AdminSection, label: "Languages", icon: Globe },
 ];
 
 const Admin = () => {
@@ -911,49 +869,6 @@ const Admin = () => {
 
       case "referrals":
         return <ReferralsAdmin />;
-
-      case "invoices":
-        return <InvoiceGenerator />;
-
-      case "expenses":
-        return <ExpenseTracker />;
-
-      case "reports":
-        return <FinancialReports />;
-
-      case "surveys":
-        return <CustomerSurveys />;
-
-      case "templates":
-        return <OrderTemplates />;
-
-      case "backup":
-        return <BackupExportSystem />;
-
-      case "ai-emails":
-        return <AIEmailTemplates />;
-
-      case "ai-summary":
-        return <AIOrderSummarizer />;
-
-      case "escalations":
-        return <ChatbotEscalation />;
-
-      case "segmentation":
-        return <CustomerSegmentation />;
-
-      case "seo-calendar":
-        return <SEOContentCalendar />;
-
-      case "funnel":
-        return <ConversionFunnelAnalytics />;
-
-      case "currency":
-        return <MultiCurrencySupport />;
-
-      case "languages":
-        return <MultiLanguageSupport />;
-
 
       case "team":
         return <TeamManager />;

@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 import { 
-  Plus, Pencil, Trash2, Eye, EyeOff, Star, RefreshCw, 
+  Plus, Pencil, Trash2, Eye, EyeOff, Star, RefreshCw, Sparkles, Wand2, Loader2, 
   Calendar, Clock, ExternalLink, Search, Upload, Image, Tag, X
 } from 'lucide-react';
 import { format } from 'date-fns';
@@ -66,6 +66,7 @@ const suggestedTags = [
   'Cultural Heritage'
 ];
 
+const aiTopicOptions = [  { value: 'wedding', label: 'Wedding Ideas', desc: 'Traditional & modern wedding tips' },  { value: 'funeral', label: 'Funeral & Memorial', desc: 'Dignified celebration of life' },  { value: 'naming', label: 'Naming Ceremonies', desc: 'Welcoming new life' },  { value: 'event_tips', label: 'Event Planning Tips', desc: 'General event advice' },  { value: 'diy', label: 'DIY Decorations', desc: 'Budget-friendly ideas' },  { value: 'trends', label: 'Event Trends 2025', desc: 'Latest event styles' },  { value: 'anniversary', label: 'Anniversary Ideas', desc: 'Celebrating milestones' },  { value: 'corporate', label: 'Corporate Events', desc: 'Professional gatherings' },];
 const emptyPost: Partial<BlogPost> = {
   title: '',
   slug: '',
@@ -93,6 +94,10 @@ export function BlogManager() {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [tagInput, setTagInput] = useState('');
+  const [isAIDialogOpen, setIsAIDialogOpen] = useState(false);
+  const [aiTopic, setAITopic] = useState<string>('event_tips');
+  const [aiGenerating, setAIGenerating] = useState(false);
+  const [aiCustomPrompt, setAICustomPrompt] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -316,6 +321,11 @@ export function BlogManager() {
           <h2 className="text-2xl font-bold">Blog Manager</h2>
           <p className="text-muted-foreground">Create and manage blog posts</p>
         </div>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => setIsAIDialogOpen(true)}>
+            <Sparkles className="h-4 w-4 mr-2" />
+            AI Generate
+          </Button>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button onClick={() => openEditDialog()}>
@@ -646,6 +656,23 @@ export function BlogManager() {
             </div>
           </DialogContent>
         </Dialog>
+        </div>        {/* AI Generate Dialog */}        <Dialog open={isAIDialogOpen} onOpenChange={setIsAIDialogOpen}>          <DialogContent className="max-w-2xl">            <DialogHeader>              <DialogTitle className="flex items-center gap-2">                <Sparkles className="h-5 w-5 text-purple-500" />                AI Blog Post Generator              </DialogTitle>            </DialogHeader>            <div className="space-y-4 py-4">              <div className="space-y-2">                <Label>Select Topic</Label>                <Select value={aiTopic} onValueChange={setAITopic}>                  <SelectTrigger>                    <SelectValue placeholder="Choose a topic" />                  </SelectTrigger>                  <SelectContent>                    {aiTopicOptions.map((topic) => (                      <SelectItem key={topic.value} value={topic.value}>                        <div className="flex flex-col">                          <span>{topic.label}</span>                          <span className="text-xs text-muted-foreground">{topic.desc}</span>                        </div>                      </SelectItem>                    ))}                  </SelectContent>                </Select>              </div>              <div className="space-y-2">                <Label>Custom Instructions (Optional)</Label>                <Textarea                  value={aiCustomPrompt}                  onChange={(e) => setAICustomPrompt(e.target.value)}                  placeholder="Add specific details or angle for the post..."                  rows={3}                />              </div>              <div className="flex justify-end gap-2">                <Button variant="outline" onClick={() => setIsAIDialogOpen(false)}>                  Cancel                </Button>                <Button                  onClick={async () => {                    setAIGenerating(true);                    const topic = aiTopicOptions.find(t => t.value === aiTopic);                    const generatedTitle = `${topic?.label || "Event"} Guide: Tips for a Memorable Celebration in Ghana`;                    const generatedContent = `# ${generatedTitle}
+
+Planning an event in Ghana requires understanding local traditions and modern trends. Here's your comprehensive guide.
+
+## Key Considerations
+
+1. **Venue Selection** - Choose a location that fits your guest count and style.
+2. **Catering** - Consider both local and international cuisine options.
+3. **Decorations** - Blend traditional Ghanaian elements with contemporary design.
+4. **Music \& Entertainment** - Plan for both traditional and modern performances.
+5. **Guest Management** - Use digital invitations for easy RSVP tracking.
+
+## VibeLink Can Help
+
+At VibeLink Ghana, we specialize in creating beautiful digital invitations that capture the essence of your celebration. Contact us today!
+
+*Ready to start planning? Get your digital invitation at [vibelinkgh.com](https://vibelinkgh.com)*`;                    setTimeout(() => {                      setAIGenerating(false);                      setIsAIDialogOpen(false);                      setEditingPost({                        ...emptyPost,                        title: generatedTitle,                        content: generatedContent,                        category: topic?.value === "wedding" ? "Wedding" : topic?.value === "funeral" ? "Funeral \& Memorial" : "Tips \& Guides",                        excerpt: `A comprehensive guide to planning the perfect ${topic?.label?.toLowerCase() || "event"} in Ghana.`,                      });                      setIsDialogOpen(true);                      toast.success("AI content generated! Review and edit before publishing.");                    }, 1500);                  }}                  disabled={aiGenerating}                >                  {aiGenerating ? (                    <>                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />                      Generating...                    </>                  ) : (                    <>                      <Wand2 className="h-4 w-4 mr-2" />                      Generate Post                    </>                  )}                </Button>              </div>            </div>          </DialogContent>        </Dialog>
       </div>
 
       {/* Stats */}

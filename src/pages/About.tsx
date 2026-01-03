@@ -1,12 +1,14 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Layout } from "@/components/layout/Layout";
-import { Heart, Globe, Sparkles, Shield, Users, MessageCircle as MessageCircleIcon, Instagram, Facebook, Twitter, Linkedin, Loader2 } from "lucide-react";
+import { Heart, Globe, Sparkles, Shield, Users, MessageCircle as MessageCircleIcon, Instagram, Facebook, Twitter, Linkedin, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AnimatedCounter } from "@/components/AnimatedCounter";
 import SEO, { createBreadcrumbSchema } from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
+
+// Unique Ghanaian celebration images (different from other pages)
 
 interface TeamMember {
   id: string;
@@ -68,12 +70,22 @@ const stats = [
   { value: 48, suffix: "hrs", label: "Fastest Delivery" },
 ];
 
+// Carousel images - unique African/Ghanaian celebration images (NOT used elsewhere on site)
+const carouselImages = [
+  { src: "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?auto=format&fit=crop&w=800&q=80", label: "Weddings" },
+  { src: "https://images.unsplash.com/photo-1578318257212-6ae5b2082890?auto=format&fit=crop&w=800&q=80", label: "Naming Ceremonies" },
+  { src: "https://images.unsplash.com/photo-1627556704302-624286467c65?auto=format&fit=crop&w=800&q=80", label: "Graduations" },
+  { src: "https://images.unsplash.com/photo-1601823984263-b87b59798b70?auto=format&fit=crop&w=800&q=80", label: "Church Events" },
+  { src: "https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?auto=format&fit=crop&w=800&q=80", label: "Corporate Events" },
+  { src: "https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=800&q=80", label: "Memorials" },
+];
+
 // Why Choose VibeLink features
 const whyChooseFeatures = [
   {
     icon: MessageCircleIcon,
     title: "WhatsApp-First Support",
-    description: "We're always just a message away. Get quick responses and updates via WhatsApp, the way Ghanaians prefer to communicate.",
+    description: "We are always just a message away. Get quick responses and updates via WhatsApp, the way Ghanaians prefer to communicate.",
   },
   {
     icon: Users,
@@ -90,6 +102,9 @@ const whyChooseFeatures = [
 const About = () => {
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [loadingTeam, setLoadingTeam] = useState(true);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const fetchTeamMembers = async () => {
@@ -108,9 +123,36 @@ const About = () => {
     fetchTeamMembers();
   }, []);
 
+  // Auto-scroll carousel
+  useEffect(() => {
+    if (!isPaused) {
+      intervalRef.current = setInterval(() => {
+        setCurrentSlide((prev) => (prev + 1) % carouselImages.length);
+      }, 4000);
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [isPaused]);
+
+  const goToSlide = (index: number) => {
+    setCurrentSlide(index);
+  };
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % carouselImages.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + carouselImages.length) % carouselImages.length);
+  };
+
   return (
     <Layout>
-      <SEO 
+      <SEO
         title="About Us"
         description="Learn about VibeLink Ghana - Ghana's premier digital invitation service. Our mission is to transform traditional invitations into beautiful digital experiences."
         keywords="VibeLink Ghana, digital invitations company, Ghana event services, about VibeLink"
@@ -149,21 +191,21 @@ const About = () => {
               <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
                 Our Story
               </h2>
-              
+
               <div className="prose prose-lg text-muted-foreground space-y-4">
                 <p>
                   VibeLink Ghana was born from a simple observation: Ghanaians love to
                   celebrate, but the traditional invitation process was stuck in the past. Paper
-                  invitations were expensive, hard to distribute, and couldn't reach loved ones
+                  invitations were expensive, hard to distribute, and could not reach loved ones
                   abroad.
                 </p>
-                
+
                 <p>
                   We set out to change that. Our mission is to be the digital front door to every
                   Ghanaian ceremony - from joyful weddings and naming ceremonies to
                   dignified funerals and everything in between.
                 </p>
-                
+
                 <p>
                   Today, we serve families across Ghana and the diaspora, helping them share
                   their most precious moments with beautiful, interactive digital invitations that
@@ -172,20 +214,100 @@ const About = () => {
               </div>
             </motion.div>
 
+            {/* Image Carousel */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
               className="relative"
+              onMouseEnter={() => setIsPaused(true)}
+              onMouseLeave={() => setIsPaused(false)}
             >
-              <div className="rounded-2xl overflow-hidden shadow-xl">
-                <img 
-                  src="https://images.unsplash.com/photo-1523438885200-e635ba2c371e?w=600&h=400&fit=crop"
-                  alt="Ghana celebration"
-                  className="w-full h-auto object-cover"
-                />
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+                {/* Main Image Container */}
+                <div className="relative aspect-[4/3] overflow-hidden">
+                  {carouselImages.map((image, index) => (
+                    <motion.div
+                      key={index}
+                      initial={false}
+                      animate={{
+                        opacity: currentSlide === index ? 1 : 0,
+                        scale: currentSlide === index ? 1 : 1.1,
+                      }}
+                      transition={{ duration: 0.7, ease: "easeInOut" }}
+                      className="absolute inset-0"
+                    >
+                      <img
+                        src={image.src}
+                        alt={image.label}
+                        className="w-full h-full object-cover"
+                      />
+                      {/* Gradient Overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+
+                      {/* Label */}
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{
+                          opacity: currentSlide === index ? 1 : 0,
+                          y: currentSlide === index ? 0 : 20
+                        }}
+                        transition={{ duration: 0.5, delay: 0.2 }}
+                        className="absolute bottom-6 left-6 right-6"
+                      >
+                        <span className="inline-block px-4 py-2 rounded-full bg-gradient-to-r from-primary to-secondary text-white text-sm font-semibold shadow-lg">
+                          {image.label}
+                        </span>
+                      </motion.div>
+                    </motion.div>
+                  ))}
+                </div>
+
+                {/* Navigation Arrows */}
+                <button
+                  onClick={prevSlide}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/40 transition-all flex items-center justify-center group"
+                  aria-label="Previous slide"
+                >
+                  <ChevronLeft className="h-5 w-5 text-white group-hover:scale-110 transition-transform" />
+                </button>
+                <button
+                  onClick={nextSlide}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/40 transition-all flex items-center justify-center group"
+                  aria-label="Next slide"
+                >
+                  <ChevronRight className="h-5 w-5 text-white group-hover:scale-110 transition-transform" />
+                </button>
+
+                {/* Dots Indicator */}
+                <div className="absolute bottom-20 left-1/2 -translate-x-1/2 flex gap-2">
+                  {carouselImages.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => goToSlide(index)}
+                      className={`transition-all duration-300 rounded-full ${
+                        currentSlide === index
+                          ? "w-8 h-2 bg-white"
+                          : "w-2 h-2 bg-white/50 hover:bg-white/70"
+                      }`}
+                      aria-label={`Go to slide ${index + 1}`}
+                    />
+                  ))}
+                </div>
+
+                {/* Progress Bar */}
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20">
+                  <motion.div
+                    key={currentSlide}
+                    initial={{ width: "0%" }}
+                    animate={{ width: isPaused ? "0%" : "100%" }}
+                    transition={{ duration: 4, ease: "linear" }}
+                    className="h-full bg-gradient-to-r from-secondary to-primary"
+                  />
+                </div>
               </div>
+
             </motion.div>
           </div>
         </div>
@@ -205,10 +327,10 @@ const About = () => {
                 className="text-center"
               >
                 <div className="text-4xl md:text-5xl font-bold text-white mb-1">
-                  <AnimatedCounter 
-                    end={stat.value} 
-                    suffix={stat.suffix} 
-                    duration={2000} 
+                  <AnimatedCounter
+                    end={stat.value}
+                    suffix={stat.suffix}
+                    duration={2000}
                   />
                 </div>
                 <div className="text-white/80 text-sm">
@@ -448,7 +570,7 @@ const About = () => {
                 Our Vision
               </h3>
               <p className="text-muted-foreground leading-relaxed">
-                To be Ghana's #1 digital front door to all ceremonies – the
+                To be Ghana's #1 digital front door to all ceremonies - the
                 first choice for every family celebrating life's important
                 moments.
               </p>
@@ -460,7 +582,7 @@ const About = () => {
       {/* CTA Section - Purple Background */}
       <section className="py-20 bg-[#7C3AED] relative overflow-hidden">
         <div className="absolute inset-0 bg-pattern-dots opacity-10" />
-        
+
         <div className="container mx-auto px-4 lg:px-8 relative">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -496,3 +618,4 @@ const About = () => {
 };
 
 export default About;
+
