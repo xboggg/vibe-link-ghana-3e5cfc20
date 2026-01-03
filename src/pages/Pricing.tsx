@@ -194,19 +194,23 @@ const Pricing = () => {
     if (typeof value === "boolean") {
       return value ? (
         <div className="flex items-center justify-center">
-          <div className="w-6 h-6 rounded-full bg-green-500/15 flex items-center justify-center">
-            <Check className="h-4 w-4 text-green-500" />
+          <div className="w-7 h-7 rounded-full bg-accent/20 flex items-center justify-center ring-2 ring-accent/30">
+            <Check className="h-4 w-4 text-accent" />
           </div>
         </div>
       ) : (
         <div className="flex items-center justify-center">
-          <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center">
-            <X className="h-3 w-3 text-muted-foreground/40" />
+          <div className="w-7 h-7 rounded-full bg-muted/60 flex items-center justify-center">
+            <X className="h-3.5 w-3.5 text-muted-foreground/50" />
           </div>
         </div>
       );
     }
-    return <span className="text-foreground font-semibold text-xs">{value}</span>;
+    return (
+      <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-primary/10 text-primary font-semibold text-xs">
+        {value}
+      </span>
+    );
   };
 
   return (
@@ -305,15 +309,18 @@ const Pricing = () => {
       </section>
 
       {/* Comparison Table */}
-      <section className="py-14 lg:py-18 bg-gradient-to-b from-muted/40 to-background">
+      <section className="py-16 lg:py-24 bg-gradient-to-b from-muted/30 via-background to-muted/20">
         <div className="container mx-auto px-4 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-8"
+            className="text-center mb-12"
           >
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-2">Compare Packages</h2>
+            <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
+              Feature Comparison
+            </span>
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-3">Compare Packages</h2>
             <p className="text-muted-foreground text-sm md:text-base max-w-xl mx-auto">
               Find your perfect fit at a glance
             </p>
@@ -323,62 +330,62 @@ const Pricing = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="max-w-5xl mx-auto"
+            className="max-w-6xl mx-auto"
           >
             {/* Desktop Table */}
-            <div className="hidden md:block overflow-visible rounded-2xl border border-border/50 shadow-2xl bg-card mt-4">
+            <div className="hidden md:block overflow-visible rounded-3xl border border-border/40 shadow-2xl bg-card/80 backdrop-blur-sm">
               {/* Table Header */}
-              <div className="grid grid-cols-5 bg-gradient-to-r from-[#6B46C1] via-[#553C9A] to-[#44337A] rounded-t-2xl">
-                <div className="p-4 flex items-center">
-                  <span className="text-white font-bold text-sm">Feature</span>
+              <div className="grid grid-cols-5 bg-gradient-to-r from-primary via-purple-dark to-navy rounded-t-3xl">
+                <div className="p-5 flex items-center">
+                  <span className="text-white font-bold text-sm tracking-wide uppercase">Feature</span>
                 </div>
-                <div className="p-3 text-center border-l border-white/10">
-                  <div className="text-white/80 font-medium text-xs mb-0.5">Starter</div>
-                  <div className="text-secondary font-bold text-sm">GHS 500</div>
+                <div className="p-4 text-center border-l border-white/10 hover:bg-white/5 transition-colors">
+                  <div className="text-white/90 font-semibold text-sm mb-1">Starter</div>
+                  <div className="text-secondary font-bold text-lg">GHS 500</div>
                 </div>
-                <div className="p-3 pt-5 text-center border-l border-white/10 bg-white/10 relative">
+                <div className="p-4 pt-6 text-center border-l border-white/10 bg-white/15 relative">
                   <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground text-[10px] font-bold shadow-lg">
-                      <Star className="h-2.5 w-2.5 fill-current" />
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-xs font-bold shadow-xl ring-2 ring-secondary/30">
+                      <Star className="h-3 w-3 fill-current" />
                       POPULAR
                     </span>
                   </div>
-                  <div className="text-white font-medium text-xs mb-0.5">Classic</div>
-                  <div className="text-secondary font-bold text-sm">GHS 1,200</div>
+                  <div className="text-white font-semibold text-sm mb-1">Classic</div>
+                  <div className="text-secondary font-bold text-lg">GHS 1,200</div>
                 </div>
-                <div className="p-3 text-center border-l border-white/10">
-                  <div className="text-white/80 font-medium text-xs mb-0.5">Prestige</div>
-                  <div className="text-secondary font-bold text-sm">GHS 2,500</div>
+                <div className="p-4 text-center border-l border-white/10 hover:bg-white/5 transition-colors">
+                  <div className="text-white/90 font-semibold text-sm mb-1">Prestige</div>
+                  <div className="text-secondary font-bold text-lg">GHS 2,500</div>
                 </div>
-                <div className="p-3 text-center border-l border-white/10">
-                  <div className="flex items-center justify-center gap-1 text-white/80 font-medium text-xs mb-0.5">
-                    <Crown className="h-3 w-3 text-amber-400" />
+                <div className="p-4 text-center border-l border-white/10 hover:bg-white/5 transition-colors">
+                  <div className="flex items-center justify-center gap-1.5 text-white font-semibold text-sm mb-1">
+                    <Crown className="h-4 w-4 text-amber-400" />
                     Royal
                   </div>
-                  <div className="text-secondary font-bold text-sm">GHS 5,000+</div>
+                  <div className="text-secondary font-bold text-lg">GHS 5,000+</div>
                 </div>
               </div>
 
               {/* Table Body */}
-              <div className="divide-y divide-border/30">
+              <div className="divide-y divide-border/20">
                 {comparisonFeatures.map((row, index) => (
                   <div
                     key={row.feature}
-                    className={`grid grid-cols-5 ${index % 2 === 0 ? "bg-card" : "bg-muted/20"} hover:bg-primary/5 transition-colors`}
+                    className={`grid grid-cols-5 ${index % 2 === 0 ? "bg-background/50" : "bg-muted/30"} hover:bg-primary/5 transition-all duration-200`}
                   >
-                    <div className="py-2.5 px-4 text-foreground font-medium text-sm flex items-center">
+                    <div className="py-4 px-5 text-foreground font-medium text-sm flex items-center">
                       {row.feature}
                     </div>
-                    <div className="py-2.5 px-2 flex items-center justify-center border-l border-border/20">
+                    <div className="py-4 px-3 flex items-center justify-center border-l border-border/15">
                       {renderCellValue(row.starter)}
                     </div>
-                    <div className="py-2.5 px-2 flex items-center justify-center border-l border-border/20 bg-secondary/5">
+                    <div className="py-4 px-3 flex items-center justify-center border-l border-border/15 bg-secondary/8">
                       {renderCellValue(row.classic)}
                     </div>
-                    <div className="py-2.5 px-2 flex items-center justify-center border-l border-border/20">
+                    <div className="py-4 px-3 flex items-center justify-center border-l border-border/15">
                       {renderCellValue(row.prestige)}
                     </div>
-                    <div className="py-2.5 px-2 flex items-center justify-center border-l border-border/20">
+                    <div className="py-4 px-3 flex items-center justify-center border-l border-border/15">
                       {renderCellValue(row.royal)}
                     </div>
                   </div>
@@ -386,25 +393,25 @@ const Pricing = () => {
               </div>
 
               {/* Table Footer - CTA */}
-              <div className="grid grid-cols-5 bg-muted/40 border-t border-border/50">
-                <div className="p-3"></div>
-                <div className="p-3 flex justify-center border-l border-border/20">
-                  <Button asChild variant="outline" size="sm" className="text-xs h-8">
+              <div className="grid grid-cols-5 bg-gradient-to-r from-muted/50 to-muted/30 border-t border-border/30 rounded-b-3xl">
+                <div className="p-5"></div>
+                <div className="p-4 flex justify-center border-l border-border/15">
+                  <Button asChild variant="outline" size="sm" className="text-xs h-9 px-5 rounded-full hover:bg-primary/10 hover:border-primary/50 transition-all">
                     <Link to="/get-started">Get Started</Link>
                   </Button>
                 </div>
-                <div className="p-3 flex justify-center border-l border-border/20 bg-secondary/5">
-                  <Button asChild variant="gold" size="sm" className="text-xs h-8">
+                <div className="p-4 flex justify-center border-l border-border/15 bg-secondary/8">
+                  <Button asChild variant="gold" size="sm" className="text-xs h-9 px-5 rounded-full shadow-lg hover:shadow-xl transition-all">
                     <Link to="/get-started">Get Started</Link>
                   </Button>
                 </div>
-                <div className="p-3 flex justify-center border-l border-border/20">
-                  <Button asChild variant="outline" size="sm" className="text-xs h-8">
+                <div className="p-4 flex justify-center border-l border-border/15">
+                  <Button asChild variant="outline" size="sm" className="text-xs h-9 px-5 rounded-full hover:bg-primary/10 hover:border-primary/50 transition-all">
                     <Link to="/get-started">Get Started</Link>
                   </Button>
                 </div>
-                <div className="p-3 flex justify-center border-l border-border/20">
-                  <Button asChild variant="outline" size="sm" className="text-xs h-8">
+                <div className="p-4 flex justify-center border-l border-border/15">
+                  <Button asChild variant="outline" size="sm" className="text-xs h-9 px-5 rounded-full hover:bg-primary/10 hover:border-primary/50 transition-all">
                     <Link to="/contact">Contact Us</Link>
                   </Button>
                 </div>
@@ -413,58 +420,58 @@ const Pricing = () => {
 
             {/* Mobile Horizontal Scroll Table */}
             <div className="md:hidden">
-              <div className="overflow-x-auto pb-4 rounded-xl border border-border/50 shadow-lg" style={{ WebkitOverflowScrolling: 'touch' }}>
-                <table className="w-full border-collapse" style={{ minWidth: '650px' }}>
+              <div className="overflow-x-auto pb-4 rounded-2xl border border-border/40 shadow-xl bg-card/80 backdrop-blur-sm" style={{ WebkitOverflowScrolling: 'touch' }}>
+                <table className="w-full border-collapse" style={{ minWidth: '680px' }}>
                   {/* Table Header */}
                   <thead>
-                    <tr className="bg-gradient-to-r from-[#6B46C1] via-[#553C9A] to-[#44337A]">
-                      <th className="p-2 text-left text-white font-bold text-xs w-[130px]">
+                    <tr className="bg-gradient-to-r from-primary via-purple-dark to-navy">
+                      <th className="p-3 text-left text-white font-bold text-xs w-[140px] uppercase tracking-wide">
                         Feature
                       </th>
-                      <th className="p-2 text-center border-l border-white/10 w-[115px]">
-                        <div className="text-white/80 font-medium text-[10px]">Starter</div>
-                        <div className="text-secondary font-bold text-xs">GHS 500</div>
+                      <th className="p-3 text-center border-l border-white/10 w-[120px]">
+                        <div className="text-white/90 font-semibold text-xs">Starter</div>
+                        <div className="text-secondary font-bold text-sm mt-0.5">GHS 500</div>
                       </th>
-                      <th className="p-2 text-center border-l border-white/10 bg-white/10 w-[115px] relative">
+                      <th className="p-3 text-center border-l border-white/10 bg-white/15 w-[120px] relative">
                         <div className="absolute -top-1 left-1/2 -translate-x-1/2">
-                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-secondary text-secondary-foreground text-[8px] font-bold shadow-lg whitespace-nowrap">
-                            <Star className="h-2 w-2 fill-current" />
+                          <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground text-[9px] font-bold shadow-lg whitespace-nowrap ring-1 ring-secondary/30">
+                            <Star className="h-2.5 w-2.5 fill-current" />
                             POPULAR
                           </span>
                         </div>
-                        <div className="text-white font-medium text-[10px] mt-3">Classic</div>
-                        <div className="text-secondary font-bold text-xs">GHS 1,200</div>
+                        <div className="text-white font-semibold text-xs mt-3">Classic</div>
+                        <div className="text-secondary font-bold text-sm mt-0.5">GHS 1,200</div>
                       </th>
-                      <th className="p-2 text-center border-l border-white/10 w-[115px]">
-                        <div className="text-white/80 font-medium text-[10px]">Prestige</div>
-                        <div className="text-secondary font-bold text-xs">GHS 2,500</div>
+                      <th className="p-3 text-center border-l border-white/10 w-[120px]">
+                        <div className="text-white/90 font-semibold text-xs">Prestige</div>
+                        <div className="text-secondary font-bold text-sm mt-0.5">GHS 2,500</div>
                       </th>
-                      <th className="p-2 text-center border-l border-white/10 w-[115px]">
-                        <div className="flex items-center justify-center gap-0.5 text-white/80 font-medium text-[10px]">
-                          <Crown className="h-2.5 w-2.5 text-amber-400" />
+                      <th className="p-3 text-center border-l border-white/10 w-[120px]">
+                        <div className="flex items-center justify-center gap-1 text-white font-semibold text-xs">
+                          <Crown className="h-3 w-3 text-amber-400" />
                           Royal
                         </div>
-                        <div className="text-secondary font-bold text-xs">GHS 5,000+</div>
+                        <div className="text-secondary font-bold text-sm mt-0.5">GHS 5,000+</div>
                       </th>
                     </tr>
                   </thead>
                   {/* Table Body */}
                   <tbody>
                     {comparisonFeatures.map((row, index) => (
-                      <tr key={row.feature} className={index % 2 === 0 ? "bg-card" : "bg-muted/20"}>
-                        <td className="py-2 px-2 text-foreground font-medium text-xs">
+                      <tr key={row.feature} className={index % 2 === 0 ? "bg-background/50" : "bg-muted/30"}>
+                        <td className="py-3 px-3 text-foreground font-medium text-xs">
                           {row.feature}
                         </td>
-                        <td className="py-2 px-1 text-center border-l border-border/20">
+                        <td className="py-3 px-2 text-center border-l border-border/15">
                           {renderCellValue(row.starter)}
                         </td>
-                        <td className="py-2 px-1 text-center border-l border-border/20 bg-secondary/5">
+                        <td className="py-3 px-2 text-center border-l border-border/15 bg-secondary/8">
                           {renderCellValue(row.classic)}
                         </td>
-                        <td className="py-2 px-1 text-center border-l border-border/20">
+                        <td className="py-3 px-2 text-center border-l border-border/15">
                           {renderCellValue(row.prestige)}
                         </td>
-                        <td className="py-2 px-1 text-center border-l border-border/20">
+                        <td className="py-3 px-2 text-center border-l border-border/15">
                           {renderCellValue(row.royal)}
                         </td>
                       </tr>
@@ -472,25 +479,25 @@ const Pricing = () => {
                   </tbody>
                   {/* Table Footer */}
                   <tfoot>
-                    <tr className="bg-muted/40 border-t border-border/50">
-                      <td className="p-2"></td>
-                      <td className="p-2 text-center border-l border-border/20">
-                        <Button asChild variant="outline" size="sm" className="text-[10px] h-7 px-2">
+                    <tr className="bg-gradient-to-r from-muted/50 to-muted/30 border-t border-border/30">
+                      <td className="p-3"></td>
+                      <td className="p-3 text-center border-l border-border/15">
+                        <Button asChild variant="outline" size="sm" className="text-[10px] h-8 px-3 rounded-full">
                           <Link to="/get-started">Select</Link>
                         </Button>
                       </td>
-                      <td className="p-2 text-center border-l border-border/20 bg-secondary/5">
-                        <Button asChild variant="gold" size="sm" className="text-[10px] h-7 px-2">
+                      <td className="p-3 text-center border-l border-border/15 bg-secondary/8">
+                        <Button asChild variant="gold" size="sm" className="text-[10px] h-8 px-3 rounded-full shadow-md">
                           <Link to="/get-started">Select</Link>
                         </Button>
                       </td>
-                      <td className="p-2 text-center border-l border-border/20">
-                        <Button asChild variant="outline" size="sm" className="text-[10px] h-7 px-2">
+                      <td className="p-3 text-center border-l border-border/15">
+                        <Button asChild variant="outline" size="sm" className="text-[10px] h-8 px-3 rounded-full">
                           <Link to="/get-started">Select</Link>
                         </Button>
                       </td>
-                      <td className="p-2 text-center border-l border-border/20">
-                        <Button asChild variant="outline" size="sm" className="text-[10px] h-7 px-2">
+                      <td className="p-3 text-center border-l border-border/15">
+                        <Button asChild variant="outline" size="sm" className="text-[10px] h-8 px-3 rounded-full">
                           <Link to="/contact">Contact</Link>
                         </Button>
                       </td>
@@ -498,8 +505,10 @@ const Pricing = () => {
                   </tfoot>
                 </table>
               </div>
-              <p className="text-center text-muted-foreground text-xs mt-2">
+              <p className="text-center text-muted-foreground text-xs mt-3 flex items-center justify-center gap-2">
+                <span className="inline-block w-8 h-px bg-border"></span>
                 ← Swipe to compare all packages →
+                <span className="inline-block w-8 h-px bg-border"></span>
               </p>
             </div>
           </motion.div>
