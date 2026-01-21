@@ -805,25 +805,34 @@ export function ChatWidget() {
   );
 }
 
-// Parse and render text with clickable links, phone numbers, and bold text
+// Parse and render text with clickable links, phone numbers, bold text, and clean markdown
 function parseMessageContent(content: string): ReactNode[] {
+  // First, clean up markdown artifacts that shouldn't be displayed
+  let cleaned = content
+    // Remove markdown headers (###, ##, #) and just keep the text
+    .replace(/^#{1,6}\s+/gm, '')
+    // Remove asterisks used for bullet points at start of line (keep the text)
+    .replace(/^\*\s+/gm, '• ')
+    // Clean up any remaining standalone asterisks
+    .replace(/(?<!\*)\*(?!\*)/g, '');
+
   const elements: ReactNode[] = [];
-  let remaining = content;
+  let remaining = cleaned;
   let key = 0;
 
   while (remaining.length > 0) {
     // Check for bold text **text**
     const boldMatch = remaining.match(/\*\*([^*]+)\*\*/);
-    
+
     // Check for markdown link [text](url)
     const linkMatch = remaining.match(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/);
-    
+
     // Check for plain URL (including wa.me)
     const urlMatch = remaining.match(/(https?:\/\/[^\s<>)\]]+)/);
-    
+
     // Check for wa.me without https
     const waMatch = remaining.match(/(?<![/:])(wa\.me\/\d+)/);
-    
+
     // Check for phone number
     const phoneMatch = remaining.match(/(\+\d{1,3}\s?\d{2,3}\s?\d{3}\s?\d{4})/);
 
