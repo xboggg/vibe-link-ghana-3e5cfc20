@@ -163,9 +163,15 @@ export function ChatWidget() {
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      // ScrollArea uses a viewport inside, need to scroll that
+      const viewport = scrollRef.current.querySelector('[data-radix-scroll-area-viewport]');
+      if (viewport) {
+        viewport.scrollTop = viewport.scrollHeight;
+      } else {
+        scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      }
     }
-  }, [messagesWithTime, suggestions]);
+  }, [messagesWithTime, suggestions, isLoading]);
 
   // Focus input when chat opens
   useEffect(() => {
@@ -174,15 +180,31 @@ export function ChatWidget() {
     }
   }, [isOpen]);
 
+  // Helper to scroll to bottom
+  const scrollToBottom = () => {
+    setTimeout(() => {
+      if (scrollRef.current) {
+        const viewport = scrollRef.current.querySelector('[data-radix-scroll-area-viewport]');
+        if (viewport) {
+          viewport.scrollTop = viewport.scrollHeight;
+        } else {
+          scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+        }
+      }
+    }, 100);
+  };
+
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
     const message = input.trim();
     setInput("");
+    scrollToBottom();
     await sendMessage(message);
   };
 
   const handleSuggestionClick = async (suggestion: string) => {
     if (isLoading) return;
+    scrollToBottom();
     await sendMessage(suggestion);
   };
 
