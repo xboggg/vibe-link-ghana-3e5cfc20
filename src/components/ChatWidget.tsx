@@ -160,18 +160,21 @@ export function ChatWidget() {
     });
   };
 
-  // Auto-scroll to bottom when new messages arrive
+  // Auto-scroll to bottom when new messages arrive or content updates
   useEffect(() => {
-    if (scrollRef.current) {
-      // ScrollArea uses a viewport inside, need to scroll that
-      const viewport = scrollRef.current.querySelector('[data-radix-scroll-area-viewport]');
-      if (viewport) {
-        viewport.scrollTop = viewport.scrollHeight;
-      } else {
-        scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    // Small delay to ensure DOM has updated
+    const timer = setTimeout(() => {
+      if (scrollRef.current) {
+        const viewport = scrollRef.current.querySelector('[data-radix-scroll-area-viewport]');
+        const target = viewport || scrollRef.current;
+        target.scrollTo({
+          top: target.scrollHeight,
+          behavior: 'smooth'
+        });
       }
-    }
-  }, [messagesWithTime, suggestions, isLoading]);
+    }, 50);
+    return () => clearTimeout(timer);
+  }, [messages, messagesWithTime, suggestions, isLoading]);
 
   // Focus input when chat opens
   useEffect(() => {
@@ -180,18 +183,18 @@ export function ChatWidget() {
     }
   }, [isOpen]);
 
-  // Helper to scroll to bottom
+  // Helper to scroll to bottom immediately
   const scrollToBottom = () => {
-    setTimeout(() => {
+    requestAnimationFrame(() => {
       if (scrollRef.current) {
         const viewport = scrollRef.current.querySelector('[data-radix-scroll-area-viewport]');
-        if (viewport) {
-          viewport.scrollTop = viewport.scrollHeight;
-        } else {
-          scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-        }
+        const target = viewport || scrollRef.current;
+        target.scrollTo({
+          top: target.scrollHeight,
+          behavior: 'instant'
+        });
       }
-    }, 100);
+    });
   };
 
   const handleSend = async () => {
