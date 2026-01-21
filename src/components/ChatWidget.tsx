@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, X, Send, Package, Phone, DollarSign, Trash2, Copy, Check, Volume2, VolumeX, SmilePlus, Search, Reply, ChevronUp, Pin, PinOff } from "lucide-react";
+import { X, Send, Package, Phone, DollarSign, Trash2, Copy, Check, Volume2, VolumeX, SmilePlus, Search, Reply, ChevronUp, Pin, PinOff, Sparkles, Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -263,7 +263,7 @@ export function ChatWidget() {
 
   return (
     <>
-      {/* Chat Button */}
+      {/* AI Chat Button - Beautiful Animated Design */}
       <AnimatePresence>
         {!isOpen && (
           <motion.div
@@ -272,14 +272,180 @@ export function ChatWidget() {
             exit={{ scale: 0, opacity: 0 }}
             className="fixed bottom-24 right-4 z-50 sm:bottom-28 sm:right-6"
           >
-            <Button
-              onClick={() => setIsOpen(true)}
-              size="lg"
-              className="h-14 w-14 rounded-full bg-primary shadow-lg hover:bg-primary/90 hover:scale-105 transition-transform"
+            {/* Floating Label */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.5 }}
+              className="absolute right-full mr-3 top-1/2 -translate-y-1/2 whitespace-nowrap"
             >
-              <MessageCircle className="h-6 w-6" />
-              <span className="sr-only">Open chat</span>
-            </Button>
+              <motion.div
+                animate={{
+                  x: [0, -5, 0],
+                  opacity: [0.9, 1, 0.9]
+                }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                className="bg-background/95 backdrop-blur-sm border border-border rounded-full px-4 py-2 shadow-lg"
+              >
+                <span className="text-sm font-medium text-foreground flex items-center gap-2">
+                  <Sparkles className="h-3.5 w-3.5 text-purple-500" />
+                  Chat with AI
+                </span>
+              </motion.div>
+            </motion.div>
+
+            {/* Main Button Container */}
+            <div className="relative">
+              {/* Outer Glow Ring */}
+              <motion.div
+                className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500"
+                animate={{
+                  scale: [1, 1.2, 1],
+                  opacity: [0.5, 0.2, 0.5],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                style={{ filter: "blur(8px)" }}
+              />
+
+              {/* Pulsing Ring */}
+              <motion.div
+                className="absolute inset-0 rounded-full border-2 border-purple-400"
+                animate={{
+                  scale: [1, 1.4, 1.4],
+                  opacity: [0.8, 0, 0],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeOut",
+                }}
+              />
+
+              {/* Second Pulsing Ring (offset) */}
+              <motion.div
+                className="absolute inset-0 rounded-full border-2 border-pink-400"
+                animate={{
+                  scale: [1, 1.4, 1.4],
+                  opacity: [0.8, 0, 0],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeOut",
+                  delay: 0.5,
+                }}
+              />
+
+              {/* Main Button */}
+              <motion.button
+                onClick={() => setIsOpen(true)}
+                className="relative h-16 w-16 rounded-full bg-gradient-to-br from-purple-600 via-purple-500 to-pink-500 shadow-2xl flex items-center justify-center overflow-hidden group"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                animate={{
+                  boxShadow: [
+                    "0 10px 30px -10px rgba(139, 92, 246, 0.5)",
+                    "0 20px 40px -10px rgba(236, 72, 153, 0.5)",
+                    "0 10px 30px -10px rgba(139, 92, 246, 0.5)",
+                  ],
+                }}
+                transition={{
+                  boxShadow: { duration: 3, repeat: Infinity, ease: "easeInOut" },
+                }}
+              >
+                {/* Shimmer Effect */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12"
+                  animate={{ x: ["-200%", "200%"] }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    repeatDelay: 2,
+                  }}
+                />
+
+                {/* Sparkle Particles */}
+                <motion.div
+                  className="absolute top-2 right-2"
+                  animate={{
+                    scale: [0, 1, 0],
+                    opacity: [0, 1, 0],
+                    rotate: [0, 180, 360],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    delay: 0,
+                  }}
+                >
+                  <Sparkles className="h-3 w-3 text-yellow-300" />
+                </motion.div>
+                <motion.div
+                  className="absolute bottom-3 left-2"
+                  animate={{
+                    scale: [0, 1, 0],
+                    opacity: [0, 1, 0],
+                    rotate: [0, -180, -360],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    delay: 0.7,
+                  }}
+                >
+                  <Sparkles className="h-2.5 w-2.5 text-cyan-300" />
+                </motion.div>
+                <motion.div
+                  className="absolute top-4 left-3"
+                  animate={{
+                    scale: [0, 1, 0],
+                    opacity: [0, 1, 0],
+                  }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: Infinity,
+                    delay: 1.2,
+                  }}
+                >
+                  <div className="h-1.5 w-1.5 rounded-full bg-white" />
+                </motion.div>
+
+                {/* Bot Icon with Animation */}
+                <motion.div
+                  animate={{
+                    y: [0, -2, 0],
+                  }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                  className="relative z-10"
+                >
+                  <Bot className="h-7 w-7 text-white drop-shadow-lg" />
+                </motion.div>
+
+                {/* AI Badge */}
+                <motion.div
+                  className="absolute -top-1 -right-1 bg-gradient-to-r from-yellow-400 to-orange-500 text-[10px] font-bold text-white px-1.5 py-0.5 rounded-full shadow-lg"
+                  animate={{
+                    scale: [1, 1.1, 1],
+                  }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                >
+                  AI
+                </motion.div>
+              </motion.button>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -296,14 +462,59 @@ export function ChatWidget() {
           >
             <div className="flex flex-col h-[70vh] max-h-[600px] bg-background border border-border rounded-2xl shadow-2xl overflow-hidden">
               {/* Header */}
-              <div className="flex items-center justify-between p-4 bg-primary text-primary-foreground">
+              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-purple-600 via-purple-500 to-pink-500 text-white">
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-full bg-primary-foreground/20 flex items-center justify-center">
-                    <MessageCircle className="h-5 w-5" />
-                  </div>
+                  <motion.div
+                    className="relative h-11 w-11 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center"
+                    animate={{
+                      boxShadow: [
+                        "0 0 0 0 rgba(255,255,255,0.4)",
+                        "0 0 0 8px rgba(255,255,255,0)",
+                      ],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeOut",
+                    }}
+                  >
+                    <motion.div
+                      animate={{ rotate: [0, 10, -10, 0] }}
+                      transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                    >
+                      <Bot className="h-6 w-6 text-white" />
+                    </motion.div>
+                    {/* Online indicator */}
+                    <motion.div
+                      className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-green-400 border-2 border-purple-500"
+                      animate={{
+                        scale: [1, 1.2, 1],
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                      }}
+                    />
+                  </motion.div>
                   <div>
-                    <h3 className="font-semibold">VibeLink Assistant</h3>
-                    <p className="text-xs text-primary-foreground/80">Your Ghanaian event expert</p>
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-semibold">VibeLink AI</h3>
+                      <motion.span
+                        className="text-[10px] font-bold bg-white/20 px-1.5 py-0.5 rounded-full"
+                        animate={{
+                          opacity: [0.8, 1, 0.8],
+                        }}
+                        transition={{
+                          duration: 2,
+                          repeat: Infinity,
+                        }}
+                      >
+                        <Sparkles className="h-2.5 w-2.5 inline mr-0.5" />
+                        SMART
+                      </motion.span>
+                    </div>
+                    <p className="text-xs text-white/80">Your Ghanaian event expert</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-1">
