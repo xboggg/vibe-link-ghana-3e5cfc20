@@ -333,6 +333,7 @@ const About = () => {
                   </motion.div>
                 </motion.div>
               </div>
+              {/* Timeline line for Paper Era */}
               <div className="absolute left-0 md:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-gray-300 via-amber-400 to-purple-500 -translate-x-1/2 hidden md:block" />
             </motion.div>
 
@@ -411,6 +412,8 @@ const About = () => {
                   ))}
                 </div>
               </div>
+              {/* Timeline line for WhatsApp Era */}
+              <div className="absolute left-0 md:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-green-400 via-amber-400 to-purple-500 -translate-x-1/2 hidden md:block" />
             </motion.div>
 
             {/* Era 3: VibeLink */}

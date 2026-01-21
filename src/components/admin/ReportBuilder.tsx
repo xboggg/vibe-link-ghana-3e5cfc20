@@ -249,7 +249,7 @@ export const ReportBuilder = () => {
         </style>
       </head>
       <body>
-        <h1>VibeLink Ghana - Custom Analytics Report</h1>
+        <h1>VibeLink Events - Custom Analytics Report</h1>
         <p><strong>Period:</strong> ${previewData.dateRange.from} to ${previewData.dateRange.to}</p>
         
         ${previewData.total_orders !== undefined ? `

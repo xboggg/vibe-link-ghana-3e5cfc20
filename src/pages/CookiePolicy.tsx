@@ -6,7 +6,7 @@ const CookiePolicy = () => {
     <Layout>
       <SEO 
         title="Cookie Policy"
-        description="Learn about the cookies VibeLink Ghana uses on our website and how to manage your cookie preferences."
+        description="Learn about the cookies VibeLink Events uses on our website and how to manage your cookie preferences."
         canonical="/cookie-policy"
         noindex={true}
       />

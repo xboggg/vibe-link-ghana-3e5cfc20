@@ -211,10 +211,10 @@ export function ChatbotEscalation() {
     if (type === "phone" && escalation.customer_phone) {
       window.open(`tel:${escalation.customer_phone}`);
     } else if (type === "email" && escalation.customer_email) {
-      window.open(`mailto:${escalation.customer_email}?subject=Re: Your inquiry with VibeLink Ghana`);
+      window.open(`mailto:${escalation.customer_email}?subject=Re: Your inquiry with VibeLink Events`);
     } else if (type === "whatsapp" && escalation.customer_phone) {
       const phone = escalation.customer_phone.replace(/\D/g, '');
-      window.open(`https://wa.me/${phone}?text=Hi ${escalation.customer_name || 'there'}, this is VibeLink Ghana following up on your inquiry.`);
+      window.open(`https://wa.me/${phone}?text=Hi ${escalation.customer_name || 'there'}, this is VibeLink Events following up on your inquiry.`);
     }
   };
 

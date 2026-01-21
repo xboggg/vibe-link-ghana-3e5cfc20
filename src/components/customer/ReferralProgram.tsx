@@ -118,12 +118,12 @@ export function ReferralProgram({ customerEmail, customerName }: ReferralProgram
 
   const shareReferral = async () => {
     const link = `https://vibelinkgh.com/get-started?ref=${referralCode}`;
-    const text = `Get 10% off your first order at VibeLink Ghana! Use my referral link: ${link}`;
+    const text = `Get 10% off your first order at VibeLink Events! Use my referral link: ${link}`;
 
     if (navigator.share) {
       try {
         await navigator.share({
-          title: "VibeLink Ghana Referral",
+          title: "VibeLink Events Referral",
           text: text,
           url: link
         });

@@ -6,7 +6,7 @@ const TermsOfService = () => {
     <Layout>
       <SEO 
         title="Terms of Service"
-        description="Read the terms and conditions for using VibeLink Ghana's digital invitation services, including pricing, payments, and delivery policies."
+        description="Read the terms and conditions for using VibeLink Events's digital invitation services, including pricing, payments, and delivery policies."
         canonical="/terms-of-service"
         noindex={true}
       />
@@ -18,7 +18,7 @@ const TermsOfService = () => {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-foreground mb-4">1. Service Description</h2>
             <p className="text-muted-foreground">
-              VibeLink Ghana provides digital invitation design and hosting services for various events including weddings, funerals, naming ceremonies, graduations, birthdays, and corporate events. Our services include custom design, hosting, and various add-on features as specified in our packages.
+              VibeLink Events provides digital invitation design and hosting services for various events including weddings, funerals, naming ceremonies, graduations, birthdays, and corporate events. Our services include custom design, hosting, and various add-on features as specified in our packages.
             </p>
           </section>
 
@@ -59,8 +59,8 @@ const TermsOfService = () => {
             <h2 className="text-2xl font-semibold text-foreground mb-4">5. Intellectual Property</h2>
             <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
               <li>Final designs are owned by the client after full payment</li>
-              <li>VibeLink Ghana retains the right to use designs in our portfolio (unless white-label package is purchased)</li>
-              <li>Pre-designed templates remain the property of VibeLink Ghana</li>
+              <li>VibeLink Events retains the right to use designs in our portfolio (unless white-label package is purchased)</li>
+              <li>Pre-designed templates remain the property of VibeLink Events</li>
               <li>Client-provided images, logos, and content remain the property of the client</li>
             </ul>
           </section>
@@ -68,7 +68,7 @@ const TermsOfService = () => {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-foreground mb-4">6. Limitation of Liability</h2>
             <p className="text-muted-foreground">
-              VibeLink Ghana shall not be liable for any indirect, incidental, special, consequential, or punitive damages resulting from your use of our services. Our total liability shall not exceed the amount paid for the specific service in question. We are not responsible for third-party service interruptions affecting hosting or delivery.
+              VibeLink Events shall not be liable for any indirect, incidental, special, consequential, or punitive damages resulting from your use of our services. Our total liability shall not exceed the amount paid for the specific service in question. We are not responsible for third-party service interruptions affecting hosting or delivery.
             </p>
           </section>
 

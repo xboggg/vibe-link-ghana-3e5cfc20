@@ -20,7 +20,7 @@ const Index = () => {
   return (
     <Layout>
       <SEO 
-        title="VibeLink Ghana | Digital Event Invitations for Weddings, Funerals & More"
+        title="VibeLink Events | Digital Event Invitations for Weddings, Funerals & More"
         description="Ghana's premier digital invitation service. Create stunning interactive invitations for weddings, funerals, naming ceremonies, graduations & corporate events. Share via WhatsApp!"
         canonical="/"
         jsonLd={createServiceSchema(homePageServices)}

@@ -6,7 +6,7 @@ const RefundPolicy = () => {
     <Layout>
       <SEO 
         title="Refund Policy"
-        description="Understand VibeLink Ghana's refund policy for digital invitation orders, including full and partial refund conditions."
+        description="Understand VibeLink Events's refund policy for digital invitation orders, including full and partial refund conditions."
         canonical="/refund-policy"
         noindex={true}
       />

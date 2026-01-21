@@ -63,7 +63,7 @@ const socialLinks = [{
 }, {
   name: "Facebook",
   icon: Facebook,
-  href: "https://facebook.com/VibeLink Ghana"
+  href: "https://facebook.com/VibeLink Events"
 }, {
   name: "Twitter",
   icon: Twitter,
@@ -137,7 +137,7 @@ export function Footer() {
             <Link to="/" className="flex items-center gap-2 mb-4">
               <Sparkles className="h-6 w-6 text-secondary" />
               <span className="text-xl font-bold font-poppins">
-                Vibe<span className="text-secondary">Link</span> <span className="text-primary-foreground/80 font-normal text-sm">Ghana</span>
+                Vibe<span className="text-secondary">Link</span> <span className="text-primary-foreground/80 font-normal text-sm">Events</span>
               </span>
             </Link>
             <p className="text-primary-foreground/70 text-sm leading-relaxed mb-4">
@@ -229,7 +229,7 @@ export function Footer() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             {/* Left - Copyright */}
             <div className="text-primary-foreground/60 text-sm">
-              © {new Date().getFullYear()} VibeLink Ghana
+              © {new Date().getFullYear()} VibeLink Events
             </div>
             
             {/* Right - Policy links and Made in Ghana */}

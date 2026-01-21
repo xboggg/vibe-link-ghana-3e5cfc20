@@ -142,7 +142,7 @@ export const OrderFormWizard = ({ onComplete }: OrderFormWizardProps) => {
       return addon?.name || "";
     }).filter(Boolean);
     
-    const message = `🎉 *New Order from VibeLink Ghana!*
+    const message = `🎉 *New Order from VibeLink Events!*
     
 📋 *Order ID:* ${orderId.substring(0, 8)}
 

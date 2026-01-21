@@ -638,7 +638,7 @@ export function InvoiceGenerator() {
             <div className="space-y-6 print:p-8" id="invoice-print">
               <div className="flex justify-between">
                 <div>
-                  <h3 className="font-bold text-lg">VibeLink Ghana</h3>
+                  <h3 className="font-bold text-lg">VibeLink Events</h3>
                   <p className="text-sm text-muted-foreground">Premium Event Services</p>
                 </div>
                 <div className="text-right">

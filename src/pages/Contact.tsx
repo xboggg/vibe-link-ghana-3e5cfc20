@@ -147,8 +147,8 @@ ${formData.message.trim()}`;
     <Layout>
       <SEO 
         title="Contact Us"
-        description="Get in touch with VibeLink Ghana. Reach us via WhatsApp for quick responses or send us an email. We're here to help with your digital invitation needs."
-        keywords="contact VibeLink Ghana, digital invitations help, WhatsApp support Ghana"
+        description="Get in touch with VibeLink Events. Reach us via WhatsApp for quick responses or send us an email. We're here to help with your digital invitation needs."
+        keywords="contact VibeLink Events, digital invitations help, WhatsApp support Ghana"
         canonical="/contact"
       />
       {/* Hero */}

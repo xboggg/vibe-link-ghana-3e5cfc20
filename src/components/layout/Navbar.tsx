@@ -24,7 +24,7 @@ const TikTokIcon = () => (
 
 const socialLinks = [
   { name: "Instagram", icon: Instagram, href: "https://instagram.com/vibelink_ghana" },
-  { name: "Facebook", icon: Facebook, href: "https://facebook.com/VibeLink Ghana" },
+  { name: "Facebook", icon: Facebook, href: "https://facebook.com/VibeLink Events" },
   { name: "Twitter", icon: Twitter, href: "https://twitter.com/VibeLink_GH" },
   { name: "TikTok", icon: TikTokIcon, href: "https://tiktok.com/@vibelink.ghana" },
 ];
@@ -62,7 +62,7 @@ export function Navbar() {
               <div className="absolute inset-0 bg-secondary/20 blur-lg rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
             <span className="text-xl lg:text-2xl font-bold font-poppins text-primary-foreground">
-              Vibe<span className="text-secondary">Link</span> <span className="text-primary-foreground/70 font-normal text-sm">Ghana</span>
+              Vibe<span className="text-secondary">Link</span> <span className="text-primary-foreground/70 font-normal text-sm">Events</span>
             </span>
           </Link>
 
