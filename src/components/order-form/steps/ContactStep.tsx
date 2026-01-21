@@ -59,7 +59,12 @@ export const ContactStep = ({
   useEffect(() => {
     const scriptId = "recaptcha-v3-script";
     if (document.getElementById(scriptId)) {
-      setRecaptchaLoaded(true);
+      // Script exists - check if grecaptcha is ready
+      if (window.grecaptcha) {
+        window.grecaptcha.ready(() => {
+          setRecaptchaLoaded(true);
+        });
+      }
       return;
     }
 
@@ -69,9 +74,16 @@ export const ContactStep = ({
     script.async = true;
     script.defer = true;
     script.onload = () => {
-      window.grecaptcha.ready(() => {
-        setRecaptchaLoaded(true);
-      });
+      if (window.grecaptcha) {
+        window.grecaptcha.ready(() => {
+          setRecaptchaLoaded(true);
+        });
+      }
+    };
+    script.onerror = () => {
+      // reCAPTCHA failed to load - allow form submission without it
+      console.warn("reCAPTCHA failed to load. Proceeding without verification.");
+      setRecaptchaLoaded(true);
     };
     document.head.appendChild(script);
 
