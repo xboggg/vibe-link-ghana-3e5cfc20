@@ -390,10 +390,10 @@ serve(async (req) => {
 
   try {
     const { messages, action, orderId, customerEmail, sessionId } = await req.json();
-    
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY is not configured");
+
+    const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
+    if (!GEMINI_API_KEY) {
+      throw new Error("GEMINI_API_KEY is not configured");
     }
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
@@ -476,22 +476,34 @@ Need help? Chat with us on WhatsApp: https://wa.me/233245817973`;
     const topic = detectTopic(lastUserMessage);
     const startTime = Date.now();
 
-    // Stream chat response
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [
-          { role: "system", content: SYSTEM_PROMPT },
-          ...messages,
-        ],
-        stream: true,
-      }),
-    });
+    // Convert messages to Gemini format
+    const geminiContents = messages.map((msg: { role: string; content: string }) => ({
+      role: msg.role === "assistant" ? "model" : "user",
+      parts: [{ text: msg.content }],
+    }));
+
+    // Stream chat response using Gemini API
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:streamGenerateContent?alt=sse&key=${GEMINI_API_KEY}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          contents: geminiContents,
+          systemInstruction: {
+            parts: [{ text: SYSTEM_PROMPT }],
+          },
+          generationConfig: {
+            temperature: 0.7,
+            topK: 40,
+            topP: 0.95,
+            maxOutputTokens: 2048,
+          },
+        }),
+      }
+    );
 
     if (!response.ok) {
       if (response.status === 429) {
@@ -528,24 +540,34 @@ Need help? Chat with us on WhatsApp: https://wa.me/233245817973`;
     const writer = writable.getWriter();
     const reader = response.body!.getReader();
 
-    // Process in background
+    // Process in background - convert Gemini SSE to OpenAI-compatible format
     (async () => {
       let fullResponse = "";
       try {
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
-          await writer.write(value);
-          
-          // Decode to capture full response for logging
+
+          // Decode Gemini's response
           const text = new TextDecoder().decode(value);
           const lines = text.split("\n");
+
           for (const line of lines) {
-            if (line.startsWith("data: ") && line !== "data: [DONE]") {
+            if (line.startsWith("data: ")) {
               try {
                 const json = JSON.parse(line.slice(6));
-                const content = json.choices?.[0]?.delta?.content;
-                if (content) fullResponse += content;
+                // Gemini format: candidates[0].content.parts[0].text
+                const content = json.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (content) {
+                  fullResponse += content;
+                  // Convert to OpenAI-compatible SSE format for the frontend
+                  const openAIFormat = {
+                    choices: [{ delta: { content } }],
+                  };
+                  await writer.write(
+                    new TextEncoder().encode(`data: ${JSON.stringify(openAIFormat)}\n\n`)
+                  );
+                }
               } catch {}
             }
           }
