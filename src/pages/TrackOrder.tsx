@@ -443,7 +443,7 @@ export default function TrackOrder() {
                     <div className="text-center text-sm text-muted-foreground pt-4 border-t">
                       <p>Questions about your order?</p>
                       <a
-                        href="https://wa.me/233245817973"
+                        href="https://wa.me/4915757178561"
                         className="text-secondary hover:underline"
                       >
                         Contact us on WhatsApp

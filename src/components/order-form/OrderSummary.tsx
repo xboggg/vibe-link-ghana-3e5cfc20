@@ -54,7 +54,7 @@ export const OrderSummary = ({ formData, total }: OrderSummaryProps) => {
         </p>
         <Button asChild variant="gold" className="w-full">
           <a
-            href="https://wa.me/233245817973"
+            href="https://wa.me/4915757178561"
             target="_blank"
             rel="noopener noreferrer"
           >

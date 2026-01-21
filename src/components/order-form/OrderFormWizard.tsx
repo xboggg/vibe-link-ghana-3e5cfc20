@@ -175,7 +175,7 @@ ${formData.additionalInfo ? `📝 *Additional Notes:* ${formData.additionalInfo}
 ${formData.designNotes ? `🎯 *Design Notes:* ${formData.designNotes}` : ""}`;
 
     const encodedMessage = encodeURIComponent(message);
-    const whatsappNumber = "233245817973";
+    const whatsappNumber = "4915757178561";
     return `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
   };
 

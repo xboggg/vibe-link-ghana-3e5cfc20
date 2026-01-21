@@ -24,7 +24,7 @@ const pricingSchema = {
     {
       "@type": "Offer",
       name: "Starter Vibe",
-      price: "500",
+      price: "600",
       priceCurrency: "GHS",
       description: "Best for simple, intimate events",
     },
@@ -55,7 +55,7 @@ const pricingSchema = {
 const packages = [
   {
     name: "Starter Vibe",
-    price: "GHS 500",
+    price: "GHS 600",
     description: "Simple, intimate events",
     popular: false,
     color: "border-border",
@@ -149,8 +149,8 @@ const addOns = [
   { name: "Gift Acknowledgment Page", price: "GHS 150", desc: "Publicly thank gift contributors" },
   { name: "Live Stream Embed", price: "GHS 200", desc: "Stream your event live to guests" },
   { name: "Extended Hosting (6 months)", price: "GHS 250", desc: "Keep your invite live longer" },
-  { name: "Extended Hosting (1 year)", price: "GHS 500", desc: "Full year of hosting" },
-  { name: "Custom Domain", price: "GHS 200/yr", desc: "Use your own domain name" },
+  { name: "Extended Hosting (1 year)", price: "GHS 600", desc: "Full year of hosting" },
+  { name: "Custom Domain", price: "GHS 300/yr", desc: "Use your own domain name" },
   { name: "Extra Photos (+10)", price: "GHS 100", desc: "Expand your photo gallery" },
   { name: "Additional Language", price: "GHS 150", desc: "Add Twi, French, or others" },
   { name: "Background Music", price: "GHS 50", desc: "Add music to your invitation" },
@@ -182,7 +182,7 @@ const comparisonFeatures = [
   { feature: "Lost & Found", starter: false, classic: false, prestige: false, royal: true },
   { feature: "Multi-Event Pages", starter: false, classic: false, prestige: false, royal: true },
   { feature: "Advanced Animations", starter: false, classic: false, prestige: false, royal: true },
-  { feature: "White-label", starter: false, classic: true, prestige: true, royal: "No branding" },
+  { feature: "White-label", starter: true, classic: true, prestige: true, royal: "No branding" },
   { feature: "Hosting Duration", starter: "30 days", classic: "90 days", prestige: "6 months", royal: "1 year" },
   { feature: "Revisions", starter: "1", classic: "2", prestige: "5", royal: "Unlimited" },
   { feature: "Account Manager", starter: false, classic: false, prestige: false, royal: true },
@@ -217,7 +217,7 @@ const Pricing = () => {
     <Layout>
       <SEO
         title="Pricing"
-        description="Affordable digital invitation packages starting from GHS 500. Choose from Starter, Classic, Prestige or Royal packages for your wedding, funeral, or event in Ghana."
+        description="Affordable digital invitation packages starting from GHS 600. Choose from Starter, Classic, Prestige or Royal packages for your wedding, funeral, or event in Ghana."
         keywords="digital invitation prices Ghana, wedding invitation cost, event invitation packages Accra"
         canonical="/pricing"
         jsonLd={[pricingSchema, pricingBreadcrumb]}
@@ -341,7 +341,7 @@ const Pricing = () => {
                 </div>
                 <div className="p-4 text-center border-l border-white/10 hover:bg-white/5 transition-colors">
                   <div className="text-white/90 font-semibold text-sm mb-1">Starter</div>
-                  <div className="text-secondary font-bold text-lg">GHS 500</div>
+                  <div className="text-secondary font-bold text-lg">GHS 600</div>
                 </div>
                 <div className="p-4 pt-6 text-center border-l border-white/10 bg-white/15 relative">
                   <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
@@ -430,7 +430,7 @@ const Pricing = () => {
                       </th>
                       <th className="p-3 text-center border-l border-white/10 w-[120px]">
                         <div className="text-white/90 font-semibold text-xs">Starter</div>
-                        <div className="text-secondary font-bold text-sm mt-0.5">GHS 500</div>
+                        <div className="text-secondary font-bold text-sm mt-0.5">GHS 600</div>
                       </th>
                       <th className="p-3 text-center border-l border-white/10 bg-white/15 w-[120px] relative">
                         <div className="absolute -top-1 left-1/2 -translate-x-1/2">
@@ -712,7 +712,7 @@ const Pricing = () => {
                 <Link to="/get-started">Get a Recommendation</Link>
               </Button>
               <Button asChild variant="outline" size="default">
-                <a href="https://wa.me/233245817973" target="_blank" rel="noopener noreferrer">
+                <a href="https://wa.me/4915757178561" target="_blank" rel="noopener noreferrer">
                   <MessageCircle className="mr-2 h-4 w-4" />
                   WhatsApp Us
                 </a>

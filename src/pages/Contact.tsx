@@ -96,7 +96,7 @@ ${formData.eventType ? `*Event Type:* ${formData.eventType.trim()}` : ""}
 *Message:*
 ${formData.message.trim()}`;
 
-    const whatsappUrl = `https://wa.me/233245817973?text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/4915757178561?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, "_blank");
     
     toast({

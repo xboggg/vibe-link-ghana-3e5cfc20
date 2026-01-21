@@ -38,17 +38,6 @@ const portfolioData: Record<string, {
     package: "Prestige Vibe",
     highlights: ["GHS 15,000+ collected via MoMo", "120 RSVPs", "Featured love story timeline"],
   },
-  "presec-osu-70th-anniversary": {
-    title: "PRESEC-OSU 70th Anniversary Launch",
-    type: "Anniversary",
-    description: "A grand celebration marking 70 years of academic excellence, brotherhood, and the enduring legacy of Presbyterian Secondary School, Osu.",
-    image: "/oposa-portfolio.jpg",
-    demoUrl: "https://osupresec70.vibelinkgh.com/",
-    features: ["Event countdown timer", "Photo gallery", "Alumni registration portal", "Donation tracking", "Event schedule", "School history timeline", "WhatsApp sharing"],
-    story: "We designed and developed a stunning digital platform for the Old Students Association of PRESEC-OSU for their landmark 70th Anniversary celebration. With alumni scattered across Ghana and the diaspora, they needed a central hub to rally the PRESEC family together. We delivered a vibrant, school-colored website featuring the iconic motto OPR3! BEE ESH3! that captured the spirit of brotherhood and excellence. The platform serves as both an invitation to the grand launch event and a registration portal for alumni worldwide.",
-    package: "Prestige Vibe",
-    highlights: ["500+ alumni registrations", "Nationwide reach", "Diaspora engagement from 10+ countries"],
-  },
   "nana-yaw-memorial": {
     title: "In Loving Memory of Nana Yaw",
     type: "Funeral",

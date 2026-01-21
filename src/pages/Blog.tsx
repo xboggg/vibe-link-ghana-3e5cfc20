@@ -481,7 +481,7 @@ const Blog = () => {
                 Like on Facebook
               </a>
               <a
-                href="https://wa.me/233245817973"
+                href="https://wa.me/4915757178561"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-green-500 text-white font-medium hover:opacity-90 transition-opacity"

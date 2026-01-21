@@ -164,7 +164,7 @@ const ThankYou = () => {
     if (whatsappUrl) {
       window.open(whatsappUrl, "_blank", "noopener,noreferrer");
     } else {
-      window.open("https://wa.me/233245817973", "_blank", "noopener,noreferrer");
+      window.open("https://wa.me/4915757178561", "_blank", "noopener,noreferrer");
     }
   };
 

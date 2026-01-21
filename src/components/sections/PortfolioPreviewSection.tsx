@@ -6,6 +6,7 @@ import { ParallaxBackground } from "@/components/ParallaxBackground";
 import { AnimatedHeading, AnimatedText } from "@/components/AnimatedHeading";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import { useRef } from "react";
+import { portfolioItems } from "@/data/portfolioItems";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -31,40 +32,8 @@ const itemVariants = {
   },
 };
 
-const portfolioItems = [
-  {
-    id: 1,
-    title: "Evans & Mina's Anniversary",
-    type: "Anniversary",
-    image: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80",
-    demoUrl: "https://evmin-rsvp.netlify.app/",
-    slug: "evans-mina-anniversary",
-  },
-  {
-    id: 2,
-    title: "Kofi & Ama's Wedding",
-    type: "Wedding",
-    image: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80",
-    demoUrl: null,
-    slug: "kofi-ama-wedding",
-  },
-  {
-    id: 3,
-    title: "In Loving Memory",
-    type: "Funeral",
-    image: "https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=800&q=80",
-    demoUrl: null,
-    slug: "loving-memory-funeral",
-  },
-  {
-    id: 4,
-    title: "Baby Blessing",
-    type: "Naming Ceremony",
-    image: "https://images.unsplash.com/photo-1544126592-807ade215a0b?auto=format&fit=crop&w=800&q=80",
-    demoUrl: null,
-    slug: "baby-blessing-naming",
-  },
-];
+// Show first 4 items from the shared portfolio data
+const previewItems = portfolioItems.slice(0, 4);
 
 export function PortfolioPreviewSection() {
   const headerRef = useRef<HTMLDivElement>(null);
@@ -126,7 +95,7 @@ export function PortfolioPreviewSection() {
           initial="hidden"
           animate={isGridInView ? "visible" : "hidden"}
         >
-          {portfolioItems.map((item) => (
+          {previewItems.map((item) => (
             <motion.div
               key={item.id}
               variants={itemVariants}
