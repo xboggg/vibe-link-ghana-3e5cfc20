@@ -120,12 +120,67 @@ export function HowItWorksPreviewSection() {
 
               {/* Icon */}
               <div className="relative inline-flex items-center justify-center mb-6">
-                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center">
-                  <step.icon className="h-10 w-10 text-primary" />
-                </div>
-                <span className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center text-sm font-bold">
+                {/* Pulsating ring effect */}
+                <motion.div
+                  className="absolute inset-0 w-24 h-24 rounded-full bg-primary/20"
+                  animate={{
+                    scale: [1, 1.2, 1],
+                    opacity: [0.5, 0, 0.5],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: index * 0.3,
+                  }}
+                />
+                <motion.div
+                  className="w-24 h-24 rounded-full bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center border-2 border-primary/20"
+                  animate={{
+                    y: [0, -8, 0],
+                    boxShadow: [
+                      "0 4px 20px rgba(138, 43, 226, 0.15)",
+                      "0 12px 30px rgba(138, 43, 226, 0.3)",
+                      "0 4px 20px rgba(138, 43, 226, 0.15)",
+                    ],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: index * 0.4,
+                  }}
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                >
+                  <motion.div
+                    animate={{
+                      rotate: [0, -5, 5, 0],
+                      scale: [1, 1.05, 1],
+                    }}
+                    transition={{
+                      duration: 4,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                      delay: index * 0.2,
+                    }}
+                  >
+                    <step.icon className="h-10 w-10 text-primary" />
+                  </motion.div>
+                </motion.div>
+                <motion.span
+                  className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center text-sm font-bold shadow-lg"
+                  animate={{
+                    scale: [1, 1.15, 1],
+                  }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: index * 0.2,
+                  }}
+                >
                   {step.number.slice(1)}
-                </span>
+                </motion.span>
               </div>
 
               {/* Content */}
