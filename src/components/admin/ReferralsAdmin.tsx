@@ -1,18 +1,37 @@
 import { useState, useEffect } from "react";
-import { Gift, Users, Wallet, TrendingUp, CheckCircle, Clock, RefreshCw, Loader2 } from "lucide-react";
+import { Gift, Users, Wallet, TrendingUp, CheckCircle, Clock, RefreshCw, Loader2, Phone, BanknoteIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { format } from "date-fns";
+
+// Fixed referral rewards by package
+const REFERRAL_REWARDS: Record<string, number> = {
+  "Classic Vibe": 100,
+  "Prestige Vibe": 200,
+  "Royal Vibe": 500,
+};
 
 interface ReferralCode {
   id: string;
   code: string;
   owner_email: string;
   owner_name: string;
+  owner_momo_number: string | null;
   reward_percentage: number;
   total_referrals: number;
   successful_referrals: number;
@@ -30,8 +49,11 @@ interface Referral {
   referral_code: string;
   status: string;
   reward_amount: number;
+  package_name: string | null;
+  payout_status: string;
   created_at: string;
   completed_at: string | null;
+  paid_at: string | null;
 }
 
 export function ReferralsAdmin() {
@@ -74,6 +96,49 @@ export function ReferralsAdmin() {
     }
   };
 
+  const getPayoutBadge = (status: string) => {
+    switch (status) {
+      case "paid": return <Badge className="bg-green-500">Paid</Badge>;
+      case "pending": return <Badge className="bg-orange-500">Unpaid</Badge>;
+      default: return <Badge variant="secondary">{status}</Badge>;
+    }
+  };
+
+  const markAsPaid = async (referral: Referral) => {
+    try {
+      // Update referral payout status
+      const { error: refError } = await supabase
+        .from("referrals")
+        .update({
+          payout_status: "paid",
+          paid_at: new Date().toISOString()
+        })
+        .eq("id", referral.id);
+
+      if (refError) throw refError;
+
+      // Update referrer's available balance
+      const { error: codeError } = await supabase
+        .from("referral_codes")
+        .update({
+          available_balance: supabase.rpc ? 0 : 0 // Will be handled by trigger or manual
+        })
+        .eq("owner_email", referral.referrer_email);
+
+      toast.success(`Marked as paid! Send GHS ${referral.reward_amount} to referrer.`);
+      fetchData();
+    } catch (err) {
+      console.error("Error marking as paid:", err);
+      toast.error("Failed to update payout status");
+    }
+  };
+
+  // Get referrer's MoMo number
+  const getReferrerMomo = (referrerEmail: string) => {
+    const code = codes.find(c => c.owner_email === referrerEmail);
+    return code?.owner_momo_number || "Not provided";
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -97,12 +162,22 @@ export function ReferralsAdmin() {
             <div className="text-center py-12"><Gift className="h-12 w-12 mx-auto text-muted-foreground/50 mb-4" /><p className="text-muted-foreground">No referral codes yet</p></div>
           ) : (
             <Table>
-              <TableHeader><TableRow><TableHead>Code</TableHead><TableHead>Owner</TableHead><TableHead>Referrals</TableHead><TableHead>Successful</TableHead><TableHead>Earnings</TableHead><TableHead>Balance</TableHead><TableHead>Status</TableHead></TableRow></TableHeader>
+              <TableHeader><TableRow><TableHead>Code</TableHead><TableHead>Owner</TableHead><TableHead>MoMo</TableHead><TableHead>Referrals</TableHead><TableHead>Successful</TableHead><TableHead>Earnings</TableHead><TableHead>Balance</TableHead><TableHead>Status</TableHead></TableRow></TableHeader>
               <TableBody>
                 {codes.map((code) => (
                   <TableRow key={code.id}>
                     <TableCell><span className="font-mono font-bold">{code.code}</span></TableCell>
                     <TableCell><div><p className="font-medium">{code.owner_name}</p><p className="text-xs text-muted-foreground">{code.owner_email}</p></div></TableCell>
+                    <TableCell>
+                      {code.owner_momo_number ? (
+                        <div className="flex items-center gap-1">
+                          <Phone className="h-3 w-3 text-green-600" />
+                          <span className="text-sm">{code.owner_momo_number}</span>
+                        </div>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">Not set</span>
+                      )}
+                    </TableCell>
                     <TableCell>{code.total_referrals}</TableCell>
                     <TableCell className="text-green-600">{code.successful_referrals}</TableCell>
                     <TableCell>GHS {code.total_earnings.toLocaleString()}</TableCell>
@@ -117,22 +192,67 @@ export function ReferralsAdmin() {
       </Card>
 
       <Card>
-        <CardHeader><CardTitle>Recent Referrals</CardTitle><CardDescription>Latest referral activity</CardDescription></CardHeader>
+        <CardHeader><CardTitle>Recent Referrals</CardTitle><CardDescription>Latest referral activity - Mark payouts as paid after sending MoMo</CardDescription></CardHeader>
         <CardContent>
           {referrals.length === 0 ? (
             <div className="text-center py-8"><p className="text-muted-foreground">No referrals yet</p></div>
           ) : (
             <Table>
-              <TableHeader><TableRow><TableHead>Date</TableHead><TableHead>Referrer</TableHead><TableHead>Referred</TableHead><TableHead>Code</TableHead><TableHead>Status</TableHead><TableHead>Reward</TableHead></TableRow></TableHeader>
+              <TableHeader><TableRow><TableHead>Date</TableHead><TableHead>Referrer</TableHead><TableHead>MoMo</TableHead><TableHead>Package</TableHead><TableHead>Status</TableHead><TableHead>Reward</TableHead><TableHead>Payout</TableHead><TableHead>Action</TableHead></TableRow></TableHeader>
               <TableBody>
                 {referrals.map((ref) => (
                   <TableRow key={ref.id}>
                     <TableCell>{format(new Date(ref.created_at), "MMM d, yyyy")}</TableCell>
-                    <TableCell>{ref.referrer_email}</TableCell>
-                    <TableCell>{ref.referred_email}</TableCell>
-                    <TableCell className="font-mono">{ref.referral_code}</TableCell>
+                    <TableCell>
+                      <div>
+                        <p className="text-sm">{ref.referrer_email}</p>
+                        <p className="text-xs text-muted-foreground">→ {ref.referred_email}</p>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-sm">{getReferrerMomo(ref.referrer_email)}</span>
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-sm">{ref.package_name || "N/A"}</span>
+                    </TableCell>
                     <TableCell>{getStatusBadge(ref.status)}</TableCell>
-                    <TableCell>{ref.status === "completed" ? "GHS " + ref.reward_amount : "--"}</TableCell>
+                    <TableCell className="font-semibold">
+                      {ref.status === "completed" ? "GHS " + ref.reward_amount : "--"}
+                    </TableCell>
+                    <TableCell>{ref.status === "completed" ? getPayoutBadge(ref.payout_status || "pending") : "--"}</TableCell>
+                    <TableCell>
+                      {ref.status === "completed" && ref.payout_status !== "paid" && (
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button size="sm" variant="outline" className="text-green-600 border-green-600 hover:bg-green-50">
+                              <BanknoteIcon className="h-4 w-4 mr-1" />
+                              Mark Paid
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Confirm Payout</AlertDialogTitle>
+                              <AlertDialogDescription className="space-y-2">
+                                <p>Have you sent <strong>GHS {ref.reward_amount}</strong> to:</p>
+                                <p className="font-medium">{ref.referrer_email}</p>
+                                <p className="text-sm">MoMo: {getReferrerMomo(ref.referrer_email)}</p>
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction onClick={() => markAsPaid(ref)} className="bg-green-600 hover:bg-green-700">
+                                Yes, Mark as Paid
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      )}
+                      {ref.payout_status === "paid" && (
+                        <span className="text-xs text-muted-foreground">
+                          {ref.paid_at ? format(new Date(ref.paid_at), "MMM d") : "Paid"}
+                        </span>
+                      )}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
