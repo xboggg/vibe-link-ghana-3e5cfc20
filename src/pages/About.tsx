@@ -471,244 +471,131 @@ const About = () => {
                   we create <strong>living, breathing event experiences</strong>. One simple link that does everything.
                 </p>
 
-                {/* Before/After Comparison - Option 2 */}
+                {/* Animated Text with Highlighted Keywords */}
                 <motion.div
-                  initial={{ opacity: 0, y: 30 }}
+                  initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.7, delay: 0.4 }}
-                  className="mt-10"
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                  className="mt-8 p-6 sm:p-8 rounded-2xl bg-gradient-to-br from-purple-500/10 via-indigo-500/5 to-pink-500/10 border border-purple-500/20 relative overflow-hidden"
                 >
-                  <motion.p
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.5 }}
-                    className="text-center text-muted-foreground text-sm mb-4"
-                  >
-                    See the difference
-                  </motion.p>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-                    {/* Before - Static JPEG */}
-                    <motion.div
-                      initial={{ opacity: 0, x: -30 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.6, delay: 0.5 }}
-                      className="relative group"
-                    >
-                      <div className="absolute -inset-1 bg-gradient-to-r from-red-500/20 to-orange-500/20 rounded-2xl blur-sm group-hover:blur-md transition-all" />
-                      <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 border border-red-500/30 shadow-lg">
-                        {/* Header Badge */}
-                        <div className="absolute top-3 left-3 z-10">
-                          <motion.span
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-500/90 text-white text-xs font-semibold shadow-lg"
-                            animate={{ scale: [1, 1.05, 1] }}
-                            transition={{ duration: 2, repeat: Infinity }}
-                          >
-                            <XCircle className="h-3.5 w-3.5" />
-                            Static JPEG
-                          </motion.span>
-                        </div>
-
-                        {/* Mock Static Flyer */}
-                        <div className="aspect-[3/4] p-6 flex flex-col items-center justify-center text-center relative">
-                          {/* Faded/Grainy overlay to show "static" feel */}
-                          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/10" />
-
-                          <motion.div
-                            className="w-20 h-20 rounded-full bg-gradient-to-br from-gray-300 to-gray-400 dark:from-gray-600 dark:to-gray-700 flex items-center justify-center mb-4 shadow-inner"
-                            animate={{ opacity: [0.7, 0.9, 0.7] }}
-                            transition={{ duration: 3, repeat: Infinity }}
-                          >
-                            <FileText className="h-10 w-10 text-gray-500 dark:text-gray-400" />
-                          </motion.div>
-
-                          <div className="space-y-2 relative z-10">
-                            <div className="h-4 w-32 bg-gray-300 dark:bg-gray-600 rounded mx-auto" />
-                            <div className="h-3 w-24 bg-gray-300 dark:bg-gray-600 rounded mx-auto" />
-                            <div className="h-3 w-28 bg-gray-300 dark:bg-gray-600 rounded mx-auto mt-4" />
-                            <div className="h-3 w-20 bg-gray-300 dark:bg-gray-600 rounded mx-auto" />
-                          </div>
-
-                          {/* Problems List */}
-                          <div className="mt-6 space-y-2 text-left w-full px-2">
-                            {["No updates possible", "No RSVP tracking", "No directions", "Gets lost in chats"].map((problem, i) => (
-                              <motion.div
-                                key={i}
-                                initial={{ opacity: 0, x: -10 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: 0.7 + i * 0.1 }}
-                                className="flex items-center gap-2 text-xs text-red-600 dark:text-red-400"
-                              >
-                                <XCircle className="h-3.5 w-3.5 flex-shrink-0" />
-                                <span>{problem}</span>
-                              </motion.div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </motion.div>
-
-                    {/* After - Interactive VibeLink */}
-                    <motion.div
-                      initial={{ opacity: 0, x: 30 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.6, delay: 0.6 }}
-                      className="relative group"
-                    >
-                      <motion.div
-                        className="absolute -inset-1 bg-gradient-to-r from-purple-500/30 to-pink-500/30 rounded-2xl blur-sm group-hover:blur-md transition-all"
-                        animate={{
-                          opacity: [0.5, 0.8, 0.5],
-                        }}
-                        transition={{ duration: 2, repeat: Infinity }}
-                      />
-                      <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-950/50 dark:to-indigo-950/50 border border-purple-500/30 shadow-xl">
-                        {/* Header Badge */}
-                        <div className="absolute top-3 left-3 z-10">
-                          <motion.span
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-xs font-semibold shadow-lg"
-                            animate={{
-                              scale: [1, 1.05, 1],
-                              boxShadow: [
-                                "0 4px 15px rgba(139, 92, 246, 0.3)",
-                                "0 8px 25px rgba(139, 92, 246, 0.5)",
-                                "0 4px 15px rgba(139, 92, 246, 0.3)"
-                              ]
-                            }}
-                            transition={{ duration: 2, repeat: Infinity }}
-                          >
-                            <Sparkles className="h-3.5 w-3.5" />
-                            Interactive VibeLink
-                          </motion.span>
-                        </div>
-
-                        {/* Mock Interactive Invitation */}
-                        <div className="aspect-[3/4] p-6 flex flex-col items-center justify-center text-center relative overflow-hidden">
-                          {/* Animated background particles */}
-                          <motion.div
-                            className="absolute top-10 right-10 w-20 h-20 bg-purple-500/10 rounded-full blur-xl"
-                            animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.6, 0.3] }}
-                            transition={{ duration: 4, repeat: Infinity }}
-                          />
-                          <motion.div
-                            className="absolute bottom-20 left-10 w-16 h-16 bg-pink-500/10 rounded-full blur-xl"
-                            animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.5, 0.2] }}
-                            transition={{ duration: 3, repeat: Infinity, delay: 1 }}
-                          />
-
-                          <motion.div
-                            className="w-20 h-20 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center mb-4 shadow-xl shadow-purple-500/30"
-                            animate={{
-                              y: [0, -5, 0],
-                              boxShadow: [
-                                "0 10px 30px rgba(139, 92, 246, 0.3)",
-                                "0 20px 40px rgba(139, 92, 246, 0.4)",
-                                "0 10px 30px rgba(139, 92, 246, 0.3)"
-                              ]
-                            }}
-                            transition={{ duration: 3, repeat: Infinity }}
-                          >
-                            <motion.div
-                              animate={{ rotate: [0, 360] }}
-                              transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-                            >
-                              <Sparkles className="h-10 w-10 text-white" />
-                            </motion.div>
-                          </motion.div>
-
-                          <div className="space-y-2 relative z-10">
-                            <motion.div
-                              className="h-4 w-32 bg-gradient-to-r from-purple-400 to-indigo-400 rounded mx-auto"
-                              animate={{ opacity: [0.8, 1, 0.8] }}
-                              transition={{ duration: 2, repeat: Infinity }}
-                            />
-                            <div className="h-3 w-24 bg-purple-300/50 rounded mx-auto" />
-                            <div className="h-3 w-28 bg-purple-300/50 rounded mx-auto mt-4" />
-                            <div className="h-3 w-20 bg-purple-300/50 rounded mx-auto" />
-                          </div>
-
-                          {/* Interactive Features */}
-                          <div className="mt-6 space-y-2 text-left w-full px-2">
-                            {[
-                              { text: "Update anytime", icon: RefreshCw },
-                              { text: "Track RSVPs live", icon: ClipboardList },
-                              { text: "One-tap directions", icon: MapPin },
-                              { text: "Reach anyone globally", icon: Globe },
-                            ].map((feature, i) => (
-                              <motion.div
-                                key={i}
-                                initial={{ opacity: 0, x: 10 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: 0.8 + i * 0.1 }}
-                                whileHover={{ x: 5, scale: 1.02 }}
-                                className="flex items-center gap-2 text-xs text-purple-700 dark:text-purple-300 cursor-default"
-                              >
-                                <motion.div
-                                  className="w-5 h-5 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center flex-shrink-0"
-                                  initial={{ scale: 0 }}
-                                  whileInView={{ scale: 1 }}
-                                  viewport={{ once: true }}
-                                  transition={{ type: "spring", delay: 0.9 + i * 0.1 }}
-                                >
-                                  <CheckCircle2 className="h-3 w-3 text-white" />
-                                </motion.div>
-                                <feature.icon className="h-3 w-3 text-purple-500" />
-                                <span className="font-medium">{feature.text}</span>
-                              </motion.div>
-                            ))}
-                          </div>
-
-                          {/* Floating action buttons mock */}
-                          <motion.div
-                            className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2"
-                            initial={{ opacity: 0, y: 10 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: 1.2 }}
-                          >
-                            <motion.div
-                              className="px-3 py-1.5 rounded-full bg-purple-600 text-white text-[10px] font-semibold shadow-lg"
-                              whileHover={{ scale: 1.05 }}
-                              animate={{ y: [0, -2, 0] }}
-                              transition={{ duration: 2, repeat: Infinity }}
-                            >
-                              RSVP Now
-                            </motion.div>
-                            <motion.div
-                              className="px-3 py-1.5 rounded-full bg-white dark:bg-gray-800 text-purple-600 text-[10px] font-semibold shadow-lg border border-purple-200"
-                              whileHover={{ scale: 1.05 }}
-                              animate={{ y: [0, -2, 0] }}
-                              transition={{ duration: 2, repeat: Infinity, delay: 0.3 }}
-                            >
-                              Get Directions
-                            </motion.div>
-                          </motion.div>
-                        </div>
-                      </div>
-                    </motion.div>
-                  </div>
-
-                  {/* Arrow indicator between cards on mobile */}
+                  {/* Background shimmer */}
                   <motion.div
-                    className="flex md:hidden justify-center my-4"
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.8 }}
-                  >
-                    <motion.div
-                      animate={{ y: [0, 5, 0] }}
-                      transition={{ duration: 1.5, repeat: Infinity }}
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12"
+                    animate={{ x: ["-200%", "200%"] }}
+                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", repeatDelay: 2 }}
+                  />
+
+                  <p className="text-foreground text-base sm:text-lg md:text-xl leading-relaxed relative z-10 text-center">
+                    VibeLink Events solves the limitations of traditional printed invitations and static digital flyers by creating{" "}
+                    <span className="font-semibold text-primary">interactive, shareable event pages</span> with one link that lets you{" "}
+
+                    {/* Highlighted action word: UPDATE */}
+                    <motion.span
+                      className="relative inline-block mx-1"
+                      initial={{ opacity: 0, y: 10 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: 0.4 }}
                     >
-                      <ArrowRight className="h-6 w-6 text-purple-500 rotate-90" />
-                    </motion.div>
-                  </motion.div>
+                      <motion.span
+                        className="absolute inset-0 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-lg -z-10"
+                        initial={{ scaleX: 0 }}
+                        whileInView={{ scaleX: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.4, delay: 0.5 }}
+                        style={{ originX: 0 }}
+                      />
+                      <span className="relative z-10 px-2 py-1 text-white font-bold">update</span>
+                    </motion.span>
+                    {" "}details instantly,{" "}
+
+                    {/* Highlighted action word: TRACK */}
+                    <motion.span
+                      className="relative inline-block mx-1"
+                      initial={{ opacity: 0, y: 10 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: 0.6 }}
+                    >
+                      <motion.span
+                        className="absolute inset-0 bg-gradient-to-r from-pink-500 to-rose-500 rounded-lg -z-10"
+                        initial={{ scaleX: 0 }}
+                        whileInView={{ scaleX: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.4, delay: 0.7 }}
+                        style={{ originX: 0 }}
+                      />
+                      <span className="relative z-10 px-2 py-1 text-white font-bold">track</span>
+                    </motion.span>
+                    {" "}RSVPs,{" "}
+
+                    {/* Highlighted action word: SHARE */}
+                    <motion.span
+                      className="relative inline-block mx-1"
+                      initial={{ opacity: 0, y: 10 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: 0.8 }}
+                    >
+                      <motion.span
+                        className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg -z-10"
+                        initial={{ scaleX: 0 }}
+                        whileInView={{ scaleX: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.4, delay: 0.9 }}
+                        style={{ originX: 0 }}
+                      />
+                      <span className="relative z-10 px-2 py-1 text-white font-bold">share</span>
+                    </motion.span>
+                    {" "}venue directions, and{" "}
+
+                    {/* Highlighted action word: REACH */}
+                    <motion.span
+                      className="relative inline-block mx-1"
+                      initial={{ opacity: 0, y: 10 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: 1.0 }}
+                    >
+                      <motion.span
+                        className="absolute inset-0 bg-gradient-to-r from-amber-500 to-orange-500 rounded-lg -z-10"
+                        initial={{ scaleX: 0 }}
+                        whileInView={{ scaleX: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.4, delay: 1.1 }}
+                        style={{ originX: 0 }}
+                      />
+                      <span className="relative z-10 px-2 py-1 text-white font-bold">reach</span>
+                    </motion.span>
+                    {" "}loved ones anywhere in the world.
+                  </p>
+
+                  {/* Decorative floating icons */}
+                  <div className="flex justify-center gap-4 mt-6 relative z-10">
+                    {[
+                      { icon: RefreshCw, color: "from-purple-500 to-indigo-500", delay: 1.2 },
+                      { icon: ClipboardList, color: "from-pink-500 to-rose-500", delay: 1.3 },
+                      { icon: MapPin, color: "from-emerald-500 to-teal-500", delay: 1.4 },
+                      { icon: Globe, color: "from-amber-500 to-orange-500", delay: 1.5 },
+                    ].map((item, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, scale: 0, y: 20 }}
+                        whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 200,
+                          delay: item.delay
+                        }}
+                        whileHover={{ scale: 1.15, y: -5 }}
+                        className={`w-12 h-12 rounded-xl bg-gradient-to-br ${item.color} flex items-center justify-center shadow-lg cursor-default`}
+                      >
+                        <item.icon className="h-6 w-6 text-white" />
+                      </motion.div>
+                    ))}
+                  </div>
                 </motion.div>
               </div>
             </motion.div>
