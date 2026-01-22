@@ -15,8 +15,12 @@ const SYSTEM_PROMPT = `You are the VibeLink Events AI Assistant - a friendly, kn
 4. Use **bold** for emphasis (this works)
 5. Always provide full clickable links: https://vibelinkgh.com/pricing, https://vibelinkgh.com/get-started
 6. For WhatsApp: https://wa.me/4915757178561
-7. List packages clearly with prices
-8. End with a helpful question or call-to-action
+7. For email links, just write the email address directly (info@vibelinkgh.com) - do NOT use markdown link syntax like [text](mailto:...)
+8. List packages clearly with prices
+9. End with a helpful question or call-to-action
+10. ABSOLUTELY CRITICAL: ONLY mention services, packages, and prices that are EXPLICITLY listed in this prompt. NEVER invent, fabricate, or make up ANY services or prices.
+11. We do NOT offer printing services - we are STRICTLY a DIGITAL invitation service. If asked about printing, say "We specialize in digital invitations only. We don't offer printing services."
+12. We do NOT charge for consultations - all consultations are FREE via WhatsApp.
 
 ## ABOUT VIBELINK EVENTS
 - **Business**: VibeLink Events (formerly VibeLink Ghana)
@@ -87,8 +91,8 @@ const SYSTEM_PROMPT = `You are the VibeLink Events AI Assistant - a friendly, kn
 - Custom Domain: GHS 300/year
 
 ## PAYMENT OPTIONS
-- **Full Payment (100%)**: Priority processing + free "Save the Date" teaser in 24 hours
-- **Split Payment (50% + 50%)**: Pay half to start, half before final delivery
+- **Full Payment (100%)**: Priority processing + free "Save the Date" teaser delivered within 24 hours (NOTE: The teaser is delivered in 24hrs, NOT the full invitation. The full invitation takes 5-7 days for most packages, 7-10 days for Royal)
+- **Split Payment (50% + 50%)**: Pay 50% deposit to start, remaining 50% before final delivery
 
 ## HOW TO ORDER
 1. Go to https://vibelinkgh.com/get-started
@@ -121,13 +125,19 @@ You know about:
 - Naming ceremonies (outdooring, 8 days after birth)
 - Major festivals (Homowo, Akwasidae, Hogbetsotso)
 
+## FREE CONSULTATION
+- ALL consultations are completely FREE - we NEVER charge for consultations
+- Customers can book a free consultation via WhatsApp: https://wa.me/4915757178561
+- During consultation we discuss event ideas, recommend packages, and answer questions
+- NEVER mention paid consultations - they do not exist
+
 ## RESPONSE STYLE
 - Warm and friendly, but concise
 - Use "Akwaaba!" for greetings when appropriate
 - Always provide direct links, not just page names
 - If unsure, direct to WhatsApp: https://wa.me/4915757178561
 - Recommend packages based on event type and budget
-- For complex questions, suggest booking a free consultation
+- For complex questions, suggest booking a FREE consultation on WhatsApp
 
 ## SMART RECOMMENDATIONS
 - Budget-conscious: Suggest Starter Vibe
@@ -138,7 +148,7 @@ You know about:
 // Function to determine topic from user message
 function detectTopic(message: string): string {
   const lowerMessage = message.toLowerCase();
-  
+
   if (lowerMessage.includes("price") || lowerMessage.includes("cost") || lowerMessage.includes("package") || lowerMessage.includes("ghs") || lowerMessage.includes("how much")) {
     return "pricing";
   }
@@ -355,9 +365,9 @@ serve(async (req) => {
   try {
     const { messages, action, orderId, customerEmail, sessionId } = await req.json();
 
-    const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
-    if (!GEMINI_API_KEY) {
-      throw new Error("GEMINI_API_KEY is not configured");
+    const GROQ_API_KEY = Deno.env.get("GROQ_API_KEY");
+    if (!GROQ_API_KEY) {
+      throw new Error("GROQ_API_KEY is not configured");
     }
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
@@ -379,7 +389,7 @@ serve(async (req) => {
 
       if (error || !order) {
         return new Response(
-          JSON.stringify({ 
+          JSON.stringify({
             message: "I couldn't find an order with that ID. Please double-check your Order ID and try again, or contact us on WhatsApp for assistance: https://wa.me/233245817973",
             suggestions: ["Try again with correct ID", "Contact via WhatsApp", "View pricing", "Place new order"]
           }),
@@ -440,52 +450,39 @@ Need help? Chat with us on WhatsApp: https://wa.me/233245817973`;
     const topic = detectTopic(lastUserMessage);
     const startTime = Date.now();
 
-    // Convert messages to Gemini format
-    const geminiContents = messages.map((msg: { role: string; content: string }) => ({
-      role: msg.role === "assistant" ? "model" : "user",
-      parts: [{ text: msg.content }],
-    }));
+    // Convert messages to Groq/OpenAI format
+    const groqMessages = [
+      { role: "system", content: SYSTEM_PROMPT },
+      ...messages.map((msg: { role: string; content: string }) => ({
+        role: msg.role,
+        content: msg.content,
+      })),
+    ];
 
-    // Stream chat response using Gemini API
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:streamGenerateContent?alt=sse&key=${GEMINI_API_KEY}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          contents: geminiContents,
-          systemInstruction: {
-            parts: [{ text: SYSTEM_PROMPT }],
-          },
-          generationConfig: {
-            temperature: 0.7,
-            topK: 40,
-            topP: 0.95,
-            maxOutputTokens: 2048,
-          },
-        }),
-      }
-    );
+    // Stream chat response using Groq API
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${GROQ_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "llama-3.1-8b-instant",
+        messages: groqMessages,
+        temperature: 0.7,
+        max_tokens: 2048,
+        stream: true,
+      }),
+    });
 
     if (!response.ok) {
       if (response.status === 429) {
         return new Response(
-          JSON.stringify({ 
+          JSON.stringify({
             error: "We're experiencing high traffic. Please try again in a moment.",
             suggestions: ["Try again in a minute", "Contact via WhatsApp", "Visit our website"]
           }),
           { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-      if (response.status === 402) {
-        return new Response(
-          JSON.stringify({ 
-            error: "Service temporarily unavailable. Please contact us on WhatsApp.",
-            suggestions: ["Contact via WhatsApp", "Visit website", "Try again later"]
-          }),
-          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
       const errorText = await response.text();
@@ -504,7 +501,7 @@ Need help? Chat with us on WhatsApp: https://wa.me/233245817973`;
     const writer = writable.getWriter();
     const reader = response.body!.getReader();
 
-    // Process in background - convert Gemini SSE to OpenAI-compatible format
+    // Process in background - Groq uses OpenAI-compatible SSE format
     (async () => {
       let fullResponse = "";
       try {
@@ -512,25 +509,18 @@ Need help? Chat with us on WhatsApp: https://wa.me/233245817973`;
           const { done, value } = await reader.read();
           if (done) break;
 
-          // Decode Gemini's response
           const text = new TextDecoder().decode(value);
           const lines = text.split("\n");
 
           for (const line of lines) {
-            if (line.startsWith("data: ")) {
+            if (line.startsWith("data: ") && line !== "data: [DONE]") {
               try {
                 const json = JSON.parse(line.slice(6));
-                // Gemini format: candidates[0].content.parts[0].text
-                const content = json.candidates?.[0]?.content?.parts?.[0]?.text;
+                const content = json.choices?.[0]?.delta?.content;
                 if (content) {
                   fullResponse += content;
-                  // Convert to OpenAI-compatible SSE format for the frontend
-                  const openAIFormat = {
-                    choices: [{ delta: { content } }],
-                  };
-                  await writer.write(
-                    new TextEncoder().encode(`data: ${JSON.stringify(openAIFormat)}\n\n`)
-                  );
+                  // Forward the SSE event (already in OpenAI format)
+                  await writer.write(new TextEncoder().encode(`${line}\n\n`));
                 }
               } catch {}
             }

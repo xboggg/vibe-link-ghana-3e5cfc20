@@ -90,7 +90,7 @@ export function TestimonialsSection() {
         const { data, error } = await supabase
           .from("testimonials")
           .select("id, name, event_type, quote, rating, image_url")
-          .eq("featured", true)
+          .eq("is_featured", true)
           .order("display_order", { ascending: true })
           .limit(3);
 

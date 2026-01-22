@@ -42,7 +42,7 @@ interface Testimonial {
   quote: string;
   rating: number;
   image_url: string | null;
-  featured: boolean;
+  is_featured: boolean;
   display_order: number;
   created_at: string;
   updated_at: string;
@@ -65,7 +65,7 @@ const emptyTestimonial: Omit<Testimonial, "id" | "created_at" | "updated_at"> = 
   quote: "",
   rating: 5,
   image_url: null,
-  featured: false,
+  is_featured: false,
   display_order: 0,
 };
 
@@ -176,7 +176,7 @@ export function TestimonialsManager() {
             quote: formData.quote,
             rating: formData.rating,
             image_url: imageUrl,
-            featured: formData.featured,
+            is_featured: formData.is_featured,
             display_order: formData.display_order,
           })
           .eq("id", editingTestimonial.id);
@@ -192,7 +192,7 @@ export function TestimonialsManager() {
             quote: formData.quote,
             rating: formData.rating,
             image_url: imageUrl,
-            featured: formData.featured,
+            is_featured: formData.is_featured,
             display_order: testimonials.length + 1,
           });
 
@@ -220,7 +220,7 @@ export function TestimonialsManager() {
       quote: testimonial.quote,
       rating: testimonial.rating,
       image_url: testimonial.image_url,
-      featured: testimonial.featured,
+      is_featured: testimonial.is_featured,
       display_order: testimonial.display_order,
     });
     setImagePreview(testimonial.image_url);
@@ -248,11 +248,11 @@ export function TestimonialsManager() {
     try {
       const { error } = await supabase
         .from("testimonials")
-        .update({ featured: !testimonial.featured })
+        .update({ is_featured: !testimonial.is_featured })
         .eq("id", testimonial.id);
 
       if (error) throw error;
-      toast.success(`Testimonial ${testimonial.featured ? "unfeatured" : "featured"}`);
+      toast.success(`Testimonial ${testimonial.is_featured ? "unfeatured" : "featured"}`);
       fetchTestimonials();
     } catch (error) {
       console.error("Error updating testimonial:", error);
@@ -422,11 +422,11 @@ export function TestimonialsManager() {
 
               <div className="flex items-center gap-2">
                 <Switch
-                  id="featured"
-                  checked={formData.featured}
-                  onCheckedChange={(checked) => setFormData({ ...formData, featured: checked })}
+                  id="is_featured"
+                  checked={formData.is_featured}
+                  onCheckedChange={(checked) => setFormData({ ...formData, is_featured: checked })}
                 />
-                <Label htmlFor="featured">Featured on homepage</Label>
+                <Label htmlFor="is_featured">Featured on homepage</Label>
               </div>
 
               <div className="flex justify-end gap-2 pt-4">
@@ -485,7 +485,7 @@ export function TestimonialsManager() {
                     <div className="flex items-center gap-2 mb-2">
                       <h3 className="font-semibold text-foreground">{testimonial.name}</h3>
                       <Badge variant="secondary">{testimonial.event_type}</Badge>
-                      {testimonial.featured && (
+                      {testimonial.is_featured && (
                         <Badge variant="default" className="bg-secondary text-secondary-foreground">
                           Featured
                         </Badge>
@@ -508,11 +508,11 @@ export function TestimonialsManager() {
                       variant="ghost"
                       size="icon"
                       onClick={() => toggleFeatured(testimonial)}
-                      title={testimonial.featured ? "Unfeature" : "Feature"}
+                      title={testimonial.is_featured ? "Unfeature" : "Feature"}
                     >
                       <Star
                         className={`h-4 w-4 ${
-                          testimonial.featured
+                          testimonial.is_featured
                             ? "fill-secondary text-secondary"
                             : "text-muted-foreground"
                         }`}
