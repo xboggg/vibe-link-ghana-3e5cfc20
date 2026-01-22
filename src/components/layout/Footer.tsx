@@ -9,6 +9,9 @@ const quickLinks = [{
   name: "Home",
   href: "/"
 }, {
+  name: "About Us",
+  href: "/about"
+}, {
   name: "Services",
   href: "/services"
 }, {
@@ -20,9 +23,6 @@ const quickLinks = [{
 }, {
   name: "Pricing",
   href: "/pricing"
-}, {
-  name: "About",
-  href: "/about"
 }];
 const policyLinks = [{
   name: "Privacy",
@@ -158,7 +158,7 @@ export function Footer() {
           </div>
 
           {/* Quick Links */}
-          <div className="mx-0 text-center md:text-left">
+          <div className="mx-0 text-center md:text-left md:ml-4 lg:ml-8">
             <h4 className="text-sm font-semibold uppercase tracking-wider text-secondary mb-4">
               Quick Links
             </h4>
@@ -172,7 +172,7 @@ export function Footer() {
           </div>
 
           {/* Event Types - Clickable */}
-          <div className="mx-0 text-center md:text-left">
+          <div className="mx-0 text-center md:text-left md:ml-4 lg:ml-8">
             <h4 className="text-sm font-semibold uppercase tracking-wider text-secondary mb-4">
               Event Types
             </h4>
@@ -186,7 +186,7 @@ export function Footer() {
           </div>
 
           {/* Contact */}
-          <div className="text-center md:text-left">
+          <div className="text-center md:text-left md:ml-4 lg:ml-8">
             <h4 className="text-sm font-semibold uppercase tracking-wider text-secondary mb-4">
               Contact Us
             </h4>
