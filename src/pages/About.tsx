@@ -471,132 +471,15 @@ const About = () => {
                   we create <strong>living, breathing event experiences</strong>. One simple link that does everything.
                 </p>
 
-                {/* Animated Text with Highlighted Keywords */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
+                <motion.p
+                  initial={{ opacity: 0, y: 10 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: 0.2 }}
-                  className="mt-8 p-6 sm:p-8 rounded-2xl bg-gradient-to-br from-purple-500/10 via-indigo-500/5 to-pink-500/10 border border-purple-500/20 relative overflow-hidden"
+                  transition={{ duration: 0.5, delay: 0.3 }}
+                  className="text-muted-foreground text-base sm:text-lg leading-relaxed"
                 >
-                  {/* Background shimmer */}
-                  <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12"
-                    animate={{ x: ["-200%", "200%"] }}
-                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", repeatDelay: 2 }}
-                  />
-
-                  <p className="text-foreground text-base sm:text-lg md:text-xl leading-relaxed relative z-10 text-center">
-                    VibeLink Events solves the limitations of traditional printed invitations and static digital flyers by creating{" "}
-                    <span className="font-semibold text-primary">interactive, shareable event pages</span> with one link that lets you{" "}
-
-                    {/* Highlighted action word: UPDATE */}
-                    <motion.span
-                      className="relative inline-block mx-1"
-                      initial={{ opacity: 0, y: 10 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.5, delay: 0.4 }}
-                    >
-                      <motion.span
-                        className="absolute inset-0 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-lg -z-10"
-                        initial={{ scaleX: 0 }}
-                        whileInView={{ scaleX: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.4, delay: 0.5 }}
-                        style={{ originX: 0 }}
-                      />
-                      <span className="relative z-10 px-2 py-1 text-white font-bold">update</span>
-                    </motion.span>
-                    {" "}details instantly,{" "}
-
-                    {/* Highlighted action word: TRACK */}
-                    <motion.span
-                      className="relative inline-block mx-1"
-                      initial={{ opacity: 0, y: 10 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.5, delay: 0.6 }}
-                    >
-                      <motion.span
-                        className="absolute inset-0 bg-gradient-to-r from-pink-500 to-rose-500 rounded-lg -z-10"
-                        initial={{ scaleX: 0 }}
-                        whileInView={{ scaleX: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.4, delay: 0.7 }}
-                        style={{ originX: 0 }}
-                      />
-                      <span className="relative z-10 px-2 py-1 text-white font-bold">track</span>
-                    </motion.span>
-                    {" "}RSVPs,{" "}
-
-                    {/* Highlighted action word: SHARE */}
-                    <motion.span
-                      className="relative inline-block mx-1"
-                      initial={{ opacity: 0, y: 10 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.5, delay: 0.8 }}
-                    >
-                      <motion.span
-                        className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg -z-10"
-                        initial={{ scaleX: 0 }}
-                        whileInView={{ scaleX: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.4, delay: 0.9 }}
-                        style={{ originX: 0 }}
-                      />
-                      <span className="relative z-10 px-2 py-1 text-white font-bold">share</span>
-                    </motion.span>
-                    {" "}venue directions, and{" "}
-
-                    {/* Highlighted action word: REACH */}
-                    <motion.span
-                      className="relative inline-block mx-1"
-                      initial={{ opacity: 0, y: 10 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.5, delay: 1.0 }}
-                    >
-                      <motion.span
-                        className="absolute inset-0 bg-gradient-to-r from-amber-500 to-orange-500 rounded-lg -z-10"
-                        initial={{ scaleX: 0 }}
-                        whileInView={{ scaleX: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.4, delay: 1.1 }}
-                        style={{ originX: 0 }}
-                      />
-                      <span className="relative z-10 px-2 py-1 text-white font-bold">reach</span>
-                    </motion.span>
-                    {" "}loved ones anywhere in the world.
-                  </p>
-
-                  {/* Decorative floating icons */}
-                  <div className="flex justify-center gap-4 mt-6 relative z-10">
-                    {[
-                      { icon: RefreshCw, color: "from-purple-500 to-indigo-500", delay: 1.2 },
-                      { icon: ClipboardList, color: "from-pink-500 to-rose-500", delay: 1.3 },
-                      { icon: MapPin, color: "from-emerald-500 to-teal-500", delay: 1.4 },
-                      { icon: Globe, color: "from-amber-500 to-orange-500", delay: 1.5 },
-                    ].map((item, index) => (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, scale: 0, y: 20 }}
-                        whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{
-                          type: "spring",
-                          stiffness: 200,
-                          delay: item.delay
-                        }}
-                        whileHover={{ scale: 1.15, y: -5 }}
-                        className={`w-12 h-12 rounded-xl bg-gradient-to-br ${item.color} flex items-center justify-center shadow-lg cursor-default`}
-                      >
-                        <item.icon className="h-6 w-6 text-white" />
-                      </motion.div>
-                    ))}
-                  </div>
-                </motion.div>
+                  VibeLink Events solves the limitations of traditional printed invitations and static digital flyers by creating interactive, shareable event pages with one link that lets you <strong className="text-foreground">update</strong> details instantly, <strong className="text-foreground">track</strong> RSVPs, <strong className="text-foreground">share</strong> venue directions, and <strong className="text-foreground">reach</strong> loved ones anywhere in the world.
+                </motion.p>
               </div>
             </motion.div>
           </div>
