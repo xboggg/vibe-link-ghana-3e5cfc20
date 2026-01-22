@@ -324,8 +324,7 @@ export function ChatWidget({ onOpenChange }: ChatWidgetProps) {
                   transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                   className="bg-background/95 backdrop-blur-sm border border-border rounded-full px-3 py-4 shadow-lg"
                 >
-                  <span className="text-sm font-medium text-foreground flex flex-col items-center gap-1" style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}>
-                    <Sparkles className="h-3.5 w-3.5 text-purple-500" />
+                  <span className="text-sm font-medium text-foreground" style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}>
                     Chat with AI
                   </span>
                 </motion.div>
