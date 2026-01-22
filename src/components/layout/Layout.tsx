@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AnimatePresence } from "framer-motion";
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
 import { FloatingWhatsApp } from "@/components/FloatingWhatsApp";
@@ -20,7 +21,9 @@ export function Layout({ children }: LayoutProps) {
       </main>
       <Footer />
       <ChatWidget onOpenChange={setIsChatOpen} />
-      {!isChatOpen && <FloatingWhatsApp />}
+      <AnimatePresence>
+        {!isChatOpen && <FloatingWhatsApp />}
+      </AnimatePresence>
       <ScrollToTop />
     </div>
   );

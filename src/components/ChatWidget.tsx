@@ -305,14 +305,29 @@ export function ChatWidget({ onOpenChange }: ChatWidgetProps) {
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
+            transition={{ type: "spring", stiffness: 200 }}
             className="fixed bottom-24 right-5 z-50 md:bottom-20 md:right-7"
           >
-            {/* Simple AI Chat Button */}
+            {/* AI Chat Button with subtle pulse animation */}
             <motion.button
               onClick={() => handleOpenChange(true)}
               className="h-12 w-12 rounded-full bg-gradient-to-br from-purple-600 to-pink-500 shadow-lg flex items-center justify-center"
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
+              animate={{
+                boxShadow: [
+                  "0 4px 14px 0 rgba(168, 85, 247, 0.35)",
+                  "0 4px 20px 4px rgba(168, 85, 247, 0.5)",
+                  "0 4px 14px 0 rgba(168, 85, 247, 0.35)",
+                ],
+              }}
+              transition={{
+                boxShadow: {
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                },
+              }}
               aria-label="Chat with AI"
             >
               <Bot className="h-6 w-6 text-white" />
