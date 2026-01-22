@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { CTASection } from "@/components/sections/CTASection";
-import { Check, X, Star, MessageCircle, Sparkles, Crown, Percent } from "lucide-react";
+import { Check, X, Star, MessageCircle, Sparkles, Crown, Percent, Gift, Users, Banknote, ArrowRight } from "lucide-react";
 import SEO, { createBreadcrumbSchema } from "@/components/SEO";
 
 const pricingBreadcrumb = createBreadcrumbSchema([
@@ -688,6 +688,131 @@ const Pricing = () => {
                   <Check className="h-4 w-4 text-purple-500" />
                 </div>
                 <span>Money-Back Guarantee</span>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Refer & Earn Section */}
+      <section className="py-14 bg-background">
+        <div className="container mx-auto px-4 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-10"
+          >
+            <span className="inline-block px-4 py-1.5 rounded-full bg-secondary/20 text-secondary text-sm font-medium mb-3">
+              Refer & Earn
+            </span>
+            <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
+              Share the Vibe, Earn Cash
+            </h3>
+            <p className="text-muted-foreground max-w-lg mx-auto">
+              Know someone planning an event? Refer them to VibeLink and earn real money when they order!
+            </p>
+          </motion.div>
+
+          <div className="max-w-4xl mx-auto">
+            {/* How It Works */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10"
+            >
+              {[
+                {
+                  step: "1",
+                  icon: Users,
+                  title: "Get Your Code",
+                  description: "Log into your Customer Portal and grab your unique referral code"
+                },
+                {
+                  step: "2",
+                  icon: MessageCircle,
+                  title: "Share With Friends",
+                  description: "Send your referral link via WhatsApp, Facebook, or any platform"
+                },
+                {
+                  step: "3",
+                  icon: Banknote,
+                  title: "Earn Cash",
+                  description: "When they complete an order, you earn cash sent to your MoMo!"
+                }
+              ].map((item, index) => (
+                <motion.div
+                  key={item.step}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  className="relative text-center p-6 rounded-2xl bg-card border border-border hover:border-secondary/50 hover:shadow-lg transition-all group"
+                >
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-secondary text-secondary-foreground text-sm font-bold shadow-lg">
+                      {item.step}
+                    </span>
+                  </div>
+                  <div className="w-14 h-14 mx-auto rounded-full bg-secondary/10 flex items-center justify-center mb-4 group-hover:bg-secondary/20 transition-colors">
+                    <item.icon className="h-7 w-7 text-secondary" />
+                  </div>
+                  <h4 className="font-bold text-foreground mb-2">{item.title}</h4>
+                  <p className="text-muted-foreground text-sm">{item.description}</p>
+                </motion.div>
+              ))}
+            </motion.div>
+
+            {/* Earnings Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="relative"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-secondary/20 via-primary/20 to-secondary/20 rounded-2xl blur-xl opacity-50" />
+              <div className="relative p-6 md:p-8 rounded-2xl bg-gradient-to-br from-purple-500/10 via-indigo-500/5 to-pink-500/10 border border-secondary/30">
+                <div className="flex items-center justify-center gap-2 mb-6">
+                  <Gift className="h-6 w-6 text-secondary" />
+                  <h4 className="text-xl font-bold text-foreground">Your Earnings Per Referral</h4>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                  {[
+                    { package: "Classic Vibe", reward: "GHS 100", color: "from-blue-500 to-cyan-500" },
+                    { package: "Prestige Vibe", reward: "GHS 200", color: "from-purple-500 to-pink-500" },
+                    { package: "Royal Vibe", reward: "GHS 500", color: "from-amber-500 to-orange-500" }
+                  ].map((tier, index) => (
+                    <motion.div
+                      key={tier.package}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.2 + index * 0.1 }}
+                      whileHover={{ scale: 1.05, y: -5 }}
+                      className="text-center p-4 rounded-xl bg-card border border-border shadow-sm hover:shadow-md transition-all"
+                    >
+                      <p className="text-muted-foreground text-sm mb-1">When they order</p>
+                      <p className="font-semibold text-foreground mb-2">{tier.package}</p>
+                      <div className={`inline-block px-4 py-2 rounded-full bg-gradient-to-r ${tier.color} text-white font-bold text-lg shadow-lg`}>
+                        {tier.reward}
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+
+                <div className="text-center">
+                  <p className="text-muted-foreground text-sm mb-4">
+                    No limits on referrals. The more you share, the more you earn!
+                  </p>
+                  <Button asChild variant="gold" size="lg" className="group">
+                    <Link to="/customer-portal">
+                      Get Your Referral Code
+                      <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                    </Link>
+                  </Button>
+                </div>
               </div>
             </motion.div>
           </div>
