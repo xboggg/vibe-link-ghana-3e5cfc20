@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Sparkles, Instagram, Facebook, Twitter, Phone, Mail, MapPin, Send, Loader2 } from "lucide-react";
+import { Sparkles, Instagram, Facebook, Twitter, Phone, Mail, MapPin, Send, Loader2, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
@@ -224,12 +224,12 @@ export function Footer() {
                 </span>
               </li>
             </ul>
-            {/* Get Started Button */}
+            {/* My Orders Button */}
             <div className="mt-5 flex justify-center md:justify-start">
               <Button asChild size="sm" className="bg-gradient-to-r from-secondary to-primary hover:from-secondary/90 hover:to-primary/90 text-secondary-foreground font-semibold shadow-lg hover:shadow-xl transition-all duration-300 px-6">
-                <Link to="/get-started" className="flex items-center gap-2">
-                  <Sparkles className="h-4 w-4" />
-                  Get Started
+                <Link to="/my-orders" className="flex items-center gap-2">
+                  <User className="h-4 w-4" />
+                  My Orders
                 </Link>
               </Button>
             </div>

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
-import { Search, Package, Clock, CheckCircle, AlertCircle, Loader2, CreditCard } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Search, Package, Clock, CheckCircle, AlertCircle, Loader2, CreditCard, Sparkles, MapPin, Mail, ArrowRight, Shield } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -234,72 +234,218 @@ export default function TrackOrder() {
 
   return (
     <Layout>
-      <SEO 
+      <SEO
         title="Track Your Order"
         description="Check the status of your VibeLink Events digital invitation order. Enter your order ID to see progress updates."
         canonical="/track-order"
         noindex={true}
       />
-      <div className="min-h-screen bg-background py-20">
-        <div className="container mx-auto px-4 max-w-2xl">
+      <div className="min-h-screen relative overflow-hidden">
+        {/* Animated Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-blue-950/20 dark:via-purple-950/20 dark:to-pink-950/20" />
+
+        {/* Floating Decorations */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {/* Animated circles */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-3xl"
+            animate={{
+              x: [0, 50, 0],
+              y: [0, 30, 0],
+              scale: [1, 1.1, 1],
+            }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div
+            className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-3xl"
+            animate={{
+              x: [0, -30, 0],
+              y: [0, -50, 0],
+              scale: [1, 1.2, 1],
+            }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div
+            className="absolute top-1/2 left-1/4 w-64 h-64 bg-gradient-to-br from-cyan-400/15 to-blue-400/15 rounded-full blur-3xl"
+            animate={{
+              x: [0, 40, 0],
+              y: [0, -40, 0],
+            }}
+            transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+          />
+
+          {/* Sparkle decorations */}
+          {[...Array(6)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute"
+              style={{
+                top: `${15 + i * 15}%`,
+                left: `${10 + (i % 3) * 35}%`,
+              }}
+              animate={{
+                y: [0, -20, 0],
+                opacity: [0.3, 0.8, 0.3],
+                rotate: [0, 180, 360],
+              }}
+              transition={{
+                duration: 3 + i * 0.5,
+                repeat: Infinity,
+                delay: i * 0.3,
+              }}
+            >
+              <Sparkles className="h-4 w-4 text-purple-400/40" />
+            </motion.div>
+          ))}
+        </div>
+
+        <div className="container relative z-10 mx-auto px-4 max-w-lg py-16 md:py-24">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-center mb-12"
+            transition={{ duration: 0.6 }}
+            className="text-center mb-8"
           >
-            <h1 className="text-3xl md:text-4xl font-bold font-poppins mb-4">
-              Track Your <span className="text-secondary">Order</span>
-            </h1>
-            <p className="text-muted-foreground">
-              Enter your order ID and email address to check your order status
-            </p>
+            {/* Animated Icon */}
+            <motion.div
+              className="mx-auto mb-6 relative"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
+            >
+              <div className="w-24 h-24 mx-auto bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-3xl rotate-3 shadow-2xl shadow-purple-500/30 flex items-center justify-center">
+                <motion.div
+                  animate={{ rotate: [-3, 3, -3] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  <MapPin className="h-12 w-12 text-white" />
+                </motion.div>
+              </div>
+              <motion.div
+                className="absolute -top-2 -right-2"
+                animate={{ scale: [1, 1.2, 1], rotate: [0, 10, 0] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                <Sparkles className="h-6 w-6 text-yellow-500" />
+              </motion.div>
+            </motion.div>
+
+            <motion.h1
+              className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 bg-clip-text text-transparent mb-3"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+            >
+              Track Your Order
+            </motion.h1>
+            <motion.p
+              className="text-muted-foreground text-lg"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+            >
+              Enter your details to check order status
+            </motion.p>
           </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
+            transition={{ delay: 0.5 }}
           >
-            <Card className="mb-8">
-              <CardContent className="pt-6">
+            <Card className="backdrop-blur-xl bg-white/80 dark:bg-gray-900/80 border-white/50 shadow-2xl shadow-purple-500/10 mb-8">
+              <CardContent className="p-8">
+                <div className="text-center mb-6">
+                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-100 dark:bg-purple-900/30 rounded-full text-purple-700 dark:text-purple-300 text-sm font-medium mb-4">
+                    <Search className="h-4 w-4" />
+                    Order Lookup
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Enter your order ID and email to view status
+                  </p>
+                </div>
+
                 <form onSubmit={handleSearch} className="space-y-4">
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <Input
                       type="text"
                       placeholder="Enter your order ID (e.g., a1b2c3d4-...)"
                       value={orderId}
                       onChange={(e) => setOrderId(e.target.value)}
-                      className="pl-10"
+                      className="pl-12 h-14 text-lg bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 focus:border-purple-500 rounded-xl"
                     />
                   </div>
-                  <Input
-                    type="email"
-                    placeholder="Enter your email address"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                  <Button type="submit" disabled={isLoading} className="w-full">
+                  <div className="relative">
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Input
+                      type="email"
+                      placeholder="Enter your email address"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="pl-12 h-14 text-lg bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 focus:border-purple-500 rounded-xl"
+                    />
+                  </div>
+                  <Button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 hover:from-blue-700 hover:via-purple-700 hover:to-pink-600 rounded-xl shadow-lg shadow-purple-500/30 transition-all hover:shadow-xl hover:shadow-purple-500/40 hover:scale-[1.02]"
+                  >
                     {isLoading ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <Loader2 className="h-5 w-5 animate-spin" />
                     ) : (
-                      "Search"
+                      <>
+                        Search Order
+                        <ArrowRight className="ml-2 h-5 w-5" />
+                      </>
                     )}
                   </Button>
                 </form>
+
+                <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground mt-4">
+                  <Shield className="h-3 w-3" />
+                  <span>Your data is secure and encrypted</span>
+                </div>
               </CardContent>
             </Card>
           </motion.div>
 
+          {/* Features */}
+          {!searched && (
+            <motion.div
+              className="grid grid-cols-3 gap-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7 }}
+            >
+              {[
+                { icon: Package, label: "Real-time Status", color: "text-blue-500" },
+                { icon: Clock, label: "Progress Updates", color: "text-purple-500" },
+                { icon: CreditCard, label: "Pay Balance", color: "text-pink-500" },
+              ].map((feature) => (
+                <motion.div
+                  key={feature.label}
+                  className="text-center p-4 rounded-2xl bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm"
+                  whileHover={{ scale: 1.05, y: -5 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <feature.icon className={`h-6 w-6 mx-auto mb-2 ${feature.color}`} />
+                  <p className="text-xs font-medium text-muted-foreground">{feature.label}</p>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+
+          <AnimatePresence>
           {searched && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.5 }}
             >
               {order ? (
-                <Card>
+                <Card className="backdrop-blur-xl bg-white/90 dark:bg-gray-900/90 border-white/50 shadow-2xl shadow-purple-500/10">
                   <CardHeader>
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-xl">Order Details</CardTitle>
@@ -452,9 +598,17 @@ export default function TrackOrder() {
                   </CardContent>
                 </Card>
               ) : (
-                <Card>
+                <Card className="backdrop-blur-xl bg-white/90 dark:bg-gray-900/90 border-white/50 shadow-2xl">
                   <CardContent className="py-12 text-center">
-                    <AlertCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ type: "spring" }}
+                    >
+                      <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-orange-400 to-red-500 rounded-2xl flex items-center justify-center shadow-lg shadow-orange-500/30">
+                        <AlertCircle className="h-8 w-8 text-white" />
+                      </div>
+                    </motion.div>
                     <h3 className="text-lg font-medium mb-2">No Order Found</h3>
                     <p className="text-muted-foreground">
                       We couldn't find an order with that ID or email. Please check and try again.
@@ -464,6 +618,7 @@ export default function TrackOrder() {
               )}
             </motion.div>
           )}
+          </AnimatePresence>
         </div>
       </div>
     </Layout>
