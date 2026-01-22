@@ -1,6 +1,15 @@
 import React, { useState, useRef, useEffect, ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Send, Package, Phone, DollarSign, Trash2, Copy, Check, Volume2, VolumeX, SmilePlus, Search, Reply, ChevronUp, Pin, PinOff, Sparkles, Bot } from "lucide-react";
+import { X, Send, Package, Phone, Trash2, Copy, Check, Volume2, VolumeX, SmilePlus, Search, Reply, ChevronUp, Pin, PinOff, Sparkles, Bot } from "lucide-react";
+
+// Ghana Cedis icon
+function CedisIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+    </svg>
+  );
+}
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -292,7 +301,7 @@ export function ChatWidget({ onOpenChange }: ChatWidgetProps) {
 
   const quickActions = [
     { label: "Track Order", icon: Package, action: () => setShowTrackInput(true) },
-    { label: "View Pricing", icon: DollarSign, action: () => sendMessage("What are your packages and pricing?") },
+    { label: "View Pricing", icon: CedisIcon, action: () => sendMessage("What are your packages and pricing?") },
     { label: "Book Consultation", icon: Phone, action: () => sendMessage("I'd like to book a consultation") },
   ];
 
