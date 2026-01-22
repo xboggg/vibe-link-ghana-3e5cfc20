@@ -387,7 +387,7 @@ const Services = () => {
               Everything Your Invitation Needs
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Powerful features packed into every VibeLink digital invitation
+              Features available in our digital invitations
             </p>
           </motion.div>
 
