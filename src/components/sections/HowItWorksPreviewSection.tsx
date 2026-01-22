@@ -41,7 +41,7 @@ const steps = [
     number: "02",
     icon: Sparkles,
     title: "We Create Your Invitation",
-    description: "Our team designs your beautiful digital invitation in 3-5 days.",
+    description: "We create your beautiful invitation in 5-10 days. Express available!",
   },
   {
     number: "03",
@@ -115,7 +115,7 @@ export function HowItWorksPreviewSection() {
             >
               {/* Connector Line */}
               {index < steps.length - 1 && (
-                <div className="hidden md:block absolute top-12 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-primary/30 to-secondary/30" />
+                <div className="hidden md:block absolute top-12 left-[55%] w-[90%] h-[2px] bg-gradient-to-r from-primary/50 via-secondary/50 to-primary/50 rounded-full" />
               )}
 
               {/* Icon */}
