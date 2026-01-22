@@ -305,33 +305,35 @@ export function ChatWidget({ onOpenChange }: ChatWidgetProps) {
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
-            className="fixed bottom-44 right-4 z-50 md:bottom-28 md:right-6"
+            className="fixed bottom-24 right-4 z-50 md:bottom-6 md:right-6"
           >
-            {/* Floating Label */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.5 }}
-              className="absolute right-full mr-3 top-1/2 -translate-y-1/2 whitespace-nowrap"
-            >
+            {/* Wrapper for vertical stacking */}
+            <div className="flex flex-col items-center">
+              {/* Floating Label - positioned above the button */}
               <motion.div
-                animate={{
-                  x: [0, -5, 0],
-                  opacity: [0.9, 1, 0.9]
-                }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                className="bg-background/95 backdrop-blur-sm border border-border rounded-full px-4 py-2 shadow-lg"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="mb-2 whitespace-nowrap"
               >
-                <span className="text-sm font-medium text-foreground flex items-center gap-2">
-                  <Sparkles className="h-3.5 w-3.5 text-purple-500" />
-                  Chat with AI
-                </span>
+                <motion.div
+                  animate={{
+                    y: [0, -3, 0],
+                    opacity: [0.9, 1, 0.9]
+                  }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                  className="bg-background/95 backdrop-blur-sm border border-border rounded-full px-4 py-2 shadow-lg"
+                >
+                  <span className="text-sm font-medium text-foreground flex items-center gap-2">
+                    <Sparkles className="h-3.5 w-3.5 text-purple-500" />
+                    Chat with AI
+                  </span>
+                </motion.div>
               </motion.div>
-            </motion.div>
 
-            {/* Main Button Container */}
-            <div className="relative">
-              {/* Outer Glow Ring */}
+              {/* Button Container */}
+              <div className="relative">
+                {/* Outer Glow Ring */}
               <motion.div
                 className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500"
                 animate={{
@@ -480,6 +482,7 @@ export function ChatWidget({ onOpenChange }: ChatWidgetProps) {
                   AI
                 </motion.div>
               </motion.button>
+              </div>
             </div>
           </motion.div>
         )}
