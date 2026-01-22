@@ -115,7 +115,7 @@ export function HowItWorksPreviewSection() {
             >
               {/* Connector Line */}
               {index < steps.length - 1 && (
-                <div className="hidden md:block absolute top-12 right-0 translate-x-1/2 w-full h-[2px] bg-gradient-to-r from-primary/40 via-secondary/40 to-primary/40" />
+                <div className="hidden md:block absolute top-12 left-[calc(50%+3rem)] w-[calc(100%-6rem)] h-[2px] bg-gradient-to-r from-primary/40 via-secondary/40 to-primary/40" />
               )}
 
               {/* Icon */}
