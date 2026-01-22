@@ -26,11 +26,15 @@ const steps = [
 
 interface OrderFormWizardProps {
   onComplete?: (data: OrderFormData) => void;
+  initialReferralCode?: string;
 }
 
-export const OrderFormWizard = ({ onComplete }: OrderFormWizardProps) => {
+export const OrderFormWizard = ({ onComplete, initialReferralCode = "" }: OrderFormWizardProps) => {
   const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState<OrderFormData>(initialFormData);
+  const [formData, setFormData] = useState<OrderFormData>({
+    ...initialFormData,
+    referralCode: initialReferralCode,
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const updateFormData = (updates: Partial<OrderFormData>) => {
@@ -248,6 +252,84 @@ ${formData.designNotes ? `🎯 *Design Notes:* ${formData.designNotes}` : ""}`;
     }
   };
 
+  const createReferralRecord = async (
+    orderId: string,
+    referralCode: string,
+    referredEmail: string,
+    packageName: string
+  ) => {
+    try {
+      // First, find the referrer by code
+      const { data: referralCodeData, error: codeError } = await supabase
+        .from("referral_codes")
+        .select("owner_email")
+        .eq("code", referralCode.toUpperCase())
+        .eq("is_active", true)
+        .single();
+
+      if (codeError || !referralCodeData) {
+        console.error("Invalid or inactive referral code:", referralCode);
+        return;
+      }
+
+      // Calculate reward based on package
+      const rewardAmounts: Record<string, number> = {
+        "Classic Vibe": 100,
+        "Prestige Vibe": 200,
+        "Royal Vibe": 500,
+      };
+      const rewardAmount = rewardAmounts[packageName] || 0;
+
+      // Create the referral record
+      const { error: referralError } = await supabase.from("referrals").insert({
+        referrer_email: referralCodeData.owner_email,
+        referred_email: referredEmail,
+        referral_code: referralCode.toUpperCase(),
+        order_id: orderId,
+        status: "pending",
+        reward_amount: rewardAmount,
+        package_name: packageName,
+      });
+
+      if (referralError) {
+        console.error("Error creating referral record:", referralError);
+        return;
+      }
+
+      // Update the referral code stats
+      const { error: updateError } = await supabase
+        .from("referral_codes")
+        .update({
+          total_referrals: supabase.rpc("increment_field", { x: 1 }),
+          pending_referrals: supabase.rpc("increment_field", { x: 1 }),
+        })
+        .eq("code", referralCode.toUpperCase());
+
+      if (updateError) {
+        // Try alternative update method
+        const { data: currentStats } = await supabase
+          .from("referral_codes")
+          .select("total_referrals, pending_referrals")
+          .eq("code", referralCode.toUpperCase())
+          .single();
+
+        if (currentStats) {
+          await supabase
+            .from("referral_codes")
+            .update({
+              total_referrals: (currentStats.total_referrals || 0) + 1,
+              pending_referrals: (currentStats.pending_referrals || 0) + 1,
+            })
+            .eq("code", referralCode.toUpperCase());
+        }
+      }
+
+      console.log("Referral record created successfully");
+    } catch (error) {
+      console.error("Failed to create referral record:", error);
+    }
+  };
+
   const handleSubmit = async () => {
     setIsSubmitting(true);
     
@@ -280,8 +362,8 @@ ${formData.designNotes ? `🎯 *Design Notes:* ${formData.designNotes}` : ""}`;
         package_price: selectedPkg?.price || 0,
         add_ons: selectedAddOnsList,
         delivery_type: formData.deliveryUrgency,
-        preferred_delivery_date: formData.preferredDeliveryDate 
-          ? formData.preferredDeliveryDate.toISOString().split("T")[0] 
+        preferred_delivery_date: formData.preferredDeliveryDate
+          ? formData.preferredDeliveryDate.toISOString().split("T")[0]
           : null,
         special_requests: formData.designNotes || null,
         client_name: formData.fullName,
@@ -290,6 +372,7 @@ ${formData.designNotes ? `🎯 *Design Notes:* ${formData.designNotes}` : ""}`;
         client_whatsapp: formData.whatsapp || null,
         total_price: total,
         reference_images: referenceImageUrls.length > 0 ? referenceImageUrls : null,
+        referral_code: formData.referralCode || null,
       }).select("id").single();
 
       if (error) {
@@ -301,7 +384,12 @@ ${formData.designNotes ? `🎯 *Design Notes:* ${formData.designNotes}` : ""}`;
       if (data?.id) {
         sendOrderConfirmationEmail(data.id, total, selectedPkg, selectedAddOnsList);
         sendAdminNotification(data.id, total, selectedPkg, selectedAddOnsList);
-        
+
+        // Create referral record if a referral code was used
+        if (formData.referralCode) {
+          await createReferralRecord(data.id, formData.referralCode, formData.email, selectedPkg?.name || "");
+        }
+
         // Store WhatsApp URL, order ID, and details for thank you page
         const whatsappUrl = getWhatsAppUrl(data.id, total);
         sessionStorage.setItem("vibelink_whatsapp_url", whatsappUrl);

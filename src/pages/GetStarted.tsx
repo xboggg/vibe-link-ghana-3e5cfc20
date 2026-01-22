@@ -1,13 +1,16 @@
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { OrderFormWizard } from "@/components/order-form/OrderFormWizard";
 import { OrderFormData } from "@/data/orderFormData";
 import { toast } from "sonner";
 import SEO from "@/components/SEO";
+import { Gift } from "lucide-react";
 
 const GetStarted = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const referralCode = searchParams.get("ref") || "";
 
   const handleFormComplete = (data: OrderFormData) => {
     toast.success("Order submitted successfully! We'll contact you within 2 hours.");
@@ -45,6 +48,19 @@ const GetStarted = () => {
               Fill out the form below with your event details and style preferences.
               We'll get back to you within 2 hours with a custom quote.
             </p>
+            {referralCode && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.3 }}
+                className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/20 border border-secondary/30"
+              >
+                <Gift className="h-4 w-4 text-secondary" />
+                <span className="text-secondary text-sm font-medium">
+                  Referral code applied: <strong>{referralCode}</strong>
+                </span>
+              </motion.div>
+            )}
           </motion.div>
         </div>
       </section>
@@ -52,7 +68,7 @@ const GetStarted = () => {
       {/* Form Section */}
       <section className="py-12 lg:py-20 bg-background">
         <div className="container mx-auto px-4 lg:px-8">
-          <OrderFormWizard onComplete={handleFormComplete} />
+          <OrderFormWizard onComplete={handleFormComplete} initialReferralCode={referralCode} />
         </div>
       </section>
     </Layout>

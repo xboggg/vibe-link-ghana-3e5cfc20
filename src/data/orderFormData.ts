@@ -203,7 +203,7 @@ export const stylePreferences: StylePreference[] = [
 export interface OrderFormData {
   // Step 1: Event Type
   eventType: string;
-  
+
   // Step 2: Event Details
   eventTitle: string;
   eventDate: Date | null;
@@ -212,30 +212,33 @@ export interface OrderFormData {
   eventAddress: string;
   celebrantNames: string;
   additionalInfo: string;
-  
+
   // Step 3: Style & Colors
   colorPalette: string;
   customColors: string[];
   stylePreference: string;
   referenceImages: File[];
   designNotes: string;
-  
+
   // Step 4: Package Selection
   selectedPackage: string;
-  
+
   // Step 5: Add-ons
   selectedAddOns: string[];
-  
+
   // Step 6: Timeline
   deliveryUrgency: "standard" | "rush";
   preferredDeliveryDate: Date | null;
-  
+
   // Step 7: Contact
   fullName: string;
   email: string;
   phone: string;
   whatsapp: string;
   hearAboutUs: string;
+
+  // Referral
+  referralCode: string;
 }
 
 export const initialFormData: OrderFormData = {
@@ -261,4 +264,5 @@ export const initialFormData: OrderFormData = {
   phone: "",
   whatsapp: "",
   hearAboutUs: "",
+  referralCode: "",
 };
