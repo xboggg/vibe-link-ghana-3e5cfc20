@@ -466,10 +466,65 @@ const About = () => {
                 <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-4">
                   What if an invitation could do <span className="text-primary">more</span>?
                 </h3>
-                <p className="text-muted-foreground text-base sm:text-lg mb-4">
+                <p className="text-muted-foreground text-base sm:text-lg mb-6">
                   VibeLink Events was born from this question. We don't just design invitations -
                   we create <strong>living, breathing event experiences</strong>. One simple link that does everything.
                 </p>
+
+                {/* Animated Solution Statement */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                  className="mt-8 p-6 sm:p-8 rounded-2xl bg-gradient-to-br from-purple-500/10 via-indigo-500/5 to-pink-500/10 border border-purple-500/20 relative overflow-hidden"
+                >
+                  {/* Background shimmer */}
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12"
+                    animate={{ x: ["-200%", "200%"] }}
+                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", repeatDelay: 2 }}
+                  />
+
+                  <p className="text-foreground text-base sm:text-lg leading-relaxed relative z-10">
+                    VibeLink Events solves the limitations of traditional printed invitations and static digital flyers by creating{" "}
+                    <span className="font-semibold text-primary">interactive, shareable event pages</span> with one link that lets you:
+                  </p>
+
+                  {/* Animated Feature List */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-6 relative z-10">
+                    {[
+                      { icon: RefreshCw, text: "Update details instantly", delay: 0.3 },
+                      { icon: ClipboardList, text: "Track RSVPs in real-time", delay: 0.4 },
+                      { icon: MapPin, text: "Provide venue directions", delay: 0.5 },
+                      { icon: Globe, text: "Reach loved ones worldwide", delay: 0.6 },
+                    ].map((feature, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, x: -20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5, delay: feature.delay }}
+                        whileHover={{ scale: 1.02, x: 5 }}
+                        className="flex items-center gap-3 p-3 rounded-xl bg-white/50 dark:bg-white/5 backdrop-blur-sm border border-white/30 dark:border-white/10 shadow-sm"
+                      >
+                        <motion.div
+                          className="w-10 h-10 rounded-lg bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center flex-shrink-0 shadow-lg shadow-green-500/20"
+                          initial={{ scale: 0, rotate: -180 }}
+                          whileInView={{ scale: 1, rotate: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ type: "spring", stiffness: 200, delay: feature.delay + 0.1 }}
+                        >
+                          <CheckCircle2 className="h-5 w-5 text-white" />
+                        </motion.div>
+                        <div className="flex items-center gap-2">
+                          <feature.icon className="h-4 w-4 text-primary" />
+                          <span className="font-medium text-foreground text-sm sm:text-base">{feature.text}</span>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
               </div>
             </motion.div>
           </div>
