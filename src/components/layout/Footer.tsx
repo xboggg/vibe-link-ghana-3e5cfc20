@@ -133,8 +133,8 @@ export function Footer() {
       <div className="container mx-auto px-4 lg:px-8 py-12 lg:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Brand Column */}
-          <div className="lg:col-span-1">
-            <Link to="/" className="flex items-center gap-2 mb-4">
+          <div className="lg:col-span-1 text-center md:text-left">
+            <Link to="/" className="flex items-center justify-center md:justify-start gap-2 mb-4">
               <Sparkles className="h-6 w-6 text-secondary" />
               <span className="text-xl font-bold font-poppins">
                 Vibe<span className="text-secondary">Link</span> <span className="text-primary-foreground/80 font-normal text-sm">Events</span>
@@ -143,13 +143,13 @@ export function Footer() {
             <p className="text-primary-foreground/70 text-sm leading-relaxed mb-4">
               Your Event. Our Vibe. Transform your Ghanaian celebrations into stunning, shareable digital invitations.
             </p>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center md:justify-start gap-3">
               {socialLinks.map(social => <a key={social.name} href={social.href} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-primary-foreground/10 hover:bg-secondary hover:text-secondary-foreground transition-all duration-300" aria-label={social.name}>
                   <social.icon className="h-4 w-4" />
                 </a>)}
             </div>
             {/* Newsletter Form - directly under social icons */}
-            <form onSubmit={handleNewsletterSubmit} className="flex gap-2 mt-4">
+            <form onSubmit={handleNewsletterSubmit} className="flex justify-center md:justify-start gap-2 mt-4">
               <Input type="email" placeholder="Enter email for Newsletter" value={email} onChange={e => setEmail(e.target.value)} className="h-10 bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 text-sm min-w-[160px]" disabled={isSubmitting} />
               <Button type="submit" size="sm" disabled={isSubmitting} className="h-10 bg-secondary/20 hover:bg-secondary text-secondary hover:text-secondary-foreground border-0">
                 {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
@@ -158,7 +158,7 @@ export function Footer() {
           </div>
 
           {/* Quick Links */}
-          <div className="mx-0">
+          <div className="mx-0 text-center md:text-left">
             <h4 className="text-sm font-semibold uppercase tracking-wider text-secondary mb-4">
               Quick Links
             </h4>
@@ -172,7 +172,7 @@ export function Footer() {
           </div>
 
           {/* Event Types - Clickable */}
-          <div className="mx-0">
+          <div className="mx-0 text-center md:text-left">
             <h4 className="text-sm font-semibold uppercase tracking-wider text-secondary mb-4">
               Event Types
             </h4>
@@ -186,32 +186,32 @@ export function Footer() {
           </div>
 
           {/* Contact */}
-          <div>
+          <div className="text-center md:text-left">
             <h4 className="text-sm font-semibold uppercase tracking-wider text-secondary mb-4">
               Contact Us
             </h4>
             <ul className="space-y-3">
-              <li className="flex items-center gap-3 text-sm">
+              <li className="flex items-center justify-center md:justify-start gap-3 text-sm">
                 <Phone className="h-4 w-4 text-secondary" />
                 <a href="https://wa.me/4915757178561" className="text-primary-foreground/70 hover:text-secondary transition-colors">
                   +233 24 581 7973
                 </a>
               </li>
-              <li className="flex items-center gap-3 text-sm">
+              <li className="flex items-center justify-center md:justify-start gap-3 text-sm">
                 <Mail className="h-4 w-4 text-secondary" />
                 <a href="mailto:info@vibelinkgh.com" className="text-primary-foreground/70 hover:text-secondary transition-colors">
                   info@vibelinkgh.com
                 </a>
               </li>
-              <li className="flex items-start gap-3 text-sm">
-                <MapPin className="h-4 w-4 text-secondary mt-0.5" />
+              <li className="flex items-center justify-center md:justify-start gap-3 text-sm">
+                <MapPin className="h-4 w-4 text-secondary" />
                 <span className="text-primary-foreground/70">
                   Accra, Ghana
                 </span>
               </li>
             </ul>
             {/* Get Started Button */}
-            <div className="mt-5">
+            <div className="mt-5 flex justify-center md:justify-start">
               <Button asChild size="sm" className="bg-gradient-to-r from-secondary to-primary hover:from-secondary/90 hover:to-primary/90 text-secondary-foreground font-semibold shadow-lg hover:shadow-xl transition-all duration-300 px-6">
                 <Link to="/get-started" className="flex items-center gap-2">
                   <Sparkles className="h-4 w-4" />
@@ -226,14 +226,14 @@ export function Footer() {
       {/* Bottom Bar */}
       <div className="border-t border-primary-foreground/10">
         <div className="container mx-auto px-4 lg:px-8 py-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
             {/* Left - Copyright */}
             <div className="text-primary-foreground/60 text-sm">
               © {new Date().getFullYear()} VibeLink Events
             </div>
-            
+
             {/* Right - Policy links and Made in Ghana */}
-            <div className="flex flex-wrap items-center justify-end gap-2 text-primary-foreground/60 text-sm mr-16 md:mr-20">
+            <div className="flex flex-wrap items-center justify-center md:justify-end gap-2 text-primary-foreground/60 text-sm mr-16 md:mr-20">
               {policyLinks.map((link, index) => <span key={link.name} className="flex items-center gap-2">
                   <Link to={link.href} className="hover:text-secondary transition-colors">
                     {link.name}
