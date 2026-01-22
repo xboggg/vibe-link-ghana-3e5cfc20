@@ -305,7 +305,7 @@ export function ChatWidget({ onOpenChange }: ChatWidgetProps) {
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
-            className="fixed bottom-[88px] right-4 z-50 md:bottom-6 md:right-6"
+            className="fixed bottom-[72px] right-5 z-50 md:bottom-6 md:right-7"
           >
             {/* Wrapper for vertical stacking */}
             <div className="flex flex-col items-center">
@@ -314,18 +314,18 @@ export function ChatWidget({ onOpenChange }: ChatWidgetProps) {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
-                className="mb-2"
+                className="mb-1"
               >
                 <motion.div
                   animate={{
-                    y: [0, -3, 0],
+                    y: [0, -2, 0],
                     opacity: [0.9, 1, 0.9]
                   }}
                   transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                  className="bg-background/95 backdrop-blur-sm border border-border rounded-full px-3 py-4 shadow-lg"
+                  className="bg-background/95 backdrop-blur-sm border border-border rounded-full px-2 py-2 shadow-md"
                 >
-                  <span className="text-sm font-medium text-foreground" style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}>
-                    Chat with AI
+                  <span className="text-xs font-medium text-foreground" style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}>
+                    AI Chat
                   </span>
                 </motion.div>
               </motion.div>
@@ -379,7 +379,7 @@ export function ChatWidget({ onOpenChange }: ChatWidgetProps) {
               {/* Main Button */}
               <motion.button
                 onClick={() => handleOpenChange(true)}
-                className="relative h-16 w-16 rounded-full bg-gradient-to-br from-purple-600 via-purple-500 to-pink-500 shadow-2xl flex items-center justify-center overflow-hidden group"
+                className="relative h-12 w-12 rounded-full bg-gradient-to-br from-purple-600 via-purple-500 to-pink-500 shadow-lg flex items-center justify-center overflow-hidden group"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
                 animate={{
@@ -463,7 +463,7 @@ export function ChatWidget({ onOpenChange }: ChatWidgetProps) {
                   }}
                   className="relative z-10"
                 >
-                  <Bot className="h-7 w-7 text-white drop-shadow-lg" />
+                  <Bot className="h-6 w-6 text-white drop-shadow-lg" />
                 </motion.div>
 
                 {/* AI Badge */}
