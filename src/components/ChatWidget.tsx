@@ -308,29 +308,41 @@ export function ChatWidget({ onOpenChange }: ChatWidgetProps) {
             transition={{ type: "spring", stiffness: 200 }}
             className="fixed bottom-24 right-5 z-50 md:bottom-20 md:right-7"
           >
-            {/* AI Chat Button with subtle pulse animation */}
+            {/* AI Chat Button with pulsating effect */}
             <motion.button
               onClick={() => handleOpenChange(true)}
-              className="h-12 w-12 rounded-full bg-gradient-to-br from-purple-600 to-pink-500 shadow-lg flex items-center justify-center"
+              className="relative h-12 w-12 rounded-full bg-gradient-to-br from-purple-600 to-pink-500 shadow-lg flex items-center justify-center"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
-              animate={{
-                boxShadow: [
-                  "0 4px 14px 0 rgba(168, 85, 247, 0.35)",
-                  "0 4px 20px 4px rgba(168, 85, 247, 0.5)",
-                  "0 4px 14px 0 rgba(168, 85, 247, 0.35)",
-                ],
-              }}
-              transition={{
-                boxShadow: {
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                },
-              }}
               aria-label="Chat with AI"
             >
-              <Bot className="h-6 w-6 text-white" />
+              {/* Pulsating ring */}
+              <motion.span
+                className="absolute inset-0 rounded-full bg-purple-500"
+                animate={{
+                  scale: [1, 1.4, 1.4],
+                  opacity: [0.5, 0, 0],
+                }}
+                transition={{
+                  duration: 1.5,
+                  repeat: Infinity,
+                  ease: "easeOut",
+                }}
+              />
+              <motion.span
+                className="absolute inset-0 rounded-full bg-purple-500"
+                animate={{
+                  scale: [1, 1.4, 1.4],
+                  opacity: [0.5, 0, 0],
+                }}
+                transition={{
+                  duration: 1.5,
+                  repeat: Infinity,
+                  ease: "easeOut",
+                  delay: 0.5,
+                }}
+              />
+              <Bot className="h-6 w-6 text-white relative z-10" />
             </motion.button>
           </motion.div>
         )}

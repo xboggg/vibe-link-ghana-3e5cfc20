@@ -15,11 +15,11 @@ export function FloatingWhatsApp() {
       href="https://wa.me/4915757178561"
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-6 right-5 z-40 flex items-center justify-center h-12 w-12 rounded-full bg-[#25D366] text-white shadow-lg hover:shadow-xl transition-all hover:scale-105 md:right-7"
-      initial={{ scale: 0, opacity: 0 }}
+      className="fixed bottom-6 right-5 z-40 flex items-center justify-center h-12 w-12 rounded-full bg-[#25D366] text-white shadow-lg hover:shadow-xl md:right-7"
+      initial={{ scale: 1, opacity: 1 }}
       animate={{ scale: 1, opacity: 1 }}
       exit={{ scale: 0, opacity: 0 }}
-      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      transition={{ duration: 0.15 }}
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.95 }}
       aria-label="Chat on WhatsApp"
