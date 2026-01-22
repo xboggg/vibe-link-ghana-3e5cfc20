@@ -102,23 +102,10 @@ export function HowItWorksPreviewSection() {
         {/* Steps */}
         <div className="relative mb-12">
           {/* Connector Lines - touching circle edges */}
-          <div className="hidden md:block absolute top-[46px] left-0 right-0 z-0">
-            {/* Line 1→2 */}
-            <div
-              className="absolute h-[3px] bg-gradient-to-r from-secondary/70 to-secondary/70"
-              style={{
-                left: 'calc(16.67% + 50px)',
-                width: 'calc(33.33% - 100px)',
-              }}
-            />
-            {/* Line 2→3 */}
-            <div
-              className="absolute h-[3px] bg-gradient-to-r from-secondary/70 to-secondary/70"
-              style={{
-                left: 'calc(50% + 50px)',
-                width: 'calc(33.33% - 100px)',
-              }}
-            />
+          <div className="hidden md:flex absolute top-[46px] left-0 right-0 z-0 justify-between px-[calc(16.67%+48px)]">
+            <div className="flex-1 h-[3px] bg-secondary/70 mx-1" />
+            <div className="w-[96px]" /> {/* spacer for middle circle */}
+            <div className="flex-1 h-[3px] bg-secondary/70 mx-1" />
           </div>
 
           <motion.div
