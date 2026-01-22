@@ -309,13 +309,13 @@ const About = () => {
               </div>
               <div className="hidden md:flex items-center justify-center">
                 <motion.div
-                  className="w-32 h-32 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center shadow-lg"
+                  className="w-32 h-32 rounded-full bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center shadow-lg"
                   animate={{
                     y: [0, -10, 0],
                     boxShadow: [
-                      "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
-                      "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
-                      "0 10px 25px -5px rgba(0, 0, 0, 0.1)"
+                      "0 10px 25px -5px rgba(56, 189, 248, 0.3)",
+                      "0 25px 50px -12px rgba(56, 189, 248, 0.5)",
+                      "0 10px 25px -5px rgba(56, 189, 248, 0.3)"
                     ],
                   }}
                   transition={{
@@ -329,7 +329,7 @@ const About = () => {
                     animate={{ rotate: [0, -5, 5, 0] }}
                     transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                   >
-                    <FileText className="h-16 w-16 text-gray-500" />
+                    <FileText className="h-16 w-16 text-white" />
                   </motion.div>
                 </motion.div>
               </div>
