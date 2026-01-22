@@ -305,7 +305,7 @@ export function ChatWidget({ onOpenChange }: ChatWidgetProps) {
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
-            className="fixed bottom-24 right-4 z-50 sm:bottom-28 sm:right-6"
+            className="fixed bottom-44 right-4 z-50 md:bottom-28 md:right-6"
           >
             {/* Floating Label */}
             <motion.div
