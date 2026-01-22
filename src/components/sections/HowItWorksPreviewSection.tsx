@@ -100,23 +100,26 @@ export function HowItWorksPreviewSection() {
         </motion.div>
 
         {/* Steps */}
-        <motion.div 
-          ref={stepsRef}
-          className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 mb-12"
-          variants={containerVariants}
-          initial="hidden"
-          animate={isStepsInView ? "visible" : "hidden"}
-        >
-          {steps.map((step, index) => (
-            <motion.div
-              key={step.number}
-              variants={stepVariants}
-              className="relative text-center"
-            >
-              {/* Connector Line */}
-              {index < steps.length - 1 && (
-                <div className="hidden md:block absolute top-12 left-1/2 w-full h-[2px] bg-gradient-to-r from-primary/40 via-secondary/40 to-primary/40" />
-              )}
+        <div className="relative mb-12">
+          {/* Connector Lines - positioned above the grid */}
+          <div className="hidden md:flex absolute top-12 left-0 right-0 z-0 px-[16.67%]">
+            <div className="flex-1 h-[2px] bg-gradient-to-r from-primary/40 via-secondary/40 to-primary/40 mx-8 lg:mx-12" />
+            <div className="flex-1 h-[2px] bg-gradient-to-r from-primary/40 via-secondary/40 to-primary/40 mx-8 lg:mx-12" />
+          </div>
+
+          <motion.div
+            ref={stepsRef}
+            className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 relative z-10"
+            variants={containerVariants}
+            initial="hidden"
+            animate={isStepsInView ? "visible" : "hidden"}
+          >
+            {steps.map((step, index) => (
+              <motion.div
+                key={step.number}
+                variants={stepVariants}
+                className="relative text-center"
+              >
 
               {/* Icon */}
               <div className="relative inline-flex items-center justify-center mb-6">
@@ -192,7 +195,8 @@ export function HowItWorksPreviewSection() {
               </p>
             </motion.div>
           ))}
-        </motion.div>
+          </motion.div>
+        </div>
 
         {/* CTA */}
         <motion.div
