@@ -20,8 +20,18 @@ type MessageWithTime = ChatMessage & {
 let messageIdCounter = 0;
 const generateMessageId = () => `msg_${Date.now()}_${++messageIdCounter}`;
 
-export function ChatWidget() {
+interface ChatWidgetProps {
+  onOpenChange?: (isOpen: boolean) => void;
+}
+
+export function ChatWidget({ onOpenChange }: ChatWidgetProps) {
   const [isOpen, setIsOpen] = useState(false);
+
+  // Notify parent when open state changes
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
+    onOpenChange?.(open);
+  };
   const [input, setInput] = useState("");
   const [showTrackInput, setShowTrackInput] = useState(false);
   const [trackOrderId, setTrackOrderId] = useState("");
@@ -367,7 +377,7 @@ export function ChatWidget() {
 
               {/* Main Button */}
               <motion.button
-                onClick={() => setIsOpen(true)}
+                onClick={() => handleOpenChange(true)}
                 className="relative h-16 w-16 rounded-full bg-gradient-to-br from-purple-600 via-purple-500 to-pink-500 shadow-2xl flex items-center justify-center overflow-hidden group"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
@@ -584,7 +594,7 @@ export function ChatWidget() {
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => setIsOpen(false)}
+                    onClick={() => handleOpenChange(false)}
                     className="h-8 w-8 text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/20"
                   >
                     <X className="h-5 w-5" />

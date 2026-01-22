@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
 import { FloatingWhatsApp } from "@/components/FloatingWhatsApp";
@@ -9,6 +10,8 @@ interface LayoutProps {
 }
 
 export function Layout({ children }: LayoutProps) {
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -16,8 +19,8 @@ export function Layout({ children }: LayoutProps) {
         {children}
       </main>
       <Footer />
-      <ChatWidget />
-      <FloatingWhatsApp />
+      <ChatWidget onOpenChange={setIsChatOpen} />
+      {!isChatOpen && <FloatingWhatsApp />}
       <ScrollToTop />
     </div>
   );
