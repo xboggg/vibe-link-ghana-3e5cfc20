@@ -37,15 +37,13 @@ import { Plus, Pencil, Trash2, Star, Quote, GripVertical, Upload, X, ImageIcon, 
 
 interface Testimonial {
   id: string;
-  name: string;
+  client_name: string;
   event_type: string;
-  quote: string;
+  content: string;
   rating: number;
   image_url: string | null;
   is_featured: boolean;
-  display_order: number;
   created_at: string;
-  updated_at: string;
 }
 
 const eventTypes = [
@@ -59,14 +57,13 @@ const eventTypes = [
   "Church Event",
 ];
 
-const emptyTestimonial: Omit<Testimonial, "id" | "created_at" | "updated_at"> = {
-  name: "",
+const emptyTestimonial: Omit<Testimonial, "id" | "created_at"> = {
+  client_name: "",
   event_type: "Wedding",
-  quote: "",
+  content: "",
   rating: 5,
   image_url: null,
   is_featured: false,
-  display_order: 0,
 };
 
 export function TestimonialsManager() {
@@ -89,7 +86,7 @@ export function TestimonialsManager() {
       const { data, error } = await supabase
         .from("testimonials")
         .select("*")
-        .order("display_order", { ascending: true });
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
       setTestimonials(data || []);
@@ -158,8 +155,8 @@ export function TestimonialsManager() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.name.trim() || !formData.quote.trim()) {
-      toast.error("Name and quote are required");
+    if (!formData.client_name.trim() || !formData.content.trim()) {
+      toast.error("Name and testimonial content are required");
       return;
     }
 
@@ -171,13 +168,12 @@ export function TestimonialsManager() {
         const { error } = await supabase
           .from("testimonials")
           .update({
-            name: formData.name,
+            client_name: formData.client_name,
             event_type: formData.event_type,
-            quote: formData.quote,
+            content: formData.content,
             rating: formData.rating,
             image_url: imageUrl,
             is_featured: formData.is_featured,
-            display_order: formData.display_order,
           })
           .eq("id", editingTestimonial.id);
 
@@ -187,13 +183,12 @@ export function TestimonialsManager() {
         const { error } = await supabase
           .from("testimonials")
           .insert({
-            name: formData.name,
+            client_name: formData.client_name,
             event_type: formData.event_type,
-            quote: formData.quote,
+            content: formData.content,
             rating: formData.rating,
             image_url: imageUrl,
             is_featured: formData.is_featured,
-            display_order: testimonials.length + 1,
           });
 
         if (error) throw error;
@@ -215,13 +210,12 @@ export function TestimonialsManager() {
   const handleEdit = (testimonial: Testimonial) => {
     setEditingTestimonial(testimonial);
     setFormData({
-      name: testimonial.name,
+      client_name: testimonial.client_name,
       event_type: testimonial.event_type,
-      quote: testimonial.quote,
+      content: testimonial.content,
       rating: testimonial.rating,
       image_url: testimonial.image_url,
       is_featured: testimonial.is_featured,
-      display_order: testimonial.display_order,
     });
     setImagePreview(testimonial.image_url);
     setImageFile(null);
@@ -307,11 +301,11 @@ export function TestimonialsManager() {
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Client Name *</Label>
+                <Label htmlFor="client_name">Client Name *</Label>
                 <Input
-                  id="name"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  id="client_name"
+                  value={formData.client_name}
+                  onChange={(e) => setFormData({ ...formData, client_name: e.target.value })}
                   placeholder="e.g., Akosua & Kwame"
                 />
               </div>
@@ -336,11 +330,11 @@ export function TestimonialsManager() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="quote">Testimonial Quote *</Label>
+                <Label htmlFor="content">Testimonial Quote *</Label>
                 <Textarea
-                  id="quote"
-                  value={formData.quote}
-                  onChange={(e) => setFormData({ ...formData, quote: e.target.value })}
+                  id="content"
+                  value={formData.content}
+                  onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                   placeholder="What did the client say about your service?"
                   rows={4}
                 />
@@ -475,7 +469,7 @@ export function TestimonialsManager() {
                     <div className="flex-shrink-0">
                       <img
                         src={testimonial.image_url}
-                        alt={testimonial.name}
+                        alt={testimonial.client_name}
                         className="w-12 h-12 rounded-full object-cover"
                       />
                     </div>
@@ -483,7 +477,7 @@ export function TestimonialsManager() {
                   
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-2">
-                      <h3 className="font-semibold text-foreground">{testimonial.name}</h3>
+                      <h3 className="font-semibold text-foreground">{testimonial.client_name}</h3>
                       <Badge variant="secondary">{testimonial.event_type}</Badge>
                       {testimonial.is_featured && (
                         <Badge variant="default" className="bg-secondary text-secondary-foreground">
@@ -491,15 +485,15 @@ export function TestimonialsManager() {
                         </Badge>
                       )}
                     </div>
-                    
+
                     <div className="flex gap-0.5 mb-2">
-                      {Array.from({ length: testimonial.rating }).map((_, i) => (
+                      {Array.from({ length: testimonial.rating || 5 }).map((_, i) => (
                         <Star key={i} className="h-4 w-4 fill-secondary text-secondary" />
                       ))}
                     </div>
-                    
+
                     <p className="text-muted-foreground italic line-clamp-2">
-                      "{testimonial.quote}"
+                      "{testimonial.content}"
                     </p>
                   </div>
 
@@ -535,7 +529,7 @@ export function TestimonialsManager() {
                         <AlertDialogHeader>
                           <AlertDialogTitle>Delete Testimonial</AlertDialogTitle>
                           <AlertDialogDescription>
-                            Are you sure you want to delete this testimonial from {testimonial.name}?
+                            Are you sure you want to delete this testimonial from {testimonial.client_name}?
                             This action cannot be undone.
                           </AlertDialogDescription>
                         </AlertDialogHeader>

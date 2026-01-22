@@ -34,9 +34,9 @@ const itemVariants = {
 
 interface Testimonial {
   id: string;
-  name: string;
+  client_name: string;
   event_type: string;
-  quote: string;
+  content: string;
   rating: number;
   image_url: string | null;
 }
@@ -52,24 +52,24 @@ const defaultImages: Record<string, string> = {
 const fallbackTestimonials: Testimonial[] = [
   {
     id: "1",
-    quote: "VibeLink transformed our wedding invitation into something our guests couldn't stop talking about. The MoMo collection feature was a game-changer!",
-    name: "Akosua & Kwame",
+    content: "VibeLink transformed our wedding invitation into something our guests couldn't stop talking about. The MoMo collection feature was a game-changer!",
+    client_name: "Akosua & Kwame",
     event_type: "Wedding",
     rating: 5,
     image_url: null,
   },
   {
     id: "2",
-    quote: "During a difficult time, VibeLink helped us create a beautiful tribute for our late father. The whole family, even those abroad, could access everything easily.",
-    name: "The Mensah Family",
+    content: "During a difficult time, VibeLink helped us create a beautiful tribute for our late father. The whole family, even those abroad, could access everything easily.",
+    client_name: "The Mensah Family",
     event_type: "Funeral",
     rating: 5,
     image_url: null,
   },
   {
     id: "3",
-    quote: "Our baby's naming ceremony invitation was absolutely stunning. Everyone asked where we got it from. Professional, fast, and worth every pesewa!",
-    name: "Efua & David",
+    content: "Our baby's naming ceremony invitation was absolutely stunning. Everyone asked where we got it from. Professional, fast, and worth every pesewa!",
+    client_name: "Efua & David",
     event_type: "Naming Ceremony",
     rating: 5,
     image_url: null,
@@ -89,9 +89,9 @@ export function TestimonialsSection() {
       try {
         const { data, error } = await supabase
           .from("testimonials")
-          .select("id, name, event_type, quote, rating, image_url")
+          .select("id, client_name, event_type, content, rating, image_url")
           .eq("is_featured", true)
-          .order("display_order", { ascending: true })
+          .order("created_at", { ascending: false })
           .limit(3);
 
         if (error) throw error;
@@ -190,19 +190,19 @@ export function TestimonialsSection() {
 
               {/* Quote */}
               <p className="text-foreground/80 leading-relaxed mb-6 italic">
-                "{testimonial.quote}"
+                "{testimonial.content}"
               </p>
 
               {/* Author */}
               <div className="flex items-center gap-3">
                 <img
                   src={getTestimonialImage(testimonial)}
-                  alt={testimonial.name}
+                  alt={testimonial.client_name}
                   className="w-12 h-12 rounded-full object-cover border-2 border-secondary/30"
                 />
                 <div>
                   <p className="font-semibold text-foreground text-sm">
-                    {testimonial.name}
+                    {testimonial.client_name}
                   </p>
                   <p className="text-muted-foreground text-xs">
                     {testimonial.event_type}
