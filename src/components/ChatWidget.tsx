@@ -349,7 +349,21 @@ export function ChatWidget({ onOpenChange }: ChatWidgetProps) {
                   delay: 0.5,
                 }}
               />
-              <Bot className="h-6 w-6 text-white relative z-10" />
+              {/* Animated Bot icon */}
+              <motion.div
+                className="relative z-10"
+                animate={{
+                  y: [0, -2, 0],
+                  rotate: [0, 5, -5, 0],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              >
+                <Bot className="h-6 w-6 text-white" />
+              </motion.div>
             </motion.button>
           </motion.div>
         )}
