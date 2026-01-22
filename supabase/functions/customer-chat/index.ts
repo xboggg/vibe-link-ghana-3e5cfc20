@@ -390,7 +390,7 @@ serve(async (req) => {
       if (error || !order) {
         return new Response(
           JSON.stringify({
-            message: "I couldn't find an order with that ID. Please double-check your Order ID and try again, or contact us on WhatsApp for assistance: https://wa.me/233245817973",
+            message: "I couldn't find an order with that ID. Please double-check your Order ID and try again, or contact us on WhatsApp for assistance: https://wa.me/4915757178561",
             suggestions: ["Try again with correct ID", "Contact via WhatsApp", "View pricing", "Place new order"]
           }),
           { headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -427,7 +427,7 @@ ${statusMessages[order.order_status] || ''}
 **Ordered On**: ${new Date(order.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
 ${order.preferred_delivery_date ? `**Expected Delivery**: ${new Date(order.preferred_delivery_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}` : ''}
 
-Need help? Chat with us on WhatsApp: https://wa.me/233245817973`;
+Need help? Chat with us on WhatsApp: https://wa.me/4915757178561`;
 
       // Generate suggestions based on order status
       let suggestions: string[];

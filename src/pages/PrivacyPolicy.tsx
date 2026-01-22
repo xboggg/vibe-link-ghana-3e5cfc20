@@ -83,7 +83,7 @@ const PrivacyPolicy = () => {
             </p>
             <ul className="list-none space-y-2 text-muted-foreground mt-4">
               <li><strong>Email:</strong> privacy@vibelinkgh.com</li>
-              <li><strong>WhatsApp:</strong> +233 24 581 7973</li>
+              <li><strong>WhatsApp:</strong> +49 157 5717 8561</li>
               <li><strong>Address:</strong> Accra, Ghana</li>
             </ul>
           </section>

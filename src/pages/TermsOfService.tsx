@@ -102,7 +102,7 @@ const TermsOfService = () => {
             </p>
             <ul className="list-none space-y-2 text-muted-foreground mt-4">
               <li><strong>Email:</strong> hello@vibelinkgh.com</li>
-              <li><strong>WhatsApp:</strong> +233 24 581 7973</li>
+              <li><strong>WhatsApp:</strong> +49 157 5717 8561</li>
             </ul>
           </section>
         </div>
