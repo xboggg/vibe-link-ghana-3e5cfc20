@@ -309,12 +309,12 @@ export function ChatWidget({ onOpenChange }: ChatWidgetProps) {
           >
             {/* Wrapper for vertical stacking */}
             <div className="flex flex-col items-center">
-              {/* Floating Label - positioned above the button */}
+              {/* Floating Label - VERTICAL text above the button */}
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
-                className="mb-2 whitespace-nowrap"
+                className="mb-2"
               >
                 <motion.div
                   animate={{
@@ -322,9 +322,9 @@ export function ChatWidget({ onOpenChange }: ChatWidgetProps) {
                     opacity: [0.9, 1, 0.9]
                   }}
                   transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                  className="bg-background/95 backdrop-blur-sm border border-border rounded-full px-4 py-2 shadow-lg"
+                  className="bg-background/95 backdrop-blur-sm border border-border rounded-full px-3 py-4 shadow-lg"
                 >
-                  <span className="text-sm font-medium text-foreground flex items-center gap-2">
+                  <span className="text-sm font-medium text-foreground flex flex-col items-center gap-1" style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}>
                     <Sparkles className="h-3.5 w-3.5 text-purple-500" />
                     Chat with AI
                   </span>
