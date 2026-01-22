@@ -101,10 +101,26 @@ export function HowItWorksPreviewSection() {
 
         {/* Steps */}
         <div className="relative mb-12">
-          {/* Connector Lines - positioned above the grid */}
-          <div className="hidden md:flex absolute top-12 left-0 right-0 z-0 px-[16.67%]">
-            <div className="flex-1 h-[2px] bg-gradient-to-r from-primary/40 via-secondary/40 to-primary/40 mx-8 lg:mx-12" />
-            <div className="flex-1 h-[2px] bg-gradient-to-r from-primary/40 via-secondary/40 to-primary/40 mx-8 lg:mx-12" />
+          {/* Connector Lines - positioned to align with icon centers */}
+          <div className="hidden md:block absolute top-[48px] left-0 right-0 z-0 px-4 lg:px-8">
+            <div className="relative max-w-full mx-auto">
+              {/* Line from step 1 center to step 2 center */}
+              <div
+                className="absolute h-[3px] bg-gradient-to-r from-primary/60 via-secondary/60 to-primary/60"
+                style={{
+                  left: 'calc(16.67% + 48px)',
+                  right: 'calc(50% + 48px)',
+                }}
+              />
+              {/* Line from step 2 center to step 3 center */}
+              <div
+                className="absolute h-[3px] bg-gradient-to-r from-primary/60 via-secondary/60 to-primary/60"
+                style={{
+                  left: 'calc(50% + 48px)',
+                  right: 'calc(16.67% + 48px)',
+                }}
+              />
+            </div>
           </div>
 
           <motion.div
