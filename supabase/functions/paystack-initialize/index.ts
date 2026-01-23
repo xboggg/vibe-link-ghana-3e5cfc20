@@ -4,13 +4,14 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
 interface PaystackInitRequest {
   orderId: string;
   email: string;
   amount: number; // Amount in GHS (cedis)
-  paymentType: "deposit" | "balance";
+  paymentType: "deposit" | "balance" | "full";
   callbackUrl: string;
 }
 
@@ -61,7 +62,7 @@ serve(async (req) => {
             {
               display_name: "Payment Type",
               variable_name: "payment_type",
-              value: paymentType === "deposit" ? "50% Deposit" : "Balance Payment",
+              value: paymentType === "full" ? "Full Payment" : paymentType === "deposit" ? "50% Deposit" : "Balance Payment",
             },
           ],
         },

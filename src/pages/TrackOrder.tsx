@@ -63,15 +63,15 @@ export default function TrackOrder() {
       return;
     }
 
-    // Support both short (8 char) and full UUID format
-    let fullOrderId = trimmedOrderId;
-    
-    // If it's a short ID, we can't expand it - need full UUID for database
+    // Support short ID (8 char), full UUID, or with # prefix
+    const cleanOrderId = trimmedOrderId.replace(/^#/, '').toLowerCase();
+
+    // Validate format - allow short ID (8+ hex chars) or full UUID
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    const shortIdRegex = /^[0-9a-f]{8}$/i;
-    
-    if (!uuidRegex.test(trimmedOrderId) && !shortIdRegex.test(trimmedOrderId)) {
-      toast.error("Please enter a valid order ID");
+    const shortIdRegex = /^[0-9a-f]{8,}$/i;
+
+    if (!uuidRegex.test(cleanOrderId) && !shortIdRegex.test(cleanOrderId)) {
+      toast.error("Please enter a valid order ID (e.g., BD2DE637 or full UUID)");
       setOrder(null);
       setSearched(true);
       return;
@@ -88,11 +88,11 @@ export default function TrackOrder() {
     setSearched(true);
 
     try {
-      // Use secure RPC function with email verification
+      // Use secure RPC function with email verification (now accepts text)
       const { data, error } = await supabase
-        .rpc('get_order_by_id', { 
-          order_id: trimmedOrderId,
-          customer_email: trimmedEmail 
+        .rpc('get_order_by_id', {
+          order_id: cleanOrderId,
+          customer_email: trimmedEmail
         });
 
       if (error) {

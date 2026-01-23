@@ -4,12 +4,13 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
 interface PaystackVerifyRequest {
   reference: string;
   orderId: string;
-  paymentType: "deposit" | "balance";
+  paymentType: "deposit" | "balance" | "full";
 }
 
 serve(async (req) => {
@@ -65,8 +66,21 @@ serve(async (req) => {
     const now = new Date().toISOString();
 
     let updateData: Record<string, unknown>;
-    
-    if (paymentType === "deposit") {
+
+    if (paymentType === "full") {
+      // Full payment - mark both deposit and balance as paid
+      updateData = {
+        deposit_paid: true,
+        deposit_reference: reference,
+        deposit_paid_at: now,
+        deposit_amount: amountPaid,
+        balance_paid: true,
+        balance_reference: reference,
+        balance_paid_at: now,
+        balance_amount: 0,
+        payment_status: "paid",
+      };
+    } else if (paymentType === "deposit") {
       updateData = {
         deposit_paid: true,
         deposit_reference: reference,
@@ -119,10 +133,11 @@ serve(async (req) => {
 
     console.log(`Order ${orderId} updated successfully with ${paymentType} payment`);
 
+    const paymentLabel = paymentType === "full" ? "Full" : paymentType === "deposit" ? "Deposit" : "Balance";
     return new Response(
-      JSON.stringify({ 
-        success: true, 
-        message: `${paymentType === "deposit" ? "Deposit" : "Balance"} payment verified`,
+      JSON.stringify({
+        success: true,
+        message: `${paymentLabel} payment verified`,
         amountPaid,
         reference,
       }),

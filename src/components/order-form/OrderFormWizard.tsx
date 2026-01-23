@@ -145,38 +145,47 @@ export const OrderFormWizard = ({ onComplete, initialReferralCode = "" }: OrderF
       const addon = addOns.find((a) => a.id === addonId);
       return addon?.name || "";
     }).filter(Boolean);
-    
-    const message = `🎉 *New Order from VibeLink Events!*
-    
-📋 *Order ID:* ${orderId.substring(0, 8)}
 
-👤 *Client Details:*
-• Name: ${formData.fullName}
-• Phone: ${formData.phone}
-• Email: ${formData.email}
-${formData.whatsapp ? `• WhatsApp: ${formData.whatsapp}` : ""}
+    // Use simple text formatting instead of emojis for better WhatsApp compatibility
+    const depositAmount = Math.round(total / 2);
 
-📅 *Event Details:*
-• Type: ${formData.eventType.charAt(0).toUpperCase() + formData.eventType.slice(1)}
-• Title: ${formData.eventTitle}
-• Date: ${formData.eventDate ? formData.eventDate.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : "TBD"}
-• Time: ${formData.eventTime || "TBD"}
-• Venue: ${formData.eventVenue}
-${formData.eventAddress ? `• Address: ${formData.eventAddress}` : ""}
-${formData.celebrantNames ? `• Celebrant(s): ${formData.celebrantNames}` : ""}
+    const message = `*NEW ORDER - VibeLink Events*
 
-🎨 *Design Preferences:*
-• Package: ${selectedPkg?.name || ""} (GHS ${selectedPkg?.price || 0})
-• Color Palette: ${formData.colorPalette}
-• Style: ${formData.stylePreference}
-${selectedAddOnsList.length > 0 ? `• Add-ons: ${selectedAddOnsList.join(", ")}` : ""}
-• Delivery: ${formData.deliveryUrgency === "rush" ? "Rush (48h)" : "Standard"}
-${formData.preferredDeliveryDate ? `• Preferred Delivery: ${formData.preferredDeliveryDate.toLocaleDateString("en-GB")}` : ""}
+*Order ID:* #${orderId.substring(0, 8).toUpperCase()}
 
-💰 *Total:* GHS ${total.toLocaleString()}
+--- CLIENT DETAILS ---
+Name: ${formData.fullName}
+Phone: ${formData.phone}
+Email: ${formData.email}${formData.whatsapp ? `
+WhatsApp: ${formData.whatsapp}` : ""}
 
-${formData.additionalInfo ? `📝 *Additional Notes:* ${formData.additionalInfo}` : ""}
-${formData.designNotes ? `🎯 *Design Notes:* ${formData.designNotes}` : ""}`;
+--- EVENT DETAILS ---
+Type: ${formData.eventType.charAt(0).toUpperCase() + formData.eventType.slice(1)}
+Title: ${formData.eventTitle}
+Date: ${formData.eventDate ? formData.eventDate.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : "TBD"}
+Time: ${formData.eventTime || "TBD"}
+Venue: ${formData.eventVenue}${formData.eventAddress ? `
+Address: ${formData.eventAddress}` : ""}${formData.celebrantNames ? `
+Celebrant(s): ${formData.celebrantNames}` : ""}
+
+--- DESIGN PREFERENCES ---
+Package: ${selectedPkg?.name || ""} (GHS ${selectedPkg?.price?.toLocaleString() || 0})
+Color Palette: ${formData.colorPalette}
+Style: ${formData.stylePreference}${selectedAddOnsList.length > 0 ? `
+Add-ons: ${selectedAddOnsList.join(", ")}` : ""}
+Delivery: ${formData.deliveryUrgency === "rush" ? "Rush (48h)" : "Standard (5-7 days)"}${formData.preferredDeliveryDate ? `
+Preferred Delivery: ${formData.preferredDeliveryDate.toLocaleDateString("en-GB")}` : ""}
+
+--- PAYMENT ---
+*Total:* GHS ${total.toLocaleString()}
+*50% Deposit:* GHS ${depositAmount.toLocaleString()}
+*Balance Due:* GHS ${depositAmount.toLocaleString()}${formData.additionalInfo ? `
+
+--- NOTES ---
+${formData.additionalInfo}` : ""}${formData.designNotes ? `
+
+--- DESIGN NOTES ---
+${formData.designNotes}` : ""}`;
 
     const encodedMessage = encodeURIComponent(message);
     const whatsappNumber = "4915757178561";

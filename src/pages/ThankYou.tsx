@@ -16,7 +16,9 @@ const ThankYou = () => {
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [isPaymentLoading, setIsPaymentLoading] = useState(false);
   const [depositPaid, setDepositPaid] = useState(false);
+  const [fullPaid, setFullPaid] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
+  const [paymentOption, setPaymentOption] = useState<"deposit" | "full">("deposit");
 
   useEffect(() => {
     // Get stored data from session storage
@@ -45,7 +47,8 @@ const ThankYou = () => {
     const storedName = sessionStorage.getItem("vibelink_order_name");
     const storedEventTitle = sessionStorage.getItem("vibelink_order_event_title");
     const storedTotal = sessionStorage.getItem("vibelink_order_total");
-    
+    const storedPaymentType = sessionStorage.getItem("vibelink_payment_type") || "deposit";
+
     if (!storedOrderId) {
       toast.error("Order not found. Please contact support.");
       return;
@@ -57,55 +60,65 @@ const ThankYou = () => {
         body: {
           reference,
           orderId: storedOrderId,
-          paymentType: "deposit",
+          paymentType: storedPaymentType,
         },
       });
 
       if (error) throw error;
 
       if (data.success) {
-        setDepositPaid(true);
-        toast.success("Payment successful! Your deposit has been received.");
-        
+        if (storedPaymentType === "full") {
+          setFullPaid(true);
+          setDepositPaid(true);
+          toast.success("Full payment successful! Your order is fully paid.");
+        } else {
+          setDepositPaid(true);
+          toast.success("Payment successful! Your deposit has been received.");
+        }
+
         // Send payment confirmation email, admin notification, and Telegram notification
         if (storedEmail && storedName && storedEventTitle && storedTotal) {
+          const total = parseFloat(storedTotal);
+          const amountPaid = storedPaymentType === "full" ? total : total * 0.5;
+
           const paymentData = {
             orderId: storedOrderId,
             clientName: storedName,
             clientEmail: storedEmail,
             eventTitle: storedEventTitle,
-            paymentType: "deposit" as const,
-            amountPaid: parseFloat(storedTotal) * 0.5,
-            totalPrice: parseFloat(storedTotal),
+            paymentType: storedPaymentType as "deposit" | "full",
+            amountPaid,
+            totalPrice: total,
             reference,
           };
-          
+
           // Send customer confirmation email
           supabase.functions.invoke("send-payment-confirmation", {
             body: paymentData,
           }).catch((err) => console.error("Failed to send payment confirmation:", err));
-          
+
           // Send admin notification email
           supabase.functions.invoke("send-admin-payment-notification", {
             body: paymentData,
           }).catch((err) => console.error("Failed to send admin notification:", err));
-          
+
           // Send Telegram notification
           supabase.functions.invoke("send-telegram-notification", {
             body: {
-              type: "deposit",
+              type: storedPaymentType,
               orderId: storedOrderId,
               clientName: storedName,
               clientEmail: storedEmail,
               eventTitle: storedEventTitle,
-              amount: parseFloat(storedTotal) * 0.5,
+              amount: amountPaid,
               paymentMethod: "paystack",
               reference,
             },
           }).catch((err) => console.error("Failed to send Telegram notification:", err));
         }
-        
-        // Clear URL params
+
+        // Clear URL params and payment type
+        sessionStorage.removeItem("vibelink_payment_type");
         window.history.replaceState({}, document.title, window.location.pathname);
       } else {
         toast.error(data.error || "Payment verification failed");
@@ -118,14 +131,14 @@ const ThankYou = () => {
     }
   };
 
-  const handlePayDeposit = async () => {
+  const handlePayment = async (type: "deposit" | "full") => {
     if (!orderId || !orderEmail) {
       toast.error("Order information not found. Please contact support.");
       return;
     }
 
-    const depositAmount = totalPrice * 0.5;
-    if (depositAmount <= 0) {
+    const amount = type === "full" ? totalPrice : totalPrice * 0.5;
+    if (amount <= 0) {
       toast.error("Invalid order amount. Please contact support.");
       return;
     }
@@ -133,13 +146,16 @@ const ThankYou = () => {
     setIsPaymentLoading(true);
     try {
       const callbackUrl = `${window.location.origin}/thank-you`;
-      
+
+      // Store payment type for verification
+      sessionStorage.setItem("vibelink_payment_type", type);
+
       const { data, error } = await supabase.functions.invoke("paystack-initialize", {
         body: {
           orderId,
           email: orderEmail,
-          amount: depositAmount,
-          paymentType: "deposit",
+          amount,
+          paymentType: type,
           callbackUrl,
         },
       });
@@ -247,7 +263,7 @@ const ThankYou = () => {
             )}
 
             {/* Payment Section */}
-            {!depositPaid && totalPrice > 0 && (
+            {!depositPaid && !fullPaid && totalPrice > 0 && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -255,21 +271,55 @@ const ThankYou = () => {
                 className="bg-accent/20 backdrop-blur-sm rounded-2xl p-6 mb-8"
               >
                 <h3 className="text-lg font-bold text-primary-foreground mb-2">
-                  Pay 50% Deposit to Start
+                  Choose Your Payment Option
                 </h3>
                 <p className="text-primary-foreground/70 text-sm mb-4">
                   Secure your order and we'll start working on your invitation immediately
                 </p>
+
+                {/* Payment Option Toggle */}
+                <div className="flex gap-2 justify-center mb-4">
+                  <button
+                    onClick={() => setPaymentOption("deposit")}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                      paymentOption === "deposit"
+                        ? "bg-accent text-accent-foreground"
+                        : "bg-primary-foreground/10 text-primary-foreground/70 hover:bg-primary-foreground/20"
+                    }`}
+                  >
+                    50% Deposit
+                  </button>
+                  <button
+                    onClick={() => setPaymentOption("full")}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                      paymentOption === "full"
+                        ? "bg-accent text-accent-foreground"
+                        : "bg-primary-foreground/10 text-primary-foreground/70 hover:bg-primary-foreground/20"
+                    }`}
+                  >
+                    Full Payment
+                  </button>
+                </div>
+
                 <div className="flex items-center justify-center gap-2 mb-4">
                   <span className="text-3xl font-bold text-accent">
-                    GH₵ {depositAmount.toFixed(2)}
+                    GH₵ {paymentOption === "full" ? totalPrice.toFixed(2) : depositAmount.toFixed(2)}
                   </span>
                   <span className="text-primary-foreground/60 text-sm">
-                    (50% of GH₵ {totalPrice.toFixed(2)})
+                    {paymentOption === "full"
+                      ? "(Full amount)"
+                      : `(50% of GH₵ ${totalPrice.toFixed(2)})`}
                   </span>
                 </div>
+
+                {paymentOption === "deposit" && (
+                  <p className="text-primary-foreground/60 text-xs mb-4">
+                    Balance of GH₵ {depositAmount.toFixed(2)} due upon delivery
+                  </p>
+                )}
+
                 <Button
-                  onClick={handlePayDeposit}
+                  onClick={() => handlePayment(paymentOption)}
                   disabled={isPaymentLoading}
                   className="bg-accent hover:bg-accent/90 text-accent-foreground font-semibold px-8 py-3"
                   size="lg"
@@ -282,7 +332,7 @@ const ThankYou = () => {
                   ) : (
                     <>
                       <CreditCard className="mr-2 h-5 w-5" />
-                      Pay Deposit Now
+                      {paymentOption === "full" ? "Pay Full Amount" : "Pay Deposit Now"}
                     </>
                   )}
                 </Button>
@@ -292,8 +342,8 @@ const ThankYou = () => {
               </motion.div>
             )}
 
-            {/* Deposit Paid Confirmation */}
-            {depositPaid && (
+            {/* Payment Confirmation */}
+            {(depositPaid || fullPaid) && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -303,13 +353,19 @@ const ThankYou = () => {
                 <div className="flex items-center justify-center gap-2 mb-2">
                   <CheckCircle className="h-6 w-6 text-green-400" />
                   <h3 className="text-lg font-bold text-primary-foreground">
-                    Deposit Paid Successfully!
+                    {fullPaid ? "Full Payment Received!" : "Deposit Paid Successfully!"}
                   </h3>
                 </div>
                 <p className="text-primary-foreground/70 text-sm">
-                  Your 50% deposit of GH₵ {depositAmount.toFixed(2)} has been received.
-                  <br />
-                  Balance of GH₵ {depositAmount.toFixed(2)} due upon delivery.
+                  {fullPaid ? (
+                    <>Your full payment of GH₵ {totalPrice.toFixed(2)} has been received. No balance due!</>
+                  ) : (
+                    <>
+                      Your 50% deposit of GH₵ {depositAmount.toFixed(2)} has been received.
+                      <br />
+                      Balance of GH₵ {depositAmount.toFixed(2)} due upon delivery.
+                    </>
+                  )}
                 </p>
               </motion.div>
             )}
