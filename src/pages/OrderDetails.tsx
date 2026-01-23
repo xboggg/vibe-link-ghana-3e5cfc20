@@ -3,8 +3,8 @@ import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   Package, Clock, CheckCircle, AlertCircle, Loader2,
-  Printer, Download, ArrowLeft, Calendar, MapPin,
-  CreditCard, Mail, Phone, Sparkles, FileText
+  Printer, Download, ArrowLeft, Calendar,
+  CreditCard, Mail, Sparkles, FileText
 } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
@@ -23,8 +23,6 @@ interface OrderDetails {
   event_title: string;
   event_type: string;
   event_date: string | null;
-  event_time: string | null;
-  event_venue: string | null;
   package_name: string;
   total_price: number;
   order_status: OrderStatus;
@@ -32,11 +30,6 @@ interface OrderDetails {
   created_at: string;
   preferred_delivery_date: string | null;
   client_email: string;
-  client_name: string | null;
-  client_phone: string | null;
-  color_palette: string | null;
-  style_preference: string | null;
-  add_ons: string[] | null;
 }
 
 const getPaymentFlags = (paymentStatus: string) => ({
@@ -71,7 +64,6 @@ export default function OrderDetails() {
   const [error, setError] = useState<string | null>(null);
 
   const email = searchParams.get("email");
-  const token = searchParams.get("token");
 
   useEffect(() => {
     if (orderId && email) {
@@ -88,7 +80,7 @@ export default function OrderDetails() {
     setIsLoading(true);
     try {
       const { data, error: fetchError } = await supabase
-        .rpc('get_order_details_by_id', {
+        .rpc('get_order_by_id', {
           order_id: orderId,
           customer_email: email
         });
@@ -323,13 +315,7 @@ export default function OrderDetails() {
                     <p className="font-semibold text-lg">{order.package_name}</p>
                   </div>
 
-                  {order.add_ons && order.add_ons.length > 0 && (
-                    <div>
-                      <p className="text-sm text-muted-foreground mb-1">Add-ons</p>
-                      <p className="font-medium">{order.add_ons.join(', ')}</p>
-                    </div>
-                  )}
-                </CardContent>
+                                  </CardContent>
               </Card>
             </motion.div>
 
@@ -358,36 +344,18 @@ export default function OrderDetails() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Event Date</p>
-                      <p className="font-medium">
-                        {order.event_date
-                          ? new Date(order.event_date).toLocaleDateString('en-GB', {
-                              day: 'numeric',
-                              month: 'long',
-                              year: 'numeric'
-                            })
-                          : 'To be confirmed'}
-                      </p>
-                    </div>
-                    {order.event_time && (
-                      <div>
-                        <p className="text-sm text-muted-foreground">Event Time</p>
-                        <p className="font-medium">{order.event_time}</p>
-                      </div>
-                    )}
+                  <div>
+                    <p className="text-sm text-muted-foreground">Event Date</p>
+                    <p className="font-medium">
+                      {order.event_date
+                        ? new Date(order.event_date).toLocaleDateString('en-GB', {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric'
+                          })
+                        : 'To be confirmed'}
+                    </p>
                   </div>
-
-                  {order.event_venue && (
-                    <div>
-                      <p className="text-sm text-muted-foreground">Venue</p>
-                      <p className="font-medium flex items-center gap-1">
-                        <MapPin className="h-4 w-4 text-muted-foreground" />
-                        {order.event_venue}
-                      </p>
-                    </div>
-                  )}
 
                   {order.preferred_delivery_date && (
                     <div>
@@ -402,26 +370,7 @@ export default function OrderDetails() {
                     </div>
                   )}
 
-                  {(order.color_palette || order.style_preference) && (
-                    <>
-                      <Separator />
-                      <div className="grid grid-cols-2 gap-4">
-                        {order.color_palette && (
-                          <div>
-                            <p className="text-sm text-muted-foreground">Color Palette</p>
-                            <p className="font-medium">{order.color_palette}</p>
-                          </div>
-                        )}
-                        {order.style_preference && (
-                          <div>
-                            <p className="text-sm text-muted-foreground">Style Preference</p>
-                            <p className="font-medium">{order.style_preference}</p>
-                          </div>
-                        )}
-                      </div>
-                    </>
-                  )}
-                </CardContent>
+                                  </CardContent>
               </Card>
             </motion.div>
 
@@ -488,22 +437,10 @@ export default function OrderDetails() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  {order.client_name && (
-                    <div className="flex items-center gap-2">
-                      <span className="text-muted-foreground w-20">Name:</span>
-                      <span className="font-medium">{order.client_name}</span>
-                    </div>
-                  )}
                   <div className="flex items-center gap-2">
                     <span className="text-muted-foreground w-20">Email:</span>
                     <span className="font-medium">{order.client_email}</span>
                   </div>
-                  {order.client_phone && (
-                    <div className="flex items-center gap-2">
-                      <span className="text-muted-foreground w-20">Phone:</span>
-                      <span className="font-medium">{order.client_phone}</span>
-                    </div>
-                  )}
 
                   <Separator className="my-4" />
 
