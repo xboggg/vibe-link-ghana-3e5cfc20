@@ -25,6 +25,7 @@ import TermsOfService from "./pages/TermsOfService";
 import RefundPolicy from "./pages/RefundPolicy";
 import CookiePolicy from "./pages/CookiePolicy";
 import TrackOrder from "./pages/TrackOrder";
+import OrderDetails from "./pages/OrderDetails";
 import CustomerPortal from "./pages/CustomerPortal";
 import { ScrollToTop } from "@/components/ScrollToTop";
 
@@ -65,6 +66,7 @@ const App = () => (
               <Route path="/refund-policy" element={<RefundPolicy />} />
               <Route path="/cookie-policy" element={<CookiePolicy />} />
               <Route path="/track-order" element={<TrackOrder />} />
+              <Route path="/order/:orderId" element={<OrderDetails />} />
               <Route path="/my-orders" element={<CustomerPortal />} />
               <Route path="/customer-portal" element={<CustomerPortal />} />
               <Route path="*" element={<NotFound />} />

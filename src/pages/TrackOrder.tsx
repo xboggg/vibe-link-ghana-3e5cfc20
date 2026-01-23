@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Package, Clock, CheckCircle, AlertCircle, Loader2, CreditCard, Sparkles, MapPin, Mail, ArrowRight, Shield } from "lucide-react";
+import { Search, Package, Clock, CheckCircle, AlertCircle, Loader2, CreditCard, Sparkles, MapPin, Mail, ArrowRight, Shield, ExternalLink } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -589,6 +590,22 @@ export default function TrackOrder() {
                           </div>
                         </div>
                       </div>
+                    </div>
+
+                    {/* View Full Details Button */}
+                    <div className="pt-4">
+                      <Link
+                        to={`/order/${order.id}?email=${encodeURIComponent(order.client_email)}`}
+                        className="block"
+                      >
+                        <Button
+                          variant="outline"
+                          className="w-full gap-2 border-purple-200 hover:bg-purple-50 hover:border-purple-300 dark:border-purple-800 dark:hover:bg-purple-900/30"
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                          View Full Details & Print
+                        </Button>
+                      </Link>
                     </div>
 
                     {/* Contact Info */}
