@@ -587,7 +587,7 @@ export default function CustomerPortal() {
         title="My Orders | VibeLink Events"
         description="View and manage your event invitation orders"
       />
-      <div className="min-h-screen py-10">
+      <div className="min-h-screen pt-24 pb-10">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
             <div className="flex items-center gap-4">
