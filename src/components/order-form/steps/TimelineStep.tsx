@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { OrderFormData } from "@/data/orderFormData";
-import { ArrowLeft, ArrowRight, Zap, Clock, Calendar } from "lucide-react";
+import { ArrowLeft, ArrowRight, Zap, Clock, Calendar, Info } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { format, addDays } from "date-fns";
@@ -21,7 +21,10 @@ export const TimelineStep = ({
   onNext,
   onPrev,
 }: TimelineStepProps) => {
-  const standardDelivery = addDays(new Date(), 5);
+  // Royal package takes 7-10 days, others take 5-7 days
+  const isRoyalPackage = formData.selectedPackage === "royal";
+  const standardDays = isRoyalPackage ? 10 : 7;
+  const standardDelivery = addDays(new Date(), standardDays);
   const rushDelivery = addDays(new Date(), 2);
 
   return (
@@ -54,14 +57,16 @@ export const TimelineStep = ({
             </div>
             <div>
               <h3 className="font-bold text-lg text-foreground">Standard</h3>
-              <p className="text-sm text-muted-foreground">3-5 business days</p>
+              <p className="text-sm text-muted-foreground">
+                {isRoyalPackage ? "7-10 business days" : "5-7 business days"}
+              </p>
             </div>
           </div>
           <div className="text-sm text-muted-foreground">
             Estimated by: <span className="font-semibold text-foreground">{format(standardDelivery, "EEEE, MMM d")}</span>
           </div>
           <div className="mt-2 text-lg font-bold text-accent">Included</div>
-          
+
           {formData.deliveryUrgency === "standard" && (
             <div className="absolute -top-2 -right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
               <svg className="w-4 h-4 text-primary-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -96,7 +101,7 @@ export const TimelineStep = ({
             Estimated by: <span className="font-semibold text-foreground">{format(rushDelivery, "EEEE, MMM d")}</span>
           </div>
           <div className="mt-2 text-lg font-bold text-secondary">+GHS 300</div>
-          
+
           {formData.deliveryUrgency === "rush" && (
             <div className="absolute -top-2 -right-2 w-6 h-6 bg-secondary rounded-full flex items-center justify-center">
               <svg className="w-4 h-4 text-secondary-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -105,6 +110,14 @@ export const TimelineStep = ({
             </div>
           )}
         </motion.button>
+      </div>
+
+      {/* Delivery time info note */}
+      <div className="flex items-start gap-2 p-3 rounded-lg bg-muted/50 text-sm">
+        <Info className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+        <p className="text-muted-foreground">
+          <span className="font-medium text-foreground">Delivery times:</span> Starter, Classic & Prestige packages take 5-7 days. Royal package takes 7-10 days due to premium features.
+        </p>
       </div>
 
       {/* Preferred Delivery Date */}

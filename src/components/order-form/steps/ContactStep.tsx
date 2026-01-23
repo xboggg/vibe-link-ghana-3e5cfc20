@@ -134,27 +134,29 @@ export const ContactStep = ({
     try {
       // Get reCAPTCHA token
       const captchaToken = await executeRecaptcha();
-      if (!captchaToken) {
-        setIsVerifying(false);
-        return;
-      }
 
-      // Verify captcha on server
-      const { data, error } = await supabase.functions.invoke("verify-captcha", {
-        body: { token: captchaToken, action: "submit_order" },
-      });
+      // If captcha token is available, verify it
+      if (captchaToken) {
+        try {
+          const { data, error } = await supabase.functions.invoke("verify-captcha", {
+            body: { token: captchaToken, action: "submit_order" },
+          });
 
-      if (error || !data?.success) {
-        toast.error("Security verification failed. Please try again.");
-        setIsVerifying(false);
-        return;
+          if (error || !data?.success) {
+            // Log the issue but proceed with submission to not block real customers
+            console.warn("reCAPTCHA verification failed, proceeding anyway:", error || data);
+          }
+        } catch (verifyError) {
+          // If verification fails, log but proceed with submission
+          console.warn("reCAPTCHA verification error, proceeding anyway:", verifyError);
+        }
       }
 
       setErrors({});
       onSubmit();
     } catch (error) {
-      console.error("Captcha verification error:", error);
-      toast.error("Verification failed. Please try again.");
+      console.error("Submission error:", error);
+      toast.error("Something went wrong. Please try again.");
     } finally {
       setIsVerifying(false);
     }
