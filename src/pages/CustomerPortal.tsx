@@ -46,6 +46,9 @@ export default function CustomerPortal() {
   const [orders, setOrders] = useState<CustomerOrder[]>([]);
   const [selectedOrder, setSelectedOrder] = useState<CustomerOrder | null>(null);
   const [customerName, setCustomerName] = useState("");
+  const [isReferralSignup, setIsReferralSignup] = useState(false);
+  const [referralName, setReferralName] = useState("");
+  const [referralEmail, setReferralEmail] = useState("");
 
   useEffect(() => {
     const savedEmail = sessionStorage.getItem("customer_email");
@@ -155,6 +158,65 @@ export default function CustomerPortal() {
     setEmail("");
     setOtp("");
     setShowOtpInput(false);
+  };
+
+  const handleReferralSignup = async () => {
+    if (!referralName.trim() || !referralEmail.trim()) {
+      toast.error("Please enter your name and email");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      // Check if referral code already exists for this email
+      const { data: existingCode } = await supabase
+        .from("referral_codes")
+        .select("code")
+        .eq("owner_email", referralEmail.toLowerCase())
+        .single();
+
+      if (existingCode) {
+        // User already has a code, log them in directly
+        sessionStorage.setItem("customer_email", referralEmail.toLowerCase());
+        sessionStorage.setItem("customer_name", referralName);
+        setEmail(referralEmail.toLowerCase());
+        setCustomerName(referralName);
+        setIsAuthenticated(true);
+        fetchCustomerOrders(referralEmail);
+        toast.success("Welcome back! Your referral code is ready.");
+        return;
+      }
+
+      // Generate new referral code
+      const prefix = referralName.split(" ")[0].toUpperCase().slice(0, 4);
+      const suffix = Math.random().toString(36).substring(2, 6).toUpperCase();
+      const code = `${prefix}-${suffix}`;
+
+      const { error: insertError } = await supabase
+        .from("referral_codes")
+        .insert({
+          code,
+          owner_email: referralEmail.toLowerCase(),
+          owner_name: referralName,
+          reward_percentage: 10
+        });
+
+      if (insertError) throw insertError;
+
+      // Log them in
+      sessionStorage.setItem("customer_email", referralEmail.toLowerCase());
+      sessionStorage.setItem("customer_name", referralName);
+      setEmail(referralEmail.toLowerCase());
+      setCustomerName(referralName);
+      setIsAuthenticated(true);
+      fetchCustomerOrders(referralEmail);
+      toast.success("Welcome! Your referral code has been created.");
+    } catch (err) {
+      console.error("Referral signup error:", err);
+      toast.error("Failed to create referral code. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const getStatusColor = (status: string) => {
@@ -291,8 +353,90 @@ export default function CustomerPortal() {
             >
               <Card className="backdrop-blur-xl bg-white/80 dark:bg-gray-900/80 border-white/50 shadow-2xl shadow-purple-500/10">
                 <CardContent className="p-8">
+                  {/* Toggle between Customer Login and Referral Signup */}
+                  <div className="flex mb-6 bg-gray-100 dark:bg-gray-800 rounded-xl p-1">
+                    <button
+                      onClick={() => setIsReferralSignup(false)}
+                      className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-all ${
+                        !isReferralSignup
+                          ? "bg-white dark:bg-gray-700 shadow-sm text-foreground"
+                          : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      <Package className="h-4 w-4 inline mr-2" />
+                      My Orders
+                    </button>
+                    <button
+                      onClick={() => setIsReferralSignup(true)}
+                      className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-all ${
+                        isReferralSignup
+                          ? "bg-white dark:bg-gray-700 shadow-sm text-foreground"
+                          : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      <Gift className="h-4 w-4 inline mr-2" />
+                      Get Referral Code
+                    </button>
+                  </div>
+
                   <AnimatePresence mode="wait">
-                    {!showOtpInput ? (
+                    {isReferralSignup ? (
+                      <motion.div
+                        key="referral-signup"
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        className="space-y-5"
+                      >
+                        <div className="text-center mb-4">
+                          <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-900/30 rounded-full text-green-700 dark:text-green-300 text-sm font-medium mb-3">
+                            <Gift className="h-4 w-4" />
+                            Earn Cash Rewards
+                          </div>
+                          <p className="text-sm text-muted-foreground">
+                            Sign up to get your unique referral code and earn money!
+                          </p>
+                        </div>
+
+                        <div className="space-y-3">
+                          <Input
+                            type="text"
+                            placeholder="Your full name"
+                            value={referralName}
+                            onChange={(e) => setReferralName(e.target.value)}
+                            className="h-12 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 focus:border-green-500 rounded-xl"
+                          />
+                          <Input
+                            type="email"
+                            placeholder="your@email.com"
+                            value={referralEmail}
+                            onChange={(e) => setReferralEmail(e.target.value)}
+                            onKeyDown={(e) => e.key === "Enter" && handleReferralSignup()}
+                            className="h-12 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 focus:border-green-500 rounded-xl"
+                          />
+                        </div>
+
+                        <Button
+                          className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 rounded-xl shadow-lg shadow-green-500/30 transition-all hover:shadow-xl hover:shadow-green-500/40 hover:scale-[1.02]"
+                          onClick={handleReferralSignup}
+                          disabled={isLoading}
+                        >
+                          {isLoading ? (
+                            <Loader2 className="h-5 w-5 animate-spin" />
+                          ) : (
+                            <>
+                              <Gift className="mr-2 h-5 w-5" />
+                              Get My Referral Code
+                            </>
+                          )}
+                        </Button>
+
+                        <div className="bg-secondary/10 rounded-lg p-3 text-xs text-muted-foreground">
+                          <p className="font-medium text-foreground mb-1">Earn per referral:</p>
+                          <p>Classic: GHS 100 • Prestige: GHS 200 • Royal: GHS 500</p>
+                        </div>
+                      </motion.div>
+                    ) : !showOtpInput ? (
                       <motion.div
                         key="email"
                         initial={{ opacity: 0, x: -20 }}
