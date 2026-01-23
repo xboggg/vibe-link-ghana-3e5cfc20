@@ -342,10 +342,7 @@ ${formData.designNotes ? `🎯 *Design Notes:* ${formData.designNotes}` : ""}`;
       
       const total = calculateTotal();
       
-      // Upload reference images first
-      const referenceImageUrls = await uploadReferenceImages();
-      
-      // Build order data object
+      // Build order data object (reference_images removed - column doesn't exist)
       const orderData: Record<string, unknown> = {
         event_type: formData.eventType,
         event_title: formData.eventTitle,
@@ -372,7 +369,6 @@ ${formData.designNotes ? `🎯 *Design Notes:* ${formData.designNotes}` : ""}`;
         client_phone: formData.phone,
         client_whatsapp: formData.whatsapp || null,
         total_price: total,
-        reference_images: referenceImageUrls.length > 0 ? referenceImageUrls : null,
       };
 
       // Only add referral_code if it exists (column may not exist in older schemas)
