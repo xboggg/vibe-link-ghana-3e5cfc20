@@ -66,6 +66,7 @@ const App = () => (
               <Route path="/cookie-policy" element={<CookiePolicy />} />
               <Route path="/track-order" element={<TrackOrder />} />
               <Route path="/my-orders" element={<CustomerPortal />} />
+              <Route path="/customer-portal" element={<CustomerPortal />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </PageTracker>
