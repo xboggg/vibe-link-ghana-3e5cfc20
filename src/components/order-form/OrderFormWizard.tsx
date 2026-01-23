@@ -345,7 +345,8 @@ ${formData.designNotes ? `🎯 *Design Notes:* ${formData.designNotes}` : ""}`;
       // Upload reference images first
       const referenceImageUrls = await uploadReferenceImages();
       
-      const { data, error } = await supabase.from("orders").insert({
+      // Build order data object
+      const orderData: Record<string, unknown> = {
         event_type: formData.eventType,
         event_title: formData.eventTitle,
         event_date: formData.eventDate ? formData.eventDate.toISOString().split("T")[0] : null,
@@ -372,8 +373,14 @@ ${formData.designNotes ? `🎯 *Design Notes:* ${formData.designNotes}` : ""}`;
         client_whatsapp: formData.whatsapp || null,
         total_price: total,
         reference_images: referenceImageUrls.length > 0 ? referenceImageUrls : null,
-        referral_code: formData.referralCode || null,
-      }).select("id").single();
+      };
+
+      // Only add referral_code if it exists (column may not exist in older schemas)
+      if (formData.referralCode) {
+        orderData.referral_code = formData.referralCode;
+      }
+
+      const { data, error } = await supabase.from("orders").insert(orderData).select("id").single();
 
       if (error) {
         console.error("Error submitting order:", error);
