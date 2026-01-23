@@ -380,30 +380,37 @@ ${formData.designNotes ? `🎯 *Design Notes:* ${formData.designNotes}` : ""}`;
         orderData.referral_code = formData.referralCode;
       }
 
-      // Insert order - don't use .select().single() as RLS may prevent reading back
-      const { error: insertError } = await supabase.from("orders").insert(orderData);
+      // Insert order with explicit returning option
+      const { data: insertData, error: insertError } = await supabase
+        .from("orders")
+        .insert(orderData)
+        .select("id");
 
       if (insertError) {
         console.error("Error submitting order:", insertError);
+        console.error("Error details:", JSON.stringify(insertError, null, 2));
+        console.error("Order data attempted:", JSON.stringify(orderData, null, 2));
         throw insertError;
       }
 
-      // Generate a temporary order ID for display purposes
-      const tempOrderId = `VL-${Date.now().toString(36).toUpperCase()}`;
+      console.log("Order inserted successfully:", insertData);
+
+      // Use returned ID if available, otherwise generate a temporary one
+      const orderId = insertData?.[0]?.id || `VL-${Date.now().toString(36).toUpperCase()}`;
 
       // Send confirmation email and admin notification
-      sendOrderConfirmationEmail(tempOrderId, total, selectedPkg, selectedAddOnsList);
-      sendAdminNotification(tempOrderId, total, selectedPkg, selectedAddOnsList);
+      sendOrderConfirmationEmail(orderId, total, selectedPkg, selectedAddOnsList);
+      sendAdminNotification(orderId, total, selectedPkg, selectedAddOnsList);
 
       // Create referral record if a referral code was used
       if (formData.referralCode) {
-        await createReferralRecord(tempOrderId, formData.referralCode, formData.email, selectedPkg?.name || "");
+        await createReferralRecord(orderId, formData.referralCode, formData.email, selectedPkg?.name || "");
       }
 
       // Store WhatsApp URL, order ID, and details for thank you page
-      const whatsappUrl = getWhatsAppUrl(tempOrderId, total);
+      const whatsappUrl = getWhatsAppUrl(orderId, total);
       sessionStorage.setItem("vibelink_whatsapp_url", whatsappUrl);
-      sessionStorage.setItem("vibelink_order_id", tempOrderId);
+      sessionStorage.setItem("vibelink_order_id", orderId);
       sessionStorage.setItem("vibelink_order_email", formData.email);
       sessionStorage.setItem("vibelink_order_total", total.toString());
       sessionStorage.setItem("vibelink_order_name", formData.fullName);
