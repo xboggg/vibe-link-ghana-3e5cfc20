@@ -203,7 +203,7 @@ export default function OrderDetails() {
         {/* Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-blue-950/20 dark:via-purple-950/20 dark:to-pink-950/20" />
 
-        <div className="container relative z-10 mx-auto px-4 max-w-3xl py-8 md:py-12">
+        <div className="container relative z-10 mx-auto px-4 max-w-3xl pt-24 pb-12">
           {/* Action Buttons - No Print */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
