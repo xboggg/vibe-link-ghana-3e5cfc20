@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import SEO from "@/components/SEO";
 
 type OrderStatus = "pending" | "in_progress" | "draft_ready" | "revision" | "completed" | "cancelled";
-type PaymentStatus = "pending" | "partial" | "paid";
+type PaymentStatus = "pending" | "partial" | "paid" | "fully_paid";
 
 interface Order {
   id: string;
@@ -25,9 +25,13 @@ interface Order {
   created_at: string;
   preferred_delivery_date: string | null;
   client_email: string;
-  deposit_paid: boolean;
-  balance_paid: boolean;
 }
+
+// Derive payment status from payment_status field
+const getPaymentFlags = (paymentStatus: string) => ({
+  deposit_paid: paymentStatus === "partial" || paymentStatus === "paid" || paymentStatus === "fully_paid",
+  balance_paid: paymentStatus === "paid" || paymentStatus === "fully_paid",
+});
 
 const statusConfig: Record<OrderStatus, { label: string; color: string; icon: typeof Package }> = {
   pending: { label: "Pending", color: "bg-yellow-500", icon: Clock },
@@ -42,6 +46,7 @@ const paymentStatusConfig: Record<PaymentStatus, { label: string; color: string 
   pending: { label: "Awaiting Deposit", color: "bg-yellow-500" },
   partial: { label: "Deposit Paid", color: "bg-blue-500" },
   paid: { label: "Fully Paid", color: "bg-green-500" },
+  fully_paid: { label: "Fully Paid", color: "bg-green-500" },
 };
 
 export default function TrackOrder() {
@@ -230,7 +235,8 @@ export default function TrackOrder() {
 
   const StatusIcon = order ? statusConfig[order.order_status].icon : Package;
   const depositAmount = order ? order.total_price * 0.5 : 0;
-  const showPayBalanceButton = order && order.deposit_paid && !order.balance_paid;
+  const paymentFlags = order ? getPaymentFlags(order.payment_status) : { deposit_paid: false, balance_paid: false };
+  const showPayBalanceButton = order && paymentFlags.deposit_paid && !paymentFlags.balance_paid;
 
   return (
     <Layout>
@@ -563,7 +569,7 @@ export default function TrackOrder() {
                             <span className="text-sm">50% Deposit</span>
                             <div className="flex items-center gap-2">
                               <span className="font-medium">GH₵ {depositAmount.toFixed(2)}</span>
-                              {order.deposit_paid ? (
+                              {paymentFlags.deposit_paid ? (
                                 <CheckCircle className="h-4 w-4 text-green-500" />
                               ) : (
                                 <Clock className="h-4 w-4 text-yellow-500" />
@@ -574,7 +580,7 @@ export default function TrackOrder() {
                             <span className="text-sm">50% Balance</span>
                             <div className="flex items-center gap-2">
                               <span className="font-medium">GH₵ {depositAmount.toFixed(2)}</span>
-                              {order.balance_paid ? (
+                              {paymentFlags.balance_paid ? (
                                 <CheckCircle className="h-4 w-4 text-green-500" />
                               ) : (
                                 <Clock className="h-4 w-4 text-yellow-500" />
