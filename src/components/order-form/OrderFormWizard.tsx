@@ -380,32 +380,34 @@ ${formData.designNotes ? `🎯 *Design Notes:* ${formData.designNotes}` : ""}`;
         orderData.referral_code = formData.referralCode;
       }
 
-      const { data, error } = await supabase.from("orders").insert(orderData).select("id").single();
+      // Insert order - don't use .select().single() as RLS may prevent reading back
+      const { error: insertError } = await supabase.from("orders").insert(orderData);
 
-      if (error) {
-        console.error("Error submitting order:", error);
-        throw error;
+      if (insertError) {
+        console.error("Error submitting order:", insertError);
+        throw insertError;
       }
-      
+
+      // Generate a temporary order ID for display purposes
+      const tempOrderId = `VL-${Date.now().toString(36).toUpperCase()}`;
+
       // Send confirmation email and admin notification
-      if (data?.id) {
-        sendOrderConfirmationEmail(data.id, total, selectedPkg, selectedAddOnsList);
-        sendAdminNotification(data.id, total, selectedPkg, selectedAddOnsList);
+      sendOrderConfirmationEmail(tempOrderId, total, selectedPkg, selectedAddOnsList);
+      sendAdminNotification(tempOrderId, total, selectedPkg, selectedAddOnsList);
 
-        // Create referral record if a referral code was used
-        if (formData.referralCode) {
-          await createReferralRecord(data.id, formData.referralCode, formData.email, selectedPkg?.name || "");
-        }
-
-        // Store WhatsApp URL, order ID, and details for thank you page
-        const whatsappUrl = getWhatsAppUrl(data.id, total);
-        sessionStorage.setItem("vibelink_whatsapp_url", whatsappUrl);
-        sessionStorage.setItem("vibelink_order_id", data.id);
-        sessionStorage.setItem("vibelink_order_email", formData.email);
-        sessionStorage.setItem("vibelink_order_total", total.toString());
-        sessionStorage.setItem("vibelink_order_name", formData.fullName);
-        sessionStorage.setItem("vibelink_order_event_title", formData.eventTitle);
+      // Create referral record if a referral code was used
+      if (formData.referralCode) {
+        await createReferralRecord(tempOrderId, formData.referralCode, formData.email, selectedPkg?.name || "");
       }
+
+      // Store WhatsApp URL, order ID, and details for thank you page
+      const whatsappUrl = getWhatsAppUrl(tempOrderId, total);
+      sessionStorage.setItem("vibelink_whatsapp_url", whatsappUrl);
+      sessionStorage.setItem("vibelink_order_id", tempOrderId);
+      sessionStorage.setItem("vibelink_order_email", formData.email);
+      sessionStorage.setItem("vibelink_order_total", total.toString());
+      sessionStorage.setItem("vibelink_order_name", formData.fullName);
+      sessionStorage.setItem("vibelink_order_event_title", formData.eventTitle);
       
       onComplete?.(formData);
     } catch (error) {
