@@ -155,9 +155,17 @@ export const ContactStep = ({
 
       setErrors({});
       await onSubmit();
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Submission error:", error);
-      toast.error("Something went wrong. Please try again.");
+      // Show more specific error message for debugging
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      const supabaseError = (error as { code?: string; details?: string })?.code;
+      if (supabaseError) {
+        console.error("Supabase error code:", supabaseError);
+        toast.error(`Database error: ${supabaseError}. Please try again.`);
+      } else {
+        toast.error(`Error: ${errorMessage}. Please try again.`);
+      }
       setIsVerifying(false);
     }
   };
