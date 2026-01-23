@@ -757,12 +757,8 @@ export default function CustomerPortal() {
                   </TabsContent>
                 </Tabs>
               ) : (
-                <Card>
-                  <CardContent className="py-12 text-center">
-                    <Package className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                    <p className="text-muted-foreground">Select an order to view details</p>
-                  </CardContent>
-                </Card>
+                // No orders - show referral program directly for referral-only users
+                <ReferralProgram customerEmail={email} customerName={customerName} />
               )}
             </div>
           </div>
