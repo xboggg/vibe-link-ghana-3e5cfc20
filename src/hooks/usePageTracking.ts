@@ -59,7 +59,7 @@ export const usePageTracking = () => {
       try {
         const sessionId = getSessionId();
         pageEntryTime.current = Date.now();
-        
+
         const { data, error } = await supabase.from("page_views").insert({
           page_path: location.pathname,
           page_title: document.title,
@@ -76,9 +76,9 @@ export const usePageTracking = () => {
         if (!error && data) {
           currentPageViewId.current = data.id;
         }
-      } catch (error) {
+        // Silently ignore errors - table may not exist
+      } catch {
         // Silently fail - don't break the app for analytics
-        console.error("Analytics tracking error:", error);
       }
     };
 
