@@ -32,7 +32,7 @@ interface ContactStepProps {
   updateFormData: (updates: Partial<OrderFormData>) => void;
   onNext: () => void;
   onPrev: () => void;
-  onSubmit: () => void;
+  onSubmit: () => Promise<void>;
   isSubmitting: boolean;
   total: number;
 }
@@ -93,8 +93,9 @@ export const ContactStep = ({
   }, []);
 
   const executeRecaptcha = useCallback(async (): Promise<string | null> => {
-    if (!recaptchaLoaded || !window.grecaptcha) {
-      toast.error("Security verification not ready. Please wait.");
+    if (!window.grecaptcha) {
+      // reCAPTCHA not available - proceed without verification
+      console.warn("reCAPTCHA not available, proceeding without verification");
       return null;
     }
 
@@ -105,10 +106,10 @@ export const ContactStep = ({
       return token;
     } catch (error) {
       console.error("reCAPTCHA execution error:", error);
-      toast.error("Security verification failed. Please refresh and try again.");
+      // Don't block form submission, just proceed without verification
       return null;
     }
-  }, [recaptchaLoaded]);
+  }, []);
 
   const validateAndSubmit = async () => {
     const result = contactSchema.safeParse({
@@ -153,16 +154,15 @@ export const ContactStep = ({
       }
 
       setErrors({});
-      onSubmit();
+      await onSubmit();
     } catch (error) {
       console.error("Submission error:", error);
       toast.error("Something went wrong. Please try again.");
-    } finally {
       setIsVerifying(false);
     }
   };
 
-  const isValid = formData.fullName && formData.email && formData.phone && recaptchaLoaded;
+  const isValid = formData.fullName && formData.email && formData.phone;
 
   const clearError = (field: string) => {
     setErrors((prev) => ({ ...prev, [field]: "" }));
