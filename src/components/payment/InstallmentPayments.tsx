@@ -209,7 +209,7 @@ export function InstallmentPaymentSelector({
                                 {inst.installment_number === 1 ? "Due now" : format(inst.due_date, "MMM d, yyyy")}
                               </span>
                               <span className="font-medium">
-                                GH???{inst.amount.toFixed(2)}
+                                GH₵{inst.amount.toFixed(2)}
                               </span>
                             </div>
                           ))}
@@ -218,7 +218,7 @@ export function InstallmentPaymentSelector({
                     </div>
                     <div className="text-right">
                       <p className="font-bold text-lg">
-                        GH???{schedule[0].amount.toFixed(2)}
+                        GH₵{schedule[0].amount.toFixed(2)}
                       </p>
                       <p className="text-xs text-muted-foreground">
                         {plan.installments === 1 ? "Total" : "Due now"}
@@ -303,8 +303,8 @@ export function InstallmentTracker({ orderId }: { orderId: string }) {
       <CardContent className="space-y-4">
         <div>
           <div className="flex justify-between text-sm mb-2">
-            <span>GH???{paidAmount.toFixed(2)} paid</span>
-            <span>GH???{installment.total_amount.toFixed(2)} total</span>
+            <span>GH₵{paidAmount.toFixed(2)} paid</span>
+            <span>GH₵{installment.total_amount.toFixed(2)} total</span>
           </div>
           <Progress value={progressPercent} className="h-2" />
         </div>
@@ -342,7 +342,7 @@ export function InstallmentTracker({ orderId }: { orderId: string }) {
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="font-medium">GH???{inst.amount.toFixed(2)}</p>
+                  <p className="font-medium">GH₵{inst.amount.toFixed(2)}</p>
                   {inst.status === "paid" ? (
                     <Badge className="bg-green-500">Paid</Badge>
                   ) : isOverdue ? (

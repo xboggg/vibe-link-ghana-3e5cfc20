@@ -708,7 +708,7 @@ export default function CustomerPortal() {
                           </div>
                           <div>
                             <p className="text-sm text-muted-foreground">Total Price</p>
-                            <p className="font-medium">GH???{selectedOrder.total_price.toLocaleString()}</p>
+                            <p className="font-medium">GH₵{selectedOrder.total_price.toLocaleString()}</p>
                           </div>
                         </div>
 
@@ -737,7 +737,7 @@ export default function CustomerPortal() {
                         {!selectedOrder.balance_paid && selectedOrder.deposit_paid && (
                           <Button className="w-full">
                             <CreditCard className="h-4 w-4 mr-2" />
-                            Pay Balance (GH???{(selectedOrder.total_price * 0.7).toLocaleString()})
+                            Pay Balance (GH₵{(selectedOrder.total_price * 0.7).toLocaleString()})
                           </Button>
                         )}
                       </CardContent>

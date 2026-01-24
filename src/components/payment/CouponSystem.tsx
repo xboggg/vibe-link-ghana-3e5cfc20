@@ -66,7 +66,7 @@ export function CouponSystem({
       }
 
       if (data.min_order_amount && orderTotal < data.min_order_amount) {
-        toast.error(`Minimum order amount is GH???${data.min_order_amount}`);
+        toast.error(`Minimum order amount is GH₵${data.min_order_amount}`);
         return;
       }
 
@@ -84,7 +84,7 @@ export function CouponSystem({
       setAppliedDetails(data);
       setDiscountAmount(discount);
       onApplyCoupon(discount, data.code);
-      toast.success(`Coupon applied! You save GH???${discount.toFixed(2)}`);
+      toast.success(`Coupon applied! You save GH₵${discount.toFixed(2)}`);
     } catch (err) {
       console.error("Coupon validation error:", err);
       toast.error("Failed to validate coupon");
@@ -119,8 +119,8 @@ export function CouponSystem({
               <p className="text-sm text-green-600 dark:text-green-400">
                 {appliedDetails.discount_type === "percentage"
                   ? `${appliedDetails.discount_value}% off`
-                  : `GH???${appliedDetails.discount_value} off`}
-                {" ?? "}You save GH???{discountAmount.toFixed(2)}
+                  : `GH₵${appliedDetails.discount_value} off`}
+                {" ?? "}You save GH₵{discountAmount.toFixed(2)}
               </p>
             </div>
           </div>

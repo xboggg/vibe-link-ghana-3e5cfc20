@@ -352,7 +352,7 @@ export function ReferralProgram({ customerEmail, customerName }: ReferralProgram
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Total Earned</p>
-                <p className="text-2xl font-bold">GH???{stats.total_earnings}</p>
+                <p className="text-2xl font-bold">GH₵{stats.total_earnings}</p>
               </div>
               <TrendingUp className="h-8 w-8 text-blue-500/50" />
             </div>
@@ -363,7 +363,7 @@ export function ReferralProgram({ customerEmail, customerName }: ReferralProgram
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Available</p>
-                <p className="text-2xl font-bold text-green-600">GH???{stats.available_balance}</p>
+                <p className="text-2xl font-bold text-green-600">GH₵{stats.available_balance}</p>
               </div>
               <Wallet className="h-8 w-8 text-green-500/50" />
             </div>
