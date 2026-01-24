@@ -133,7 +133,7 @@ const faqs = [
   },
   {
     question: "How does MoMo collection work for contributions?",
-    answer: "For packages with MoMo collection, guests can contribute directly through your invitation. Funds go to your MoMo number, and you can track all contributions in your dashboard. We charge a small 2.5% processing fee.",
+    answer: "For packages with MoMo collection, guests can contribute directly through your invitation. Funds go straight to your own MoMo number—no fees, no middleman. You can track all contributions in real-time from your dashboard.",
   },
   {
     question: "What if I need my invitation urgently?",
