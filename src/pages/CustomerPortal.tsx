@@ -654,7 +654,7 @@ export default function CustomerPortal() {
 
             <div className="lg:col-span-3">
               {selectedOrder ? (
-                <Tabs defaultValue="timeline" className="space-y-4">
+                <Tabs defaultValue="timeline" key={selectedOrder.id} className="space-y-4">
                   <TabsList className="grid w-full grid-cols-5">
                     <TabsTrigger value="timeline">
                       <Clock className="h-4 w-4 mr-2 hidden sm:block" />
