@@ -17,7 +17,7 @@ export const portfolioItems: PortfolioItem[] = [
     type: "Anniversaries",
     description: "A beautiful 25th anniversary celebration with elegant gold accents.",
     image: "/anniversary-portfolio.jpg",
-    demoUrl: "https://evmin-rsvp.netlify.app/",
+    demoUrl: "https://evmin.vibelinkgh.com/",
     slug: "evans-mina-anniversary",
     features: ["Photo gallery", "RSVP tracking", "Music player", "Countdown timer"],
     imagePosition: "top",
