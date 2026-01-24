@@ -37,10 +37,11 @@ export const portfolioItems: PortfolioItem[] = [
     title: "In Loving Memory of Nana Yaw",
     type: "Funerals",
     description: "A dignified digital tribute celebrating a life well-lived with grace.",
-    image: "https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=800&q=80",
-    demoUrl: null,
+    image: "/nanayaw-portfolio.png",
+    demoUrl: "https://nanayaw.vibelinkgh.com/",
     slug: "nana-yaw-memorial",
     features: ["Memorial page", "Tribute wall", "Donation tracking"],
+    imagePosition: "top",
   },
   {
     id: 4,
