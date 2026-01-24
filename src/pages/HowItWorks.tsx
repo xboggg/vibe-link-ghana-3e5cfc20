@@ -202,7 +202,7 @@ const HowItWorks = () => {
       {/* Hero Section */}
       <section
         ref={heroRef}
-        className="relative pt-24 lg:pt-32 pb-20 bg-gradient-to-br from-[#6B46C1] via-[#553C9A] to-[#44337A] overflow-hidden"
+        className="relative pt-24 lg:pt-32 pb-40 lg:pb-48 bg-gradient-to-br from-[#6B46C1] via-[#553C9A] to-[#44337A] overflow-hidden"
       >
         <FloatingElements />
 
