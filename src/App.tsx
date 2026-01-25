@@ -27,6 +27,8 @@ import CookiePolicy from "./pages/CookiePolicy";
 import TrackOrder from "./pages/TrackOrder";
 import OrderDetails from "./pages/OrderDetails";
 import CustomerPortal from "./pages/CustomerPortal";
+import Survey from "./pages/Survey";
+import InvoiceView from "./pages/InvoiceView";
 import { ScrollToTop } from "@/components/ScrollToTop";
 
 const queryClient = new QueryClient();
@@ -69,6 +71,8 @@ const App = () => (
               <Route path="/order/:orderId" element={<OrderDetails />} />
               <Route path="/my-orders" element={<CustomerPortal />} />
               <Route path="/customer-portal" element={<CustomerPortal />} />
+              <Route path="/survey/:token" element={<Survey />} />
+              <Route path="/invoice/:invoiceNumber" element={<InvoiceView />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </PageTracker>

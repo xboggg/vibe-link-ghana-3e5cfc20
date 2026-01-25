@@ -15,6 +15,7 @@ import {
   Clock,
   Eye,
   ChevronDown,
+  ChevronRight,
   Phone,
   Mail,
   MessageCircle,
@@ -160,35 +161,78 @@ const paymentStatusColors: Record<PaymentStatus, string> = {
   fully_paid: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
 };
 
-const navItems = [
-  { id: "dashboard" as AdminSection, label: "Dashboard", icon: LayoutDashboard },
-  { id: "orders" as AdminSection, label: "Orders", icon: Package },
-  { id: "analytics" as AdminSection, label: "Analytics", icon: BarChart3 },
-  { id: "chatbot" as AdminSection, label: "Chatbot", icon: MessageCircle },
-  { id: "blog" as AdminSection, label: "Blog", icon: FileText },
-  { id: "testimonials" as AdminSection, label: "Testimonials", icon: Quote },
-  { id: "team" as AdminSection, label: "Team", icon: UsersRound },
-  { id: "newsletter" as AdminSection, label: "Newsletter", icon: Newspaper },
-  { id: "follow-ups" as AdminSection, label: "Follow-ups", icon: Send },
-  { id: "email-settings" as AdminSection, label: "Email Settings", icon: Mail },
-  { id: "users" as AdminSection, label: "User Management", icon: Shield },
-  { id: "abandoned-carts" as AdminSection, label: "Abandoned Carts", icon: ShoppingCart },
-  { id: "coupons" as AdminSection, label: "Coupons", icon: Tag },
-  { id: "referrals" as AdminSection, label: "Referrals", icon: Gift },
-  { id: "invoices" as AdminSection, label: "Invoices", icon: Receipt },
-  { id: "expenses" as AdminSection, label: "Expenses", icon: Wallet },
-  { id: "reports" as AdminSection, label: "Reports", icon: PieChart },
-  { id: "surveys" as AdminSection, label: "Surveys", icon: ClipboardList },
-  { id: "templates" as AdminSection, label: "Templates", icon: FileStack },
-  { id: "backup" as AdminSection, label: "Backup", icon: Download },
-  { id: "ai-emails" as AdminSection, label: "AI Emails", icon: Sparkles },
-  { id: "ai-summary" as AdminSection, label: "AI Summary", icon: Brain },
-  { id: "escalations" as AdminSection, label: "Escalations", icon: AlertTriangle },
-  { id: "segmentation" as AdminSection, label: "Segments", icon: Target },
-  { id: "seo-calendar" as AdminSection, label: "SEO Calendar", icon: Calendar },
-  { id: "funnel" as AdminSection, label: "Funnel", icon: Gauge },
-  { id: "currency" as AdminSection, label: "Currency", icon: DollarSign },
-  { id: "languages" as AdminSection, label: "Languages", icon: Globe },
+// Grouped navigation categories
+const navCategories = [
+  {
+    category: "Main",
+    icon: LayoutDashboard,
+    items: [
+      { id: "dashboard" as AdminSection, label: "Dashboard", icon: LayoutDashboard },
+      { id: "orders" as AdminSection, label: "Orders", icon: Package },
+    ],
+  },
+  {
+    category: "Analytics",
+    icon: BarChart3,
+    items: [
+      { id: "analytics" as AdminSection, label: "Analytics", icon: BarChart3 },
+      { id: "chatbot" as AdminSection, label: "Chatbot", icon: MessageCircle },
+      { id: "funnel" as AdminSection, label: "Funnel", icon: Gauge },
+    ],
+  },
+  {
+    category: "Content",
+    icon: FileText,
+    items: [
+      { id: "blog" as AdminSection, label: "Blog", icon: FileText },
+      { id: "testimonials" as AdminSection, label: "Testimonials", icon: Quote },
+      { id: "team" as AdminSection, label: "Team", icon: UsersRound },
+      { id: "newsletter" as AdminSection, label: "Newsletter", icon: Newspaper },
+    ],
+  },
+  {
+    category: "Marketing",
+    icon: Target,
+    items: [
+      { id: "coupons" as AdminSection, label: "Coupons", icon: Tag },
+      { id: "referrals" as AdminSection, label: "Referrals", icon: Gift },
+      { id: "abandoned-carts" as AdminSection, label: "Abandoned Carts", icon: ShoppingCart },
+      { id: "segmentation" as AdminSection, label: "Segments", icon: Target },
+      { id: "seo-calendar" as AdminSection, label: "SEO Calendar", icon: Calendar },
+    ],
+  },
+  {
+    category: "Finance",
+    icon: Wallet,
+    items: [
+      { id: "invoices" as AdminSection, label: "Invoices", icon: Receipt },
+      { id: "expenses" as AdminSection, label: "Expenses", icon: Wallet },
+      { id: "reports" as AdminSection, label: "Reports", icon: PieChart },
+    ],
+  },
+  {
+    category: "Automation",
+    icon: Sparkles,
+    items: [
+      { id: "follow-ups" as AdminSection, label: "Follow-ups", icon: Send },
+      { id: "email-settings" as AdminSection, label: "Email Settings", icon: Mail },
+      { id: "ai-emails" as AdminSection, label: "AI Emails", icon: Sparkles },
+      { id: "ai-summary" as AdminSection, label: "AI Summary", icon: Brain },
+      { id: "escalations" as AdminSection, label: "Escalations", icon: AlertTriangle },
+    ],
+  },
+  {
+    category: "System",
+    icon: Settings,
+    items: [
+      { id: "users" as AdminSection, label: "User Management", icon: Shield },
+      { id: "surveys" as AdminSection, label: "Surveys", icon: ClipboardList },
+      { id: "templates" as AdminSection, label: "Templates", icon: FileStack },
+      { id: "backup" as AdminSection, label: "Backup", icon: Download },
+      { id: "currency" as AdminSection, label: "Currency", icon: DollarSign },
+      { id: "languages" as AdminSection, label: "Languages", icon: Globe },
+    ],
+  },
 ];
 
 const Admin = () => {
@@ -208,6 +252,28 @@ const Admin = () => {
   const [paymentReference, setPaymentReference] = useState("");
   const [paymentHistory, setPaymentHistory] = useState<PaymentHistoryLog[]>([]);
   const [loadingPaymentHistory, setLoadingPaymentHistory] = useState(false);
+  const [expandedCategories, setExpandedCategories] = useState<string[]>(["Main"]);
+
+  // Toggle category expansion
+  const toggleCategory = (category: string) => {
+    setExpandedCategories(prev =>
+      prev.includes(category)
+        ? prev.filter(c => c !== category)
+        : [...prev, category]
+    );
+  };
+
+  // Handle menu click with scroll to top
+  const handleMenuClick = (sectionId: AdminSection, category: string) => {
+    setActiveSection(sectionId);
+    setSidebarOpen(false);
+    // Expand the category if not already expanded
+    if (!expandedCategories.includes(category)) {
+      setExpandedCategories(prev => [...prev, category]);
+    }
+    // Scroll main content to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   useEffect(() => {
     if (!loading && !user) {
@@ -996,27 +1062,56 @@ const Admin = () => {
           </div>
 
           {/* Navigation */}
-          <ScrollArea className="flex-1 py-4">
-            <nav className="px-3 space-y-1">
-              {navItems.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => {
-                    setActiveSection(item.id);
-                    setSidebarOpen(false);
-                  }}
-                  className={`
-                    w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all
-                    ${activeSection === item.id 
-                      ? 'bg-primary text-primary-foreground shadow-md' 
-                      : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                    }
-                  `}
-                >
-                  <item.icon className="h-5 w-5" />
-                  {item.label}
-                </button>
-              ))}
+          <ScrollArea className="flex-1 py-2">
+            <nav className="px-2 space-y-1">
+              {navCategories.map((cat) => {
+                const isExpanded = expandedCategories.includes(cat.category);
+                const hasActiveItem = cat.items.some(item => item.id === activeSection);
+
+                return (
+                  <div key={cat.category} className="mb-1">
+                    {/* Category Header */}
+                    <button
+                      onClick={() => toggleCategory(cat.category)}
+                      className={`
+                        w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-semibold transition-all
+                        ${hasActiveItem
+                          ? 'bg-primary/10 text-primary'
+                          : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                        }
+                      `}
+                    >
+                      <div className="flex items-center gap-2">
+                        <cat.icon className="h-4 w-4" />
+                        <span>{cat.category}</span>
+                      </div>
+                      <ChevronRight className={`h-4 w-4 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
+                    </button>
+
+                    {/* Category Items */}
+                    {isExpanded && (
+                      <div className="ml-2 mt-1 space-y-0.5 border-l-2 border-muted pl-2">
+                        {cat.items.map((item) => (
+                          <button
+                            key={item.id}
+                            onClick={() => handleMenuClick(item.id, cat.category)}
+                            className={`
+                              w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm transition-all
+                              ${activeSection === item.id
+                                ? 'bg-primary text-primary-foreground shadow-sm'
+                                : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                              }
+                            `}
+                          >
+                            <item.icon className="h-4 w-4" />
+                            {item.label}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </nav>
           </ScrollArea>
 
@@ -1057,7 +1152,7 @@ const Admin = () => {
             <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(true)}>
               <Menu className="h-6 w-6" />
             </Button>
-            <h1 className="font-semibold">{navItems.find(i => i.id === activeSection)?.label}</h1>
+            <h1 className="font-semibold">{navCategories.flatMap(c => c.items).find(i => i.id === activeSection)?.label}</h1>
             <div className="w-10" />
           </div>
         </header>
