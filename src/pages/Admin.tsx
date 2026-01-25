@@ -769,7 +769,7 @@ const Admin = () => {
                       <p className="text-xs text-muted-foreground mt-1">Fully paid orders</p>
                     </div>
                     <div className="p-3 rounded-xl bg-green-500/10">
-                      <DollarSign className="h-6 w-6 text-green-600" />
+                      <span className="text-2xl font-bold text-green-600">₵</span>
                     </div>
                   </div>
                 </CardContent>
