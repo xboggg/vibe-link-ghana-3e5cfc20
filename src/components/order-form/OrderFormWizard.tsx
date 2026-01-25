@@ -350,58 +350,44 @@ ${formData.designNotes}` : ""}`;
       }).filter(Boolean) as { id: string; name: string; price: number }[];
       
       const total = calculateTotal();
-      
-      // Build order data object (reference_images removed - column doesn't exist)
-      const orderData: Record<string, unknown> = {
-        event_type: formData.eventType,
-        event_title: formData.eventTitle,
-        event_date: formData.eventDate ? formData.eventDate.toISOString().split("T")[0] : null,
-        event_time: formData.eventTime || null,
-        venue_name: formData.eventVenue || null,
-        venue_address: formData.eventAddress || null,
-        couple_names: formData.celebrantNames || null,
-        special_message: formData.additionalInfo || null,
-        color_palette: formData.colorPalette || null,
-        custom_colors: formData.customColors.length > 0 ? formData.customColors : null,
-        style_preferences: formData.stylePreference ? [formData.stylePreference] : null,
-        package_id: formData.selectedPackage,
-        package_name: selectedPkg?.name || "",
-        package_price: selectedPkg?.price || 0,
-        add_ons: selectedAddOnsList,
-        delivery_type: formData.deliveryUrgency,
-        preferred_delivery_date: formData.preferredDeliveryDate
+
+      // Insert order using secure RPC function that bypasses RLS for returning ID
+      const { data: orderId, error: insertError } = await supabase.rpc('insert_order', {
+        p_event_type: formData.eventType,
+        p_event_title: formData.eventTitle,
+        p_event_date: formData.eventDate ? formData.eventDate.toISOString().split("T")[0] : null,
+        p_event_time: formData.eventTime || null,
+        p_venue_name: formData.eventVenue || null,
+        p_venue_address: formData.eventAddress || null,
+        p_couple_names: formData.celebrantNames || null,
+        p_special_message: formData.additionalInfo || null,
+        p_color_palette: formData.colorPalette || null,
+        p_custom_colors: formData.customColors.length > 0 ? formData.customColors : null,
+        p_style_preferences: formData.stylePreference ? [formData.stylePreference] : null,
+        p_package_id: formData.selectedPackage,
+        p_package_name: selectedPkg?.name || "",
+        p_package_price: selectedPkg?.price || 0,
+        p_add_ons: selectedAddOnsList,
+        p_delivery_type: formData.deliveryUrgency,
+        p_preferred_delivery_date: formData.preferredDeliveryDate
           ? formData.preferredDeliveryDate.toISOString().split("T")[0]
           : null,
-        special_requests: formData.designNotes || null,
-        client_name: formData.fullName,
-        client_email: formData.email,
-        client_phone: formData.phone,
-        client_whatsapp: formData.whatsapp || null,
-        total_price: total,
-      };
-
-      // Only add referral_code if it exists (column may not exist in older schemas)
-      if (formData.referralCode) {
-        orderData.referral_code = formData.referralCode;
-      }
-
-      // Insert order with explicit returning option
-      const { data: insertData, error: insertError } = await supabase
-        .from("orders")
-        .insert(orderData)
-        .select("id");
+        p_special_requests: formData.designNotes || null,
+        p_client_name: formData.fullName,
+        p_client_email: formData.email,
+        p_client_phone: formData.phone,
+        p_client_whatsapp: formData.whatsapp || null,
+        p_total_price: total,
+        p_referral_code: formData.referralCode || null,
+      });
 
       if (insertError) {
         console.error("Error submitting order:", insertError);
         console.error("Error details:", JSON.stringify(insertError, null, 2));
-        console.error("Order data attempted:", JSON.stringify(orderData, null, 2));
         throw insertError;
       }
 
-      console.log("Order inserted successfully:", insertData);
-
-      // Use returned ID if available, otherwise generate a temporary one
-      const orderId = insertData?.[0]?.id || `VL-${Date.now().toString(36).toUpperCase()}`;
+      console.log("Order inserted successfully, ID:", orderId);
 
       // Send confirmation email and admin notification
       sendOrderConfirmationEmail(orderId, total, selectedPkg, selectedAddOnsList);
