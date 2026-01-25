@@ -200,6 +200,13 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Sending payment reminder email to:", clientEmail);
 
+    // Check if Resend API key is configured
+    const resendApiKey = Deno.env.get("RESEND_API_KEY");
+    if (!resendApiKey) {
+      console.error("RESEND_API_KEY is not configured");
+      throw new Error("Email service not configured. Please contact support.");
+    }
+
     const emailResponse = await resend.emails.send({
       from: "VibeLink Ghana <orders@vibelinkgh.com>",
       to: [clientEmail],
@@ -207,15 +214,25 @@ const handler = async (req: Request): Promise<Response> => {
       html: emailHtml,
     });
 
+    // Check for Resend API errors
+    if ((emailResponse as any).error) {
+      console.error("Resend API error:", (emailResponse as any).error);
+      throw new Error((emailResponse as any).error.message || "Failed to send email");
+    }
+
     console.log("Payment reminder email sent successfully:", emailResponse);
 
-    // Log the manual reminder
-    await supabase.from("payment_reminder_logs").insert({
-      order_id: orderId,
-      reminder_type: "manual",
-      recipient_email: clientEmail,
-      success: true,
-    });
+    // Log the manual reminder (non-blocking - don't let logging failure stop the response)
+    try {
+      await supabase.from("payment_reminder_logs").insert({
+        order_id: orderId,
+        reminder_type: "manual",
+        recipient_email: clientEmail,
+        success: true,
+      });
+    } catch (logError) {
+      console.error("Failed to log payment reminder (non-critical):", logError);
+    }
 
     return new Response(JSON.stringify({ success: true, data: emailResponse }), {
       status: 200,
@@ -223,6 +240,25 @@ const handler = async (req: Request): Promise<Response> => {
     });
   } catch (error: any) {
     console.error("Error sending payment reminder:", error);
+
+    // Try to log the failed attempt (non-blocking)
+    try {
+      const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+      const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+      const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+      const body = await req.clone().json().catch(() => ({}));
+      await supabase.from("payment_reminder_logs").insert({
+        order_id: body.orderId || null,
+        reminder_type: "manual",
+        recipient_email: body.clientEmail || "unknown",
+        success: false,
+        error_message: error.message,
+      });
+    } catch (logError) {
+      console.error("Failed to log error (non-critical):", logError);
+    }
+
     return new Response(
       JSON.stringify({ success: false, error: error.message }),
       {
