@@ -427,7 +427,7 @@ const Admin = () => {
 
   const updateOrderStatus = async (orderId: string, status: OrderStatus) => {
     const order = orders.find(o => o.id === orderId);
-    
+
     const { error } = await supabase
       .from("orders")
       .update({ order_status: status })
@@ -437,6 +437,20 @@ const Admin = () => {
       toast.error("Failed to update order status");
     } else {
       toast.success("Order status updated");
+
+      // If order is completed, also mark all pending/in-progress revisions as completed
+      if (status === "completed") {
+        await supabase
+          .from("order_revisions")
+          .update({
+            status: "completed",
+            admin_response: "Order completed",
+            updated_at: new Date().toISOString()
+          })
+          .eq("order_id", orderId)
+          .in("status", ["pending", "in_progress"]);
+      }
+
       if (order) {
         sendStatusEmail(order, status);
       }
