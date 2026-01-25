@@ -118,6 +118,7 @@ import { CalendarView } from "@/components/admin/CalendarView";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import type { Database } from "@/integrations/supabase/types";
 
 type Order = Database["public"]["Tables"]["orders"]["Row"];
@@ -144,6 +145,16 @@ interface PaymentHistoryLog {
   recorded_by: string | null;
   notes: string | null;
   created_at: string;
+}
+
+interface RevisionRequest {
+  id: string;
+  order_id: string;
+  request_text: string;
+  status: string;
+  admin_response: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 type AdminSection = "dashboard" | "orders" | "analytics" | "chatbot" | "blog" | "testimonials" | "newsletter" | "follow-ups" | "email-settings" | "users" | "team" | "abandoned-carts" | "coupons" | "referrals" | "invoices" | "expenses" | "reports" | "surveys" | "templates" | "backup" | "ai-emails" | "ai-summary" | "escalations" | "segmentation" | "seo-calendar" | "funnel" | "currency" | "languages";
@@ -257,6 +268,10 @@ const Admin = () => {
   const [expandedCategories, setExpandedCategories] = useState<string[]>(["Main"]);
   const [finalLink, setFinalLink] = useState("");
   const [savingFinalLink, setSavingFinalLink] = useState(false);
+  const [revisionRequests, setRevisionRequests] = useState<RevisionRequest[]>([]);
+  const [loadingRevisions, setLoadingRevisions] = useState(false);
+  const [adminResponse, setAdminResponse] = useState("");
+  const [respondingToRevision, setRespondingToRevision] = useState<string | null>(null);
 
   // Toggle category expansion
   const toggleCategory = (category: string) => {
@@ -295,10 +310,12 @@ const Admin = () => {
     if (selectedOrder) {
       fetchReminderLogs(selectedOrder.id);
       fetchPaymentHistory(selectedOrder.id);
+      fetchRevisionRequests(selectedOrder.id);
       setFinalLink((selectedOrder as any).final_link || "");
     } else {
       setReminderLogs([]);
       setPaymentHistory([]);
+      setRevisionRequests([]);
       setFinalLink("");
     }
   }, [selectedOrder]);
@@ -349,6 +366,63 @@ const Admin = () => {
       setPaymentHistory((data as PaymentHistoryLog[]) || []);
     }
     setLoadingPaymentHistory(false);
+  };
+
+  const fetchRevisionRequests = async (orderId: string) => {
+    setLoadingRevisions(true);
+    const { data, error } = await supabase
+      .from("order_revisions")
+      .select("*")
+      .eq("order_id", orderId)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching revision requests:", error);
+    } else {
+      setRevisionRequests((data as RevisionRequest[]) || []);
+    }
+    setLoadingRevisions(false);
+  };
+
+  const respondToRevision = async (revisionId: string, status: "in_progress" | "completed") => {
+    if (!adminResponse.trim() && status === "completed") {
+      toast.error("Please add a response before marking as completed");
+      return;
+    }
+
+    setRespondingToRevision(revisionId);
+    try {
+      const { error } = await supabase
+        .from("order_revisions")
+        .update({
+          status,
+          admin_response: adminResponse.trim() || null,
+          updated_at: new Date().toISOString()
+        })
+        .eq("id", revisionId);
+
+      if (error) throw error;
+
+      // If completed, update order status back to draft_ready
+      if (status === "completed" && selectedOrder) {
+        await supabase
+          .from("orders")
+          .update({ order_status: "draft_ready" })
+          .eq("id", selectedOrder.id);
+        fetchOrders();
+      }
+
+      toast.success(status === "completed" ? "Revision completed!" : "Revision marked as in progress");
+      setAdminResponse("");
+      if (selectedOrder) {
+        fetchRevisionRequests(selectedOrder.id);
+      }
+    } catch (err) {
+      console.error("Error responding to revision:", err);
+      toast.error("Failed to update revision");
+    } finally {
+      setRespondingToRevision(null);
+    }
   };
 
   const updateOrderStatus = async (orderId: string, status: OrderStatus) => {
@@ -1476,6 +1550,114 @@ const Admin = () => {
                   )}
                 </div>
               </div>
+
+              {/* Revision Requests Section */}
+              {revisionRequests.length > 0 && (
+                <>
+                  <Separator />
+                  <div>
+                    <h4 className="font-semibold mb-3 flex items-center gap-2">
+                      <FileText className="h-4 w-4" />
+                      Revision Requests ({revisionRequests.length})
+                    </h4>
+                    <div className="space-y-4">
+                      {revisionRequests.map((revision) => (
+                        <div
+                          key={revision.id}
+                          className={`p-4 rounded-lg border ${
+                            revision.status === "pending"
+                              ? "bg-yellow-50 border-yellow-200 dark:bg-yellow-950 dark:border-yellow-800"
+                              : revision.status === "in_progress"
+                              ? "bg-blue-50 border-blue-200 dark:bg-blue-950 dark:border-blue-800"
+                              : "bg-green-50 border-green-200 dark:bg-green-950 dark:border-green-800"
+                          }`}
+                        >
+                          <div className="flex items-start justify-between mb-3">
+                            <div>
+                              <p className="text-xs text-muted-foreground">
+                                {format(new Date(revision.created_at), "MMM d, yyyy 'at' h:mm a")}
+                              </p>
+                            </div>
+                            <Badge
+                              variant="outline"
+                              className={
+                                revision.status === "pending"
+                                  ? "bg-yellow-100 text-yellow-800 border-yellow-300"
+                                  : revision.status === "in_progress"
+                                  ? "bg-blue-100 text-blue-800 border-blue-300"
+                                  : "bg-green-100 text-green-800 border-green-300"
+                              }
+                            >
+                              {revision.status === "pending"
+                                ? "Pending"
+                                : revision.status === "in_progress"
+                                ? "In Progress"
+                                : "Completed"}
+                            </Badge>
+                          </div>
+
+                          <div className="bg-white dark:bg-gray-900 p-3 rounded-lg mb-3">
+                            <p className="text-sm font-medium mb-1">Customer Request:</p>
+                            <p className="text-sm text-muted-foreground">{revision.request_text}</p>
+                          </div>
+
+                          {revision.admin_response && (
+                            <div className="bg-primary/5 p-3 rounded-lg border-l-2 border-primary mb-3">
+                              <p className="text-sm font-medium mb-1">Your Response:</p>
+                              <p className="text-sm">{revision.admin_response}</p>
+                            </div>
+                          )}
+
+                          {revision.status !== "completed" && (
+                            <div className="space-y-3">
+                              <Textarea
+                                placeholder="Add your response or notes about the revision..."
+                                value={respondingToRevision === revision.id ? adminResponse : ""}
+                                onChange={(e) => {
+                                  setRespondingToRevision(revision.id);
+                                  setAdminResponse(e.target.value);
+                                }}
+                                onFocus={() => setRespondingToRevision(revision.id)}
+                                rows={2}
+                                className="text-sm"
+                              />
+                              <div className="flex gap-2">
+                                {revision.status === "pending" && (
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => respondToRevision(revision.id, "in_progress")}
+                                    disabled={respondingToRevision === revision.id && !adminResponse}
+                                  >
+                                    {respondingToRevision === revision.id ? (
+                                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                    ) : (
+                                      <Clock className="h-4 w-4 mr-2" />
+                                    )}
+                                    Start Working
+                                  </Button>
+                                )}
+                                <Button
+                                  size="sm"
+                                  onClick={() => respondToRevision(revision.id, "completed")}
+                                  disabled={respondingToRevision === revision.id && !adminResponse}
+                                >
+                                  {respondingToRevision === revision.id ? (
+                                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                  ) : (
+                                    <CheckCircle className="h-4 w-4 mr-2" />
+                                  )}
+                                  Mark Complete
+                                </Button>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
 
               <Separator />
 
