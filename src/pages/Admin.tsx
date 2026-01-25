@@ -659,6 +659,12 @@ const Admin = () => {
   const depositReceived = orders
     .filter((o) => o.payment_status === "deposit_paid")
     .reduce((sum, o) => sum + Number(o.total_price) * 0.5, 0);
+  const pendingPayments = orders
+    .filter((o) => o.payment_status === "pending")
+    .reduce((sum, o) => sum + Number(o.total_price), 0) +
+    orders
+    .filter((o) => o.payment_status === "deposit_paid")
+    .reduce((sum, o) => sum + Number(o.total_price) * 0.5, 0);
   const thisMonthOrders = orders.filter(o => {
     const orderDate = new Date(o.created_at);
     const now = new Date();
@@ -723,7 +729,7 @@ const Admin = () => {
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
               <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
                 <CardContent className="pt-6">
                   <div className="flex items-center justify-between">
@@ -779,6 +785,21 @@ const Admin = () => {
                     </div>
                     <div className="p-3 rounded-xl bg-blue-500/10">
                       <CreditCard className="h-6 w-6 text-blue-600" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gradient-to-br from-red-500/10 to-red-500/5 border-red-500/20">
+                <CardContent className="pt-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Pending Amount</p>
+                      <p className="text-3xl font-bold">₵{pendingPayments.toLocaleString()}</p>
+                      <p className="text-xs text-muted-foreground mt-1">Awaiting payment</p>
+                    </div>
+                    <div className="p-3 rounded-xl bg-red-500/10">
+                      <Wallet className="h-6 w-6 text-red-600" />
                     </div>
                   </div>
                 </CardContent>
