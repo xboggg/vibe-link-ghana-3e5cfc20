@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import {
   Clock, Package, Palette, Eye, CheckCircle,
-  FileEdit, Send, PartyPopper, XCircle
+  FileEdit, Send, PartyPopper, XCircle, ExternalLink, Copy, Share2
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 
@@ -16,6 +18,7 @@ interface Order {
   created_at: string;
   deposit_paid: boolean;
   balance_paid: boolean;
+  final_link?: string | null;
 }
 
 interface TimelineEvent {
@@ -144,6 +147,71 @@ export function OrderTimeline({ order }: OrderTimelineProps) {
               : statusSteps[currentStepIndex]?.description}
           </p>
         </div>
+
+        {/* Final Invitation Link - Show when completed and link is available */}
+        {order.order_status === "completed" && order.final_link && (
+          <div className="mb-6 p-5 rounded-xl bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border border-green-200 dark:border-green-800">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center">
+                <PartyPopper className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <h4 className="font-semibold text-green-800 dark:text-green-200">Your Invitation is Ready!</h4>
+                <p className="text-sm text-green-600 dark:text-green-400">Share it with your guests</p>
+              </div>
+            </div>
+
+            <div className="bg-white dark:bg-gray-900 rounded-lg p-3 mb-3 border border-green-200 dark:border-green-800">
+              <a
+                href={`https://${order.final_link.replace(/^https?:\/\//, '')}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline font-medium flex items-center gap-2 break-all"
+              >
+                {order.final_link}
+                <ExternalLink className="h-4 w-4 flex-shrink-0" />
+              </a>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                className="bg-white dark:bg-gray-900"
+                onClick={() => {
+                  navigator.clipboard.writeText(`https://${order.final_link?.replace(/^https?:\/\//, '')}`);
+                  toast.success("Link copied to clipboard!");
+                }}
+              >
+                <Copy className="h-4 w-4 mr-2" />
+                Copy Link
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                className="bg-white dark:bg-gray-900 text-green-600 border-green-300 hover:bg-green-50"
+                onClick={() => {
+                  const url = `https://${order.final_link?.replace(/^https?:\/\//, '')}`;
+                  const text = encodeURIComponent(`Check out my event invitation: ${url}`);
+                  window.open(`https://wa.me/?text=${text}`, '_blank');
+                }}
+              >
+                <Share2 className="h-4 w-4 mr-2" />
+                Share via WhatsApp
+              </Button>
+              <Button
+                size="sm"
+                className="bg-green-600 hover:bg-green-700"
+                onClick={() => {
+                  window.open(`https://${order.final_link?.replace(/^https?:\/\//, '')}`, '_blank');
+                }}
+              >
+                <ExternalLink className="h-4 w-4 mr-2" />
+                View Invitation
+              </Button>
+            </div>
+          </div>
+        )}
 
         {/* Timeline Events */}
         {events.length > 0 && (

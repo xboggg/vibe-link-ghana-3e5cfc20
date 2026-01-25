@@ -54,6 +54,8 @@ import {
   Target,
   Globe,
   Gauge,
+  Link2,
+  ExternalLink,
 } from "lucide-react";
 import { AnalyticsDashboard } from "@/components/admin/AnalyticsDashboard";
 import { OrderAnalytics } from "@/components/admin/OrderAnalytics";
@@ -253,6 +255,8 @@ const Admin = () => {
   const [paymentHistory, setPaymentHistory] = useState<PaymentHistoryLog[]>([]);
   const [loadingPaymentHistory, setLoadingPaymentHistory] = useState(false);
   const [expandedCategories, setExpandedCategories] = useState<string[]>(["Main"]);
+  const [finalLink, setFinalLink] = useState("");
+  const [savingFinalLink, setSavingFinalLink] = useState(false);
 
   // Toggle category expansion
   const toggleCategory = (category: string) => {
@@ -291,9 +295,11 @@ const Admin = () => {
     if (selectedOrder) {
       fetchReminderLogs(selectedOrder.id);
       fetchPaymentHistory(selectedOrder.id);
+      setFinalLink((selectedOrder as any).final_link || "");
     } else {
       setReminderLogs([]);
       setPaymentHistory([]);
+      setFinalLink("");
     }
   }, [selectedOrder]);
 
@@ -576,6 +582,41 @@ const Admin = () => {
       toast.error("Failed to record payment");
     } finally {
       setRecordingPayment(null);
+    }
+  };
+
+  const saveFinalLink = async () => {
+    if (!selectedOrder) return;
+
+    setSavingFinalLink(true);
+    try {
+      // Cast to any since final_link column will be added via migration
+      const { error } = await supabase
+        .from("orders")
+        .update({ final_link: finalLink.trim() || null } as any)
+        .eq("id", selectedOrder.id);
+
+      if (error) throw error;
+
+      toast.success("Final link saved!");
+
+      // Refresh selected order
+      const { data: updatedOrder } = await supabase
+        .from("orders")
+        .select("*")
+        .eq("id", selectedOrder.id)
+        .single();
+
+      if (updatedOrder) {
+        setSelectedOrder(updatedOrder);
+      }
+
+      fetchOrders();
+    } catch (err) {
+      console.error("Error saving final link:", err);
+      toast.error("Failed to save final link");
+    } finally {
+      setSavingFinalLink(false);
     }
   };
 
@@ -1336,6 +1377,58 @@ const Admin = () => {
                     <div className="flex items-center gap-2">
                       <MessageCircle className="h-4 w-4 text-muted-foreground" />
                       <span>{selectedOrder.client_whatsapp}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Final Invitation Link */}
+              <div>
+                <h4 className="font-semibold mb-3 flex items-center gap-2">
+                  <Link2 className="h-4 w-4" />
+                  Final Invitation Link
+                </h4>
+                <div className="bg-muted/30 rounded-lg p-4">
+                  <p className="text-sm text-muted-foreground mb-3">
+                    Enter the final invitation URL (subdomain or custom domain) to deliver to the customer.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <Input
+                      placeholder="e.g., amawedding.vibelinkgh.com"
+                      value={finalLink}
+                      onChange={(e) => setFinalLink(e.target.value)}
+                      className="flex-1"
+                    />
+                    <Button
+                      onClick={saveFinalLink}
+                      disabled={savingFinalLink}
+                      className="whitespace-nowrap"
+                    >
+                      {savingFinalLink ? (
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      ) : (
+                        <CheckCircle className="h-4 w-4 mr-2" />
+                      )}
+                      Save Link
+                    </Button>
+                  </div>
+                  {(selectedOrder as any).final_link && (
+                    <div className="mt-3 flex items-center gap-2">
+                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                        <CheckCircle className="h-3 w-3 mr-1" />
+                        Link Saved
+                      </Badge>
+                      <a
+                        href={`https://${(selectedOrder as any).final_link.replace(/^https?:\/\//, '')}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-primary hover:underline flex items-center gap-1"
+                      >
+                        {(selectedOrder as any).final_link}
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
                     </div>
                   )}
                 </div>

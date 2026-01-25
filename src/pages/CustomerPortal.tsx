@@ -35,6 +35,7 @@ interface CustomerOrder {
   client_email: string;
   deposit_paid: boolean;
   balance_paid: boolean;
+  final_link?: string | null;
 }
 
 export default function CustomerPortal() {
