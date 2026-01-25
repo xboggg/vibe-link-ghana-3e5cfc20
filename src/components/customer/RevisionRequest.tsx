@@ -70,21 +70,13 @@ export function RevisionRequest({ order }: RevisionRequestProps) {
 
     setIsSubmitting(true);
     try {
-      const { error } = await supabase
-        .from("order_revisions")
-        .insert({
-          order_id: order.id,
-          request_text: newRequest.trim(),
-          status: "pending"
-        });
+      // Use secure RPC function that handles both insert and order status update
+      const { error } = await supabase.rpc('submit_revision_request', {
+        p_order_id: order.id,
+        p_request_text: newRequest.trim()
+      });
 
       if (error) throw error;
-
-      // Update order status to revision
-      await supabase
-        .from("orders")
-        .update({ order_status: "revision" })
-        .eq("id", order.id);
 
       toast.success("Revision request submitted!");
       setNewRequest("");
