@@ -23,6 +23,8 @@ interface OrderDetails {
   event_title: string;
   event_type: string;
   event_date: string | null;
+  event_time: string | null;
+  event_venue: string | null;
   package_name: string;
   total_price: number;
   order_status: OrderStatus;
@@ -30,6 +32,11 @@ interface OrderDetails {
   created_at: string;
   preferred_delivery_date: string | null;
   client_email: string;
+  client_name: string | null;
+  client_phone: string | null;
+  color_palette: string | null;
+  style_preference: string | null;
+  add_ons: string[] | null;
 }
 
 const getPaymentFlags = (paymentStatus: string) => ({
@@ -80,7 +87,7 @@ export default function OrderDetails() {
     setIsLoading(true);
     try {
       const { data, error: fetchError } = await supabase
-        .rpc('get_order_by_id', {
+        .rpc('get_order_details_by_id', {
           order_id: orderId,
           customer_email: email
         });
@@ -188,13 +195,33 @@ export default function OrderDetails() {
             left: 0;
             top: 0;
             width: 100%;
-            padding: 20px;
+            padding: 15px 30px;
+            font-size: 12px;
           }
           .no-print {
             display: none !important;
           }
           .print-break {
             page-break-inside: avoid;
+          }
+          #print-content h1 {
+            font-size: 20px !important;
+            margin-bottom: 5px !important;
+          }
+          #print-content .mb-6 {
+            margin-bottom: 12px !important;
+          }
+          #print-content .mb-8 {
+            margin-bottom: 15px !important;
+          }
+          #print-content .p-6 {
+            padding: 12px !important;
+          }
+          #print-content .space-y-4 > * + * {
+            margin-top: 8px !important;
+          }
+          #print-content .gap-4 {
+            gap: 8px !important;
           }
         }
       `}</style>
@@ -314,8 +341,7 @@ export default function OrderDetails() {
                     <p className="text-sm text-muted-foreground mb-1">Package</p>
                     <p className="font-semibold text-lg">{order.package_name}</p>
                   </div>
-
-                                  </CardContent>
+                </CardContent>
               </Card>
             </motion.div>
 
@@ -326,14 +352,14 @@ export default function OrderDetails() {
               transition={{ delay: 0.3 }}
             >
               <Card className="mb-6 print-break">
-                <CardHeader>
+                <CardHeader className="pb-3">
                   <CardTitle className="flex items-center gap-2">
                     <Calendar className="h-5 w-5 text-purple-500" />
                     Event Details
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
+                <CardContent className="space-y-3">
+                  <div className="grid grid-cols-2 gap-3">
                     <div>
                       <p className="text-sm text-muted-foreground">Event Title</p>
                       <p className="font-medium">{order.event_title}</p>
@@ -342,24 +368,43 @@ export default function OrderDetails() {
                       <p className="text-sm text-muted-foreground">Event Type</p>
                       <p className="font-medium capitalize">{order.event_type}</p>
                     </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Event Date</p>
+                      <p className="font-medium">
+                        {order.event_date
+                          ? new Date(order.event_date).toLocaleDateString('en-GB', {
+                              day: 'numeric',
+                              month: 'long',
+                              year: 'numeric'
+                            })
+                          : 'To be confirmed'}
+                      </p>
+                    </div>
+                    {order.event_time && (
+                      <div>
+                        <p className="text-sm text-muted-foreground">Event Time</p>
+                        <p className="font-medium">{order.event_time}</p>
+                      </div>
+                    )}
                   </div>
 
-                  <div>
-                    <p className="text-sm text-muted-foreground">Event Date</p>
-                    <p className="font-medium">
-                      {order.event_date
-                        ? new Date(order.event_date).toLocaleDateString('en-GB', {
-                            day: 'numeric',
-                            month: 'long',
-                            year: 'numeric'
-                          })
-                        : 'To be confirmed'}
-                    </p>
-                  </div>
+                  {order.event_venue && (
+                    <div>
+                      <p className="text-sm text-muted-foreground">Venue</p>
+                      <p className="font-medium">{order.event_venue}</p>
+                    </div>
+                  )}
+
+                  {order.color_palette && (
+                    <div>
+                      <p className="text-sm text-muted-foreground">Color Theme</p>
+                      <p className="font-medium">{order.color_palette}</p>
+                    </div>
+                  )}
 
                   {order.preferred_delivery_date && (
                     <div>
-                      <p className="text-sm text-muted-foreground">Preferred Delivery Date</p>
+                      <p className="text-sm text-muted-foreground">Preferred Delivery</p>
                       <p className="font-medium">
                         {new Date(order.preferred_delivery_date).toLocaleDateString('en-GB', {
                           day: 'numeric',
@@ -369,8 +414,7 @@ export default function OrderDetails() {
                       </p>
                     </div>
                   )}
-
-                                  </CardContent>
+                </CardContent>
               </Card>
             </motion.div>
 
@@ -430,28 +474,34 @@ export default function OrderDetails() {
               transition={{ delay: 0.5 }}
             >
               <Card className="print-break">
-                <CardHeader>
+                <CardHeader className="pb-3">
                   <CardTitle className="flex items-center gap-2">
                     <Mail className="h-5 w-5 text-purple-500" />
-                    Contact Information
+                    Customer Information
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3">
+                <CardContent className="space-y-2">
+                  {order.client_name && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-muted-foreground w-16">Name:</span>
+                      <span className="font-medium">{order.client_name}</span>
+                    </div>
+                  )}
                   <div className="flex items-center gap-2">
-                    <span className="text-muted-foreground w-20">Email:</span>
+                    <span className="text-muted-foreground w-16">Email:</span>
                     <span className="font-medium">{order.client_email}</span>
                   </div>
+                  {order.client_phone && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-muted-foreground w-16">Phone:</span>
+                      <span className="font-medium">{order.client_phone}</span>
+                    </div>
+                  )}
 
-                  <Separator className="my-4" />
+                  <Separator className="my-3" />
 
                   <div className="text-center text-sm text-muted-foreground">
-                    <p>Questions about your order?</p>
-                    <a
-                      href="https://wa.me/4915757178561"
-                      className="text-purple-600 hover:underline font-medium"
-                    >
-                      Contact us on WhatsApp
-                    </a>
+                    <p>Questions? Contact us on WhatsApp: +233 24 581 7973</p>
                   </div>
                 </CardContent>
               </Card>
