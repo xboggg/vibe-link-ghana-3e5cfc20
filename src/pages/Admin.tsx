@@ -423,10 +423,25 @@ const Admin = () => {
 
   const updatePaymentStatus = async (orderId: string, status: PaymentStatus) => {
     const order = orders.find(o => o.id === orderId);
-    
+
+    // Build update object based on payment status
+    const updateData: Record<string, unknown> = { payment_status: status };
+
+    // Sync the boolean flags with the payment status
+    if (status === "fully_paid") {
+      updateData.deposit_paid = true;
+      updateData.balance_paid = true;
+    } else if (status === "deposit_paid") {
+      updateData.deposit_paid = true;
+      updateData.balance_paid = false;
+    } else if (status === "pending") {
+      updateData.deposit_paid = false;
+      updateData.balance_paid = false;
+    }
+
     const { error } = await supabase
       .from("orders")
-      .update({ payment_status: status })
+      .update(updateData)
       .eq("id", orderId);
 
     if (error) {
