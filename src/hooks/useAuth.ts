@@ -7,6 +7,7 @@ export const useAuth = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [checkingAdmin, setCheckingAdmin] = useState(true);
 
   useEffect(() => {
     // Set up auth state listener FIRST
@@ -18,11 +19,13 @@ export const useAuth = () => {
 
         // Check admin role using setTimeout to avoid deadlock
         if (session?.user) {
+          setCheckingAdmin(true);
           setTimeout(() => {
             checkAdminRole(session.user.id);
           }, 0);
         } else {
           setIsAdmin(false);
+          setCheckingAdmin(false);
         }
       }
     );
@@ -34,7 +37,10 @@ export const useAuth = () => {
       setLoading(false);
 
       if (session?.user) {
+        setCheckingAdmin(true);
         checkAdminRole(session.user.id);
+      } else {
+        setCheckingAdmin(false);
       }
     });
 
@@ -47,13 +53,15 @@ export const useAuth = () => {
         _role: 'admin',
         _user_id: userId
       });
-      
+
       if (!error) {
         setIsAdmin(data === true);
       }
     } catch (error) {
       console.error('Error checking admin role:', error);
       setIsAdmin(false);
+    } finally {
+      setCheckingAdmin(false);
     }
   };
 
@@ -91,6 +99,7 @@ export const useAuth = () => {
     session,
     loading,
     isAdmin,
+    checkingAdmin,
     signIn,
     signUp,
     signOut,

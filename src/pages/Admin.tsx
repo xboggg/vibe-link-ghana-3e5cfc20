@@ -239,7 +239,7 @@ const navCategories = [
 
 const Admin = () => {
   const navigate = useNavigate();
-  const { user, loading, isAdmin, signOut } = useAuth();
+  const { user, loading, isAdmin, checkingAdmin, signOut } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
@@ -671,7 +671,7 @@ const Admin = () => {
     return orderDate.getMonth() === now.getMonth() && orderDate.getFullYear() === now.getFullYear();
   }).length;
 
-  if (loading) {
+  if (loading || checkingAdmin) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
