@@ -184,6 +184,20 @@ export default function OrderDetails() {
       {/* Print Styles */}
       <style>{`
         @media print {
+          @page {
+            size: A4;
+            margin: 8mm;
+          }
+          * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          html, body {
+            height: auto !important;
+            overflow: visible !important;
+            margin: 0 !important;
+            padding: 0 !important;
+          }
           body * {
             visibility: hidden;
           }
@@ -195,33 +209,124 @@ export default function OrderDetails() {
             left: 0;
             top: 0;
             width: 100%;
-            padding: 15px 30px;
-            font-size: 12px;
+            padding: 5px 15px;
+            font-size: 10px;
+            line-height: 1.3;
           }
-          .no-print {
+          .no-print, nav, footer, header, .fixed, [class*="motion"] {
             display: none !important;
           }
           .print-break {
             page-break-inside: avoid;
+            break-inside: avoid;
           }
+          /* Prevent any page breaks */
+          #print-content, #print-content * {
+            page-break-before: avoid !important;
+            page-break-after: avoid !important;
+            page-break-inside: avoid !important;
+          }
+          /* Header */
           #print-content h1 {
-            font-size: 20px !important;
-            margin-bottom: 5px !important;
+            font-size: 16px !important;
+            margin-bottom: 2px !important;
           }
+          #print-content .text-2xl, #print-content .text-3xl {
+            font-size: 16px !important;
+          }
+          #print-content .text-xl {
+            font-size: 12px !important;
+          }
+          #print-content .text-lg {
+            font-size: 11px !important;
+          }
+          #print-content .text-sm {
+            font-size: 9px !important;
+          }
+          /* Spacing reductions */
           #print-content .mb-6 {
-            margin-bottom: 12px !important;
+            margin-bottom: 4px !important;
           }
           #print-content .mb-8 {
-            margin-bottom: 15px !important;
+            margin-bottom: 6px !important;
+          }
+          #print-content .mb-4, #print-content .mb-2 {
+            margin-bottom: 2px !important;
           }
           #print-content .p-6 {
-            padding: 12px !important;
+            padding: 6px !important;
+          }
+          #print-content .p-3 {
+            padding: 4px !important;
+          }
+          #print-content .py-6, #print-content .py-4, #print-content .py-3 {
+            padding-top: 4px !important;
+            padding-bottom: 4px !important;
+          }
+          #print-content .pb-3 {
+            padding-bottom: 2px !important;
           }
           #print-content .space-y-4 > * + * {
-            margin-top: 8px !important;
+            margin-top: 3px !important;
+          }
+          #print-content .space-y-3 > * + * {
+            margin-top: 2px !important;
+          }
+          #print-content .space-y-2 > * + * {
+            margin-top: 2px !important;
           }
           #print-content .gap-4 {
-            gap: 8px !important;
+            gap: 4px !important;
+          }
+          #print-content .gap-3, #print-content .gap-2 {
+            gap: 3px !important;
+          }
+          #print-content .mt-8 {
+            margin-top: 6px !important;
+          }
+          #print-content .my-3 {
+            margin-top: 3px !important;
+            margin-bottom: 3px !important;
+          }
+          /* Card styling */
+          #print-content [class*="Card"] {
+            box-shadow: none !important;
+            border: 1px solid #ddd !important;
+          }
+          #print-content [class*="CardHeader"] {
+            padding: 4px 8px !important;
+          }
+          #print-content [class*="CardContent"] {
+            padding: 6px 8px !important;
+          }
+          /* Icons smaller */
+          #print-content svg {
+            width: 14px !important;
+            height: 14px !important;
+          }
+          #print-content .h-6, #print-content .w-6 {
+            width: 16px !important;
+            height: 16px !important;
+          }
+          #print-content .h-5, #print-content .w-5 {
+            width: 14px !important;
+            height: 14px !important;
+          }
+          /* Status circle smaller */
+          #print-content .p-3.rounded-full {
+            padding: 6px !important;
+          }
+          /* Remove backgrounds that cause issues */
+          #print-content .bg-gradient-to-br {
+            background: white !important;
+          }
+          /* Grid compact */
+          #print-content .grid-cols-2 {
+            gap: 4px 8px !important;
+          }
+          /* Separator thinner */
+          #print-content [class*="Separator"] {
+            margin: 3px 0 !important;
           }
         }
       `}</style>
