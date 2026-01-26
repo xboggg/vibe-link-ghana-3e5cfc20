@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, Package, Clock, CheckCircle, AlertCircle, Loader2, CreditCard, Sparkles, MapPin, Mail, ArrowRight, Shield, ExternalLink } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -51,6 +51,8 @@ const paymentStatusConfig: Record<PaymentStatus, { label: string; color: string 
 };
 
 export default function TrackOrder() {
+  const navigate = useNavigate();
+  const resultsRef = useRef<HTMLDivElement>(null);
   const [orderId, setOrderId] = useState("");
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -109,10 +111,16 @@ export default function TrackOrder() {
       }
 
       if (data && data.length > 0) {
-        setOrder(data[0] as Order);
+        const foundOrder = data[0] as Order;
+        // Navigate directly to order details page
+        navigate(`/order/${foundOrder.id}?email=${encodeURIComponent(foundOrder.client_email)}`);
       } else {
         setOrder(null);
         toast.info("No order found. Please verify your order ID and email match.");
+        // Scroll to results area if not found
+        setTimeout(() => {
+          resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -446,6 +454,7 @@ export default function TrackOrder() {
           <AnimatePresence>
           {searched && (
             <motion.div
+              ref={resultsRef}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
