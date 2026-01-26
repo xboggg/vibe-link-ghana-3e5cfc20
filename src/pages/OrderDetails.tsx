@@ -15,6 +15,84 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import SEO from "@/components/SEO";
 
+// Print styles injected into document head
+const printStyles = `
+@media print {
+  @page {
+    size: A4;
+    margin: 15mm;
+  }
+
+  /* Hide everything except print content */
+  body > *:not(#print-root) {
+    display: none !important;
+  }
+
+  #print-root {
+    display: block !important;
+  }
+
+  /* Hide non-print elements */
+  .no-print, nav, header, footer, .fixed, button {
+    display: none !important;
+  }
+
+  /* Reset page structure */
+  html, body, #root, #print-root {
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+  }
+
+  /* Hide backgrounds and gradients */
+  .min-h-screen, .absolute, .bg-gradient-to-br, .bg-gradient-to-r {
+    background: transparent !important;
+    min-height: 0 !important;
+  }
+
+  .absolute.inset-0 {
+    display: none !important;
+  }
+
+  /* Print content area */
+  #print-content {
+    position: relative !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Typography */
+  #print-content h1 { font-size: 20px !important; }
+  #print-content .text-2xl, #print-content .text-3xl { font-size: 18px !important; }
+  #print-content .text-xl { font-size: 14px !important; }
+  #print-content .text-lg { font-size: 13px !important; }
+
+  /* Spacing */
+  #print-content .mb-6, #print-content .mb-8 { margin-bottom: 12px !important; }
+  #print-content .mb-4 { margin-bottom: 8px !important; }
+  #print-content .p-6 { padding: 12px !important; }
+  #print-content .gap-4 { gap: 8px !important; }
+
+  /* Cards */
+  #print-content [class*="Card"] {
+    box-shadow: none !important;
+    border: 1px solid #ddd !important;
+    break-inside: avoid !important;
+  }
+
+  /* Colors for print */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+`;
+
 type OrderStatus = "pending" | "in_progress" | "draft_ready" | "revision" | "completed" | "cancelled";
 type PaymentStatus = "pending" | "partial" | "paid" | "fully_paid";
 
@@ -72,6 +150,21 @@ export default function OrderDetails() {
 
   const email = searchParams.get("email");
 
+  // Inject print styles into document head
+  useEffect(() => {
+    const styleElement = document.createElement('style');
+    styleElement.id = 'print-styles';
+    styleElement.textContent = printStyles;
+    document.head.appendChild(styleElement);
+
+    return () => {
+      const existingStyle = document.getElementById('print-styles');
+      if (existingStyle) {
+        existingStyle.remove();
+      }
+    };
+  }, []);
+
   useEffect(() => {
     if (orderId && email) {
       fetchOrderDetails();
@@ -112,19 +205,222 @@ export default function OrderDetails() {
   };
 
   const handlePrint = () => {
-    window.print();
-  };
-
-  const handleDownloadPDF = async () => {
-    toast.info("Generating PDF...");
-
-    // Create a simple PDF-friendly content
     const printContent = document.getElementById('print-content');
     if (!printContent) return;
 
-    // Open print dialog which allows saving as PDF
-    window.print();
-    toast.success("Use 'Save as PDF' in the print dialog to download");
+    // Create a new window for printing
+    const printWindow = window.open('', '_blank', 'width=800,height=600');
+    if (!printWindow) {
+      toast.error('Please allow popups to print');
+      return;
+    }
+
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Order #${order?.id.slice(0, 8).toUpperCase()} - VibeLink Events</title>
+        <style>
+          * { box-sizing: border-box; margin: 0; padding: 0; }
+          body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+            color: #333;
+            line-height: 1.5;
+          }
+          .header { text-align: center; margin-bottom: 24px; }
+          .logo { font-size: 20px; font-weight: bold; color: #7c3aed; margin-bottom: 8px; }
+          h1 { font-size: 24px; margin-bottom: 4px; }
+          .order-id { color: #666; font-size: 14px; }
+          .card {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            overflow: hidden;
+          }
+          .card-header {
+            background: #f9fafb;
+            padding: 12px 16px;
+            border-bottom: 1px solid #e5e7eb;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+          }
+          .card-content { padding: 16px; }
+          .status-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+          }
+          .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+          }
+          .bg-green { background: #22c55e; }
+          .bg-blue { background: #3b82f6; }
+          .bg-yellow { background: #eab308; }
+          .bg-purple { background: #a855f7; }
+          .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+          .label { font-size: 12px; color: #666; margin-bottom: 2px; }
+          .value { font-weight: 500; }
+          .divider { border-top: 1px solid #e5e7eb; margin: 12px 0; }
+          .payment-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+          }
+          .total-row {
+            font-weight: bold;
+            font-size: 18px;
+          }
+          .total-amount { color: #7c3aed; }
+          .check { color: #22c55e; }
+          .pending { color: #eab308; }
+          .footer {
+            text-align: center;
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px solid #e5e7eb;
+            color: #666;
+            font-size: 13px;
+          }
+          @media print {
+            body { padding: 0; }
+            .card { break-inside: avoid; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <div class="logo">✨ VibeLink Events</div>
+          <h1>Order Confirmation</h1>
+          <div class="order-id">Order #${order?.id.slice(0, 8).toUpperCase()}</div>
+        </div>
+
+        <div class="card">
+          <div class="status-row">
+            <div>
+              <div class="label">Order Status</div>
+              <div class="value" style="color: ${order?.order_status === 'completed' ? '#22c55e' : '#3b82f6'}">
+                ${statusConfig[order?.order_status || 'pending'].label}
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <div class="label">Payment Status</div>
+              <span class="status-badge ${order?.payment_status === 'paid' || order?.payment_status === 'fully_paid' ? 'bg-green' : order?.payment_status === 'partial' ? 'bg-blue' : 'bg-yellow'}">
+                ${paymentStatusConfig[order?.payment_status || 'pending'].label}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">📄 Order Information</div>
+          <div class="card-content">
+            <div class="grid">
+              <div>
+                <div class="label">Order ID</div>
+                <div class="value">${order?.id.slice(0, 8).toUpperCase()}</div>
+              </div>
+              <div>
+                <div class="label">Order Date</div>
+                <div class="value">${order?.created_at ? new Date(order.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : ''}</div>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <div>
+              <div class="label">Package</div>
+              <div class="value" style="font-size: 16px;">${order?.package_name}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">📅 Event Details</div>
+          <div class="card-content">
+            <div class="grid">
+              <div>
+                <div class="label">Event Title</div>
+                <div class="value">${order?.event_title}</div>
+              </div>
+              <div>
+                <div class="label">Event Type</div>
+                <div class="value" style="text-transform: capitalize;">${order?.event_type}</div>
+              </div>
+              <div>
+                <div class="label">Event Date</div>
+                <div class="value">${order?.event_date ? new Date(order.event_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : 'To be confirmed'}</div>
+              </div>
+              ${order?.event_time ? `<div><div class="label">Event Time</div><div class="value">${order.event_time}</div></div>` : ''}
+            </div>
+            ${order?.event_venue ? `<div style="margin-top: 12px;"><div class="label">Venue</div><div class="value">${order.event_venue}</div></div>` : ''}
+            ${order?.color_palette ? `<div style="margin-top: 12px;"><div class="label">Color Theme</div><div class="value">${order.color_palette}</div></div>` : ''}
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">💳 Payment Summary</div>
+          <div class="card-content">
+            <div class="payment-row">
+              <span>50% Deposit</span>
+              <span>
+                GH₵ ${depositAmount.toFixed(2)}
+                <span class="${paymentFlags.deposit_paid ? 'check' : 'pending'}">${paymentFlags.deposit_paid ? ' ✓' : ' ○'}</span>
+              </span>
+            </div>
+            <div class="payment-row">
+              <span>50% Balance</span>
+              <span>
+                GH₵ ${depositAmount.toFixed(2)}
+                <span class="${paymentFlags.balance_paid ? 'check' : 'pending'}">${paymentFlags.balance_paid ? ' ✓' : ' ○'}</span>
+              </span>
+            </div>
+            <div class="divider"></div>
+            <div class="payment-row total-row">
+              <span>Total</span>
+              <span class="total-amount">GH₵ ${order?.total_price.toFixed(2)}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">👤 Customer Information</div>
+          <div class="card-content">
+            ${order?.client_name ? `<div class="payment-row"><span class="label" style="width: 60px;">Name:</span><span class="value">${order.client_name}</span></div>` : ''}
+            <div class="payment-row"><span class="label" style="width: 60px;">Email:</span><span class="value">${order?.client_email}</span></div>
+            ${order?.client_phone ? `<div class="payment-row"><span class="label" style="width: 60px;">Phone:</span><span class="value">${order.client_phone}</span></div>` : ''}
+          </div>
+        </div>
+
+        <div class="footer">
+          <p>Questions? Contact us on WhatsApp: +233 24 581 7973</p>
+          <p style="margin-top: 8px;">Thank you for choosing VibeLink Events!</p>
+          <p>www.vibelinkgh.com</p>
+        </div>
+      </body>
+      </html>
+    `;
+
+    printWindow.document.write(htmlContent);
+    printWindow.document.close();
+
+    // Wait for content to load then print
+    printWindow.onload = () => {
+      printWindow.print();
+      printWindow.onafterprint = () => printWindow.close();
+    };
+  };
+
+  const handleDownloadPDF = () => {
+    handlePrint();
+    toast.info("Use 'Save as PDF' in the print dialog to download");
   };
 
   const handleBack = () => {
@@ -180,176 +476,6 @@ export default function OrderDetails() {
         description="View your order details, payment status, and event information."
         noindex={true}
       />
-
-      {/* Print Styles */}
-      <style>{`
-        @media print {
-          @page {
-            size: A4;
-            margin: 10mm;
-          }
-          * {
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-          }
-          /* Reset everything */
-          html, body {
-            height: auto !important;
-            min-height: 0 !important;
-            max-height: none !important;
-            overflow: visible !important;
-            margin: 0 !important;
-            padding: 0 !important;
-          }
-          /* Hide everything first */
-          body > * {
-            display: none !important;
-          }
-          /* Show only the root and path to print-content */
-          #root, #root > *, #root > * > *, #root > * > * > * {
-            display: block !important;
-            height: auto !important;
-            min-height: 0 !important;
-            overflow: visible !important;
-            position: static !important;
-            padding: 0 !important;
-            margin: 0 !important;
-          }
-          /* Hide nav, header, footer, fixed elements */
-          nav, header, footer, .no-print, .fixed {
-            display: none !important;
-          }
-          /* Kill min-h-screen */
-          .min-h-screen {
-            min-height: 0 !important;
-            height: auto !important;
-          }
-          /* Kill absolute positioned backgrounds */
-          .absolute.inset-0 {
-            display: none !important;
-          }
-          /* Remove container padding */
-          .container {
-            padding: 0 !important;
-            margin: 0 !important;
-            max-width: 100% !important;
-          }
-          .pt-24, .pb-12 {
-            padding: 0 !important;
-          }
-          /* Print content styling */
-          #print-content {
-            display: block !important;
-            position: static !important;
-            width: 100% !important;
-            padding: 0 !important;
-            font-size: 11px !important;
-            line-height: 1.4 !important;
-          }
-          #print-content * {
-            visibility: visible !important;
-          }
-          /* Header */
-          #print-content h1 {
-            font-size: 18px !important;
-            margin-bottom: 4px !important;
-          }
-          #print-content .text-2xl, #print-content .text-3xl {
-            font-size: 18px !important;
-          }
-          #print-content .text-xl {
-            font-size: 13px !important;
-          }
-          #print-content .text-lg {
-            font-size: 12px !important;
-          }
-          #print-content .text-sm {
-            font-size: 10px !important;
-          }
-          /* Spacing reductions */
-          #print-content .mb-6 {
-            margin-bottom: 8px !important;
-          }
-          #print-content .mb-8 {
-            margin-bottom: 10px !important;
-          }
-          #print-content .mb-4, #print-content .mb-2 {
-            margin-bottom: 4px !important;
-          }
-          #print-content .p-6 {
-            padding: 8px !important;
-          }
-          #print-content .p-3 {
-            padding: 6px !important;
-          }
-          #print-content .py-6, #print-content .py-4, #print-content .py-3 {
-            padding-top: 6px !important;
-            padding-bottom: 6px !important;
-          }
-          #print-content .pb-3 {
-            padding-bottom: 4px !important;
-          }
-          #print-content .space-y-4 > * + * {
-            margin-top: 6px !important;
-          }
-          #print-content .space-y-3 > * + * {
-            margin-top: 4px !important;
-          }
-          #print-content .space-y-2 > * + * {
-            margin-top: 3px !important;
-          }
-          #print-content .gap-4 {
-            gap: 6px !important;
-          }
-          #print-content .gap-3, #print-content .gap-2 {
-            gap: 4px !important;
-          }
-          #print-content .mt-8 {
-            margin-top: 10px !important;
-          }
-          #print-content .my-3 {
-            margin-top: 4px !important;
-            margin-bottom: 4px !important;
-          }
-          /* Card styling */
-          #print-content [class*="Card"] {
-            box-shadow: none !important;
-            border: 1px solid #ccc !important;
-            break-inside: avoid !important;
-          }
-          #print-content [class*="CardHeader"] {
-            padding: 6px 10px !important;
-          }
-          #print-content [class*="CardContent"] {
-            padding: 8px 10px !important;
-          }
-          /* Icons */
-          #print-content .h-6, #print-content .w-6 {
-            width: 18px !important;
-            height: 18px !important;
-          }
-          #print-content .h-5, #print-content .w-5 {
-            width: 16px !important;
-            height: 16px !important;
-          }
-          /* Status circle */
-          #print-content .p-3.rounded-full {
-            padding: 8px !important;
-          }
-          /* Remove gradient backgrounds */
-          .bg-gradient-to-br, .bg-gradient-to-r {
-            background: transparent !important;
-          }
-          /* Grid */
-          #print-content .grid-cols-2 {
-            gap: 6px 10px !important;
-          }
-          /* Separator */
-          #print-content [class*="Separator"] {
-            margin: 6px 0 !important;
-          }
-        }
-      `}</style>
 
       <div className="min-h-screen relative overflow-hidden">
         {/* Background */}
