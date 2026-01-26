@@ -186,147 +186,167 @@ export default function OrderDetails() {
         @media print {
           @page {
             size: A4;
-            margin: 8mm;
+            margin: 10mm;
           }
           * {
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
           }
+          /* Reset everything */
           html, body {
             height: auto !important;
+            min-height: 0 !important;
+            max-height: none !important;
             overflow: visible !important;
             margin: 0 !important;
             padding: 0 !important;
           }
-          body * {
-            visibility: hidden;
-          }
-          #print-content, #print-content * {
-            visibility: visible;
-          }
-          #print-content {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            padding: 5px 15px;
-            font-size: 10px;
-            line-height: 1.3;
-          }
-          .no-print, nav, footer, header, .fixed, [class*="motion"] {
+          /* Hide everything first */
+          body > * {
             display: none !important;
           }
-          .print-break {
-            page-break-inside: avoid;
-            break-inside: avoid;
+          /* Show only the root and path to print-content */
+          #root, #root > *, #root > * > *, #root > * > * > * {
+            display: block !important;
+            height: auto !important;
+            min-height: 0 !important;
+            overflow: visible !important;
+            position: static !important;
+            padding: 0 !important;
+            margin: 0 !important;
           }
-          /* Prevent any page breaks */
-          #print-content, #print-content * {
-            page-break-before: avoid !important;
-            page-break-after: avoid !important;
-            page-break-inside: avoid !important;
+          /* Hide nav, header, footer, fixed elements */
+          nav, header, footer, .no-print, .fixed {
+            display: none !important;
+          }
+          /* Kill min-h-screen */
+          .min-h-screen {
+            min-height: 0 !important;
+            height: auto !important;
+          }
+          /* Kill absolute positioned backgrounds */
+          .absolute.inset-0 {
+            display: none !important;
+          }
+          /* Remove container padding */
+          .container {
+            padding: 0 !important;
+            margin: 0 !important;
+            max-width: 100% !important;
+          }
+          .pt-24, .pb-12 {
+            padding: 0 !important;
+          }
+          /* Print content styling */
+          #print-content {
+            display: block !important;
+            position: static !important;
+            width: 100% !important;
+            padding: 0 !important;
+            font-size: 11px !important;
+            line-height: 1.4 !important;
+          }
+          #print-content * {
+            visibility: visible !important;
           }
           /* Header */
           #print-content h1 {
-            font-size: 16px !important;
-            margin-bottom: 2px !important;
+            font-size: 18px !important;
+            margin-bottom: 4px !important;
           }
           #print-content .text-2xl, #print-content .text-3xl {
-            font-size: 16px !important;
+            font-size: 18px !important;
           }
           #print-content .text-xl {
-            font-size: 12px !important;
+            font-size: 13px !important;
           }
           #print-content .text-lg {
-            font-size: 11px !important;
+            font-size: 12px !important;
           }
           #print-content .text-sm {
-            font-size: 9px !important;
+            font-size: 10px !important;
           }
           /* Spacing reductions */
           #print-content .mb-6 {
-            margin-bottom: 4px !important;
+            margin-bottom: 8px !important;
           }
           #print-content .mb-8 {
-            margin-bottom: 6px !important;
+            margin-bottom: 10px !important;
           }
           #print-content .mb-4, #print-content .mb-2 {
-            margin-bottom: 2px !important;
+            margin-bottom: 4px !important;
           }
           #print-content .p-6 {
-            padding: 6px !important;
+            padding: 8px !important;
           }
           #print-content .p-3 {
-            padding: 4px !important;
+            padding: 6px !important;
           }
           #print-content .py-6, #print-content .py-4, #print-content .py-3 {
-            padding-top: 4px !important;
-            padding-bottom: 4px !important;
+            padding-top: 6px !important;
+            padding-bottom: 6px !important;
           }
           #print-content .pb-3 {
-            padding-bottom: 2px !important;
+            padding-bottom: 4px !important;
           }
           #print-content .space-y-4 > * + * {
-            margin-top: 3px !important;
-          }
-          #print-content .space-y-3 > * + * {
-            margin-top: 2px !important;
-          }
-          #print-content .space-y-2 > * + * {
-            margin-top: 2px !important;
-          }
-          #print-content .gap-4 {
-            gap: 4px !important;
-          }
-          #print-content .gap-3, #print-content .gap-2 {
-            gap: 3px !important;
-          }
-          #print-content .mt-8 {
             margin-top: 6px !important;
           }
-          #print-content .my-3 {
+          #print-content .space-y-3 > * + * {
+            margin-top: 4px !important;
+          }
+          #print-content .space-y-2 > * + * {
             margin-top: 3px !important;
-            margin-bottom: 3px !important;
+          }
+          #print-content .gap-4 {
+            gap: 6px !important;
+          }
+          #print-content .gap-3, #print-content .gap-2 {
+            gap: 4px !important;
+          }
+          #print-content .mt-8 {
+            margin-top: 10px !important;
+          }
+          #print-content .my-3 {
+            margin-top: 4px !important;
+            margin-bottom: 4px !important;
           }
           /* Card styling */
           #print-content [class*="Card"] {
             box-shadow: none !important;
-            border: 1px solid #ddd !important;
+            border: 1px solid #ccc !important;
+            break-inside: avoid !important;
           }
           #print-content [class*="CardHeader"] {
-            padding: 4px 8px !important;
+            padding: 6px 10px !important;
           }
           #print-content [class*="CardContent"] {
-            padding: 6px 8px !important;
+            padding: 8px 10px !important;
           }
-          /* Icons smaller */
-          #print-content svg {
-            width: 14px !important;
-            height: 14px !important;
-          }
+          /* Icons */
           #print-content .h-6, #print-content .w-6 {
+            width: 18px !important;
+            height: 18px !important;
+          }
+          #print-content .h-5, #print-content .w-5 {
             width: 16px !important;
             height: 16px !important;
           }
-          #print-content .h-5, #print-content .w-5 {
-            width: 14px !important;
-            height: 14px !important;
-          }
-          /* Status circle smaller */
+          /* Status circle */
           #print-content .p-3.rounded-full {
-            padding: 6px !important;
+            padding: 8px !important;
           }
-          /* Remove backgrounds that cause issues */
-          #print-content .bg-gradient-to-br {
-            background: white !important;
+          /* Remove gradient backgrounds */
+          .bg-gradient-to-br, .bg-gradient-to-r {
+            background: transparent !important;
           }
-          /* Grid compact */
+          /* Grid */
           #print-content .grid-cols-2 {
-            gap: 4px 8px !important;
+            gap: 6px 10px !important;
           }
-          /* Separator thinner */
+          /* Separator */
           #print-content [class*="Separator"] {
-            margin: 3px 0 !important;
+            margin: 6px 0 !important;
           }
         }
       `}</style>
