@@ -46,9 +46,9 @@ const organizationSchema = {
     closes: "18:00",
   },
   sameAs: [
-    "https://www.instagram.com/vibelinkgh",
-    "https://www.facebook.com/vibelinkgh",
-    "https://twitter.com/vibelinkgh",
+    "https://www.instagram.com/vibelinkevent",
+    "https://www.facebook.com/vibelinkevent",
+    "https://twitter.com/vibelinkevent",
   ],
 };
 
