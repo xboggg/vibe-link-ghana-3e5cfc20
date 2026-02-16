@@ -243,7 +243,7 @@ export function Footer() {
               © {new Date().getFullYear()} VibeLink Events
             </div>
 
-            {/* Right - Policy links and Made in Ghana - centered on all screen sizes */}
+            {/* Right - Policy links */}
             <div className="flex flex-wrap items-center justify-center md:justify-end gap-2 text-primary-foreground/60 text-sm">
               {policyLinks.map((link, index) => <span key={link.name} className="flex items-center gap-2">
                   <Link to={link.href} className="hover:text-secondary transition-colors">
@@ -252,9 +252,9 @@ export function Footer() {
                   {index < policyLinks.length - 1 && <span>|</span>}
                 </span>)}
               <span>|</span>
-              <span className="flex items-center gap-1">
-                Made with <span className="text-destructive">❤️</span> in Ghana
-              </span>
+              <a href="https://www.novastreamdigital.com" target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors">
+                Design by NovaStream
+              </a>
             </div>
           </div>
         </div>
