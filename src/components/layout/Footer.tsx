@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Sparkles, Instagram, Facebook, Twitter, Phone, Mail, MapPin, Send, Loader2, User } from "lucide-react";
+import { Instagram, Facebook, Twitter, Phone, Mail, MapPin, Send, Loader2, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
@@ -134,14 +134,11 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Brand Column */}
           <div className="lg:col-span-1 text-center md:text-left">
-            <Link to="/" className="flex items-center justify-center md:justify-start gap-2 mb-4">
-              <Sparkles className="h-6 w-6 text-secondary" />
-              <span className="text-xl font-bold font-poppins">
-                Vibe<span className="text-secondary">Link</span> <span className="text-primary-foreground/80 font-normal text-sm">Events</span>
-              </span>
+            <Link to="/" className="flex items-center justify-center md:justify-start mb-4">
+              <img src="/vibelink-logo.png" alt="VibeLink Event" className="h-20 object-contain" />
             </Link>
             <p className="text-primary-foreground/70 text-sm leading-relaxed mb-4">
-              Your Event. Our Vibe. Transform your Ghanaian celebrations into stunning, shareable digital invitations.
+              Your Event. Our Vibe. Transform your Ghanaian events into stunning, shareable digital invitations.
             </p>
             <div className="flex items-center justify-center md:justify-start gap-3">
               {socialLinks.map(social => <a key={social.name} href={social.href} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-primary-foreground/10 hover:bg-secondary hover:text-secondary-foreground transition-all duration-300" aria-label={social.name}>

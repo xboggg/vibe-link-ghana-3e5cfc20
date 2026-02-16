@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Sparkles, Instagram, Facebook, Twitter, Package } from "lucide-react";
+import { Menu, X, Instagram, Facebook, Twitter, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -56,14 +56,8 @@ export function Navbar() {
     <nav className={cn("fixed top-0 left-0 right-0 z-50 transition-all duration-300", getNavbarClasses())}>
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
-          <Link to="/" className="flex items-center gap-2 group">
-            <div className="relative">
-              <Sparkles className="h-7 w-7 text-secondary transition-transform duration-300 group-hover:scale-110" />
-              <div className="absolute inset-0 bg-secondary/20 blur-lg rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
-            </div>
-            <span className="text-xl lg:text-2xl font-bold font-poppins text-primary-foreground">
-              Vibe<span className="text-secondary">Link</span> <span className="text-primary-foreground/70 font-normal text-sm">Events</span>
-            </span>
+          <Link to="/" className="flex items-center group shrink-0">
+            <img src="/vibelink-logo.png" alt="VibeLink Event" className="h-20 lg:h-24 object-contain transition-transform duration-300 group-hover:scale-105" />
           </Link>
 
           <div className="hidden lg:flex items-center gap-1">

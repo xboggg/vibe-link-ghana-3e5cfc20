@@ -15,15 +15,15 @@ interface SEOProps {
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
-  "@id": "https://vibelink.com.gh/#organization",
+  "@id": "https://vibelinkevent.com/#organization",
   name: "VibeLink Events",
   alternateName: "VibeLink",
   description: "Ghana's premier digital invitation service for weddings, funerals, naming ceremonies, graduations & corporate events.",
-  url: "https://vibelink.com.gh",
-  logo: "https://vibelink.com.gh/og-image.jpg",
-  image: "https://vibelink.com.gh/og-image.jpg",
+  url: "https://vibelinkevent.com",
+  logo: "https://vibelinkevent.com/og-image.jpg",
+  image: "https://vibelinkevent.com/og-image.jpg",
   telephone: "+233-XX-XXX-XXXX",
-  email: "hello@vibelink.com.gh",
+  email: "hello@vibelinkevent.com",
   address: {
     "@type": "PostalAddress",
     addressLocality: "Accra",
@@ -56,18 +56,18 @@ const organizationSchema = {
 const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  "@id": "https://vibelink.com.gh/#website",
-  url: "https://vibelink.com.gh",
+  "@id": "https://vibelinkevent.com/#website",
+  url: "https://vibelinkevent.com",
   name: "VibeLink Events",
   description: "Ghana's premier digital invitation service",
   publisher: {
-    "@id": "https://vibelink.com.gh/#organization",
+    "@id": "https://vibelinkevent.com/#organization",
   },
   potentialAction: {
     "@type": "SearchAction",
     target: {
       "@type": "EntryPoint",
-      urlTemplate: "https://vibelink.com.gh/portfolio?search={search_term_string}",
+      urlTemplate: "https://vibelinkevent.com/portfolio?search={search_term_string}",
     },
     "query-input": "required name=search_term_string",
   },
@@ -78,13 +78,13 @@ const SEO = ({
   description = "Ghana's premier digital invitation service. Create stunning interactive invitations for weddings, funerals, naming ceremonies, graduations & corporate events.",
   keywords = "digital invitations Ghana, wedding invitations Ghana, funeral programs Ghana, naming ceremony invitations, event invitations Accra",
   canonical,
-  ogImage = "https://vibelink.com.gh/og-image.jpg",
+  ogImage = "https://vibelinkevent.com/og-image.jpg",
   ogType = "website",
   noindex = false,
   jsonLd,
 }: SEOProps) => {
   const fullTitle = title.includes("VibeLink") ? title : `${title} | VibeLink Events`;
-  const siteUrl = "https://vibelink.com.gh";
+  const siteUrl = "https://vibelinkevent.com";
   const canonicalUrl = canonical ? `${siteUrl}${canonical}` : undefined;
 
   // Combine base schemas with page-specific schemas
@@ -131,7 +131,7 @@ export const createServiceSchema = (services: Array<{ name: string; description:
   "@context": "https://schema.org",
   "@type": "Service",
   provider: {
-    "@id": "https://vibelink.com.gh/#organization",
+    "@id": "https://vibelinkevent.com/#organization",
   },
   areaServed: {
     "@type": "Country",
@@ -174,7 +174,7 @@ export const createBreadcrumbSchema = (items: Array<{ name: string; url: string 
     "@type": "ListItem",
     position: index + 1,
     name: item.name,
-    item: `https://vibelink.com.gh${item.url}`,
+    item: `https://vibelinkevent.com${item.url}`,
   })),
 });
 
@@ -196,14 +196,14 @@ export const createArticleSchema = (article: {
   author: {
     "@type": "Organization",
     name: article.author || "VibeLink Events",
-    url: "https://vibelink.com.gh",
+    url: "https://vibelinkevent.com",
   },
   publisher: {
-    "@id": "https://vibelink.com.gh/#organization",
+    "@id": "https://vibelinkevent.com/#organization",
   },
-  image: article.image || "https://vibelink.com.gh/og-image.jpg",
+  image: article.image || "https://vibelinkevent.com/og-image.jpg",
   mainEntityOfPage: {
     "@type": "WebPage",
-    "@id": `https://vibelink.com.gh${article.url}`,
+    "@id": `https://vibelinkevent.com${article.url}`,
   },
 });
