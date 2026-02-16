@@ -110,8 +110,9 @@ const Portfolio = () => {
                 {/* Image */}
                 <div className="relative aspect-[4/3] overflow-hidden">
                   <img
-                    src={item.image}
+                    src={item.thumbnail || item.image}
                     alt={item.title}
+                    loading="lazy"
                     className="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-navy/80 to-transparent" />
