@@ -238,10 +238,10 @@ export function Footer() {
       <div className="border-t border-primary-foreground/10">
         <div className="container mx-auto px-4 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-            {/* Left - Design by NovaStream */}
+            {/* Left - Designed by NovaStream */}
             <div className="text-sm">
               <a href="https://www.novastreamdigital.com" target="_blank" rel="noopener noreferrer" className="text-secondary hover:text-secondary/80 transition-colors">
-                Design by NovaStream
+                Designed by NovaStream
               </a>
             </div>
 
