@@ -210,8 +210,8 @@ export function Footer() {
               </li>
               <li className="flex items-center justify-center md:justify-start gap-3 text-sm">
                 <Mail className="h-4 w-4 text-secondary" />
-                <a href="mailto:info@vibelinkgh.com" className="text-primary-foreground/70 hover:text-secondary transition-colors">
-                  info@vibelinkgh.com
+                <a href="mailto:info@vibelinkevent.com" className="text-primary-foreground/70 hover:text-secondary transition-colors">
+                  info@vibelinkevent.com
                 </a>
               </li>
               <li className="flex items-center justify-center md:justify-start gap-3 text-sm">
@@ -238,7 +238,14 @@ export function Footer() {
       <div className="border-t border-primary-foreground/10">
         <div className="container mx-auto px-4 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-            {/* Left - Copyright */}
+            {/* Left - Design by NovaStream */}
+            <div className="text-sm">
+              <a href="https://www.novastreamdigital.com" target="_blank" rel="noopener noreferrer" className="text-secondary hover:text-secondary/80 transition-colors">
+                Design by NovaStream
+              </a>
+            </div>
+
+            {/* Center - Copyright */}
             <div className="text-primary-foreground/60 text-sm">
               © {new Date().getFullYear()} VibeLink Events
             </div>
@@ -251,10 +258,6 @@ export function Footer() {
                   </Link>
                   {index < policyLinks.length - 1 && <span>|</span>}
                 </span>)}
-              <span>|</span>
-              <a href="https://www.novastreamdigital.com" target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors">
-                Design by NovaStream
-              </a>
             </div>
           </div>
         </div>
