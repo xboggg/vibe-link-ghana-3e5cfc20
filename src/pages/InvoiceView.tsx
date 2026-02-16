@@ -160,7 +160,7 @@ const InvoiceView = () => {
                       <span className="text-xl font-bold text-white">V</span>
                     </div>
                     <div>
-                      <h1 className="text-2xl font-bold text-gray-900">VibeLink Events</h1>
+                      <h1 className="text-2xl font-bold text-gray-900">VibeLink Event</h1>
                       <p className="text-sm text-muted-foreground">Premium Digital Invitations</p>
                     </div>
                   </div>
@@ -171,7 +171,7 @@ const InvoiceView = () => {
                     </div>
                     <div className="flex items-center gap-2">
                       <Mail className="h-4 w-4" />
-                      <span>hello@vibelinkgh.com</span>
+                      <span>hello@vibelinkevent.com</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <MapPin className="h-4 w-4" />
@@ -296,13 +296,13 @@ const InvoiceView = () => {
                       <p className="font-medium text-gray-700">Mobile Money (MoMo)</p>
                       <p className="text-muted-foreground">MTN: 024 XXX XXXX</p>
                       <p className="text-muted-foreground">Vodafone: 020 XXX XXXX</p>
-                      <p className="text-muted-foreground">Name: VibeLink Events</p>
+                      <p className="text-muted-foreground">Name: VibeLink Event</p>
                     </div>
                     <div>
                       <p className="font-medium text-gray-700">Bank Transfer</p>
                       <p className="text-muted-foreground">Bank: [Bank Name]</p>
                       <p className="text-muted-foreground">Account: [Account Number]</p>
-                      <p className="text-muted-foreground">Name: VibeLink Events</p>
+                      <p className="text-muted-foreground">Name: VibeLink Event</p>
                     </div>
                   </div>
                   <p className="text-xs text-muted-foreground mt-4">
@@ -313,8 +313,8 @@ const InvoiceView = () => {
 
               {/* Footer */}
               <div className="mt-8 pt-6 border-t text-center text-sm text-muted-foreground">
-                <p>Thank you for choosing VibeLink Events!</p>
-                <p className="mt-1">Questions? Contact us at hello@vibelinkgh.com</p>
+                <p>Thank you for choosing VibeLink Event!</p>
+                <p className="mt-1">Questions? Contact us at hello@vibelinkevent.com</p>
               </div>
             </CardContent>
           </Card>

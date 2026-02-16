@@ -13,6 +13,13 @@ export const useAuth = () => {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
+        // Handle password recovery event - redirect to reset password page
+        if (event === 'PASSWORD_RECOVERY') {
+          // Keep the hash params and redirect to reset-password page
+          window.location.href = `/reset-password${window.location.hash}`;
+          return;
+        }
+
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);

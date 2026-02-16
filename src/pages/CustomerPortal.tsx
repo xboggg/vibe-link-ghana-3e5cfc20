@@ -236,7 +236,7 @@ export default function CustomerPortal() {
     return (
       <Layout>
         <SEO
-          title="Customer Portal | VibeLink Events"
+          title="Customer Portal | VibeLink Event"
           description="Access your orders, track progress, and manage your event invitations"
         />
         <div className="min-h-screen relative overflow-hidden">
@@ -585,7 +585,7 @@ export default function CustomerPortal() {
   return (
     <Layout>
       <SEO
-        title="My Orders | VibeLink Events"
+        title="My Orders | VibeLink Event"
         description="View and manage your event invitation orders"
       />
       <div className="min-h-screen pt-24 pb-10">

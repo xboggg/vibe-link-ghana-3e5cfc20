@@ -131,7 +131,7 @@ Remember to take a step back and enjoy your event. You've worked hard for this!
 
 ---
 
-At VibeLink Events, we're here to help make your event dreams come true. Contact us today for professional event design services that will leave a lasting impression.
+At VibeLink Event, we're here to help make your event dreams come true. Contact us today for professional event design services that will leave a lasting impression.
 
 *Ready to start planning? [Get a quote](#) or [call us](#) today!*`
   }),
@@ -164,7 +164,7 @@ Let us create stunning backdrops, table settings, and decorations that reflect y
 
 ---
 
-*Planning your wedding? Contact VibeLink Events for custom wedding design packages.*`
+*Planning your wedding? Contact VibeLink Event for custom wedding design packages.*`
   }),
 
   birthday: (vars) => ({
@@ -206,7 +206,7 @@ Send guests home with memorable keepsakes that reflect your celebration.
 
 ---
 
-*Let VibeLink Events design your dream birthday party! From intimate gatherings to grand celebrations, we've got you covered.*`
+*Let VibeLink Event design your dream birthday party! From intimate gatherings to grand celebrations, we've got you covered.*`
   }),
 
   corporate: (vars) => ({
@@ -243,7 +243,7 @@ Consider seating arrangements, temperature control, and accessibility for all at
 
 ---
 
-*Elevate your corporate events with VibeLink Events's professional design services.*`
+*Elevate your corporate events with VibeLink Event's professional design services.*`
   }),
 
   diy: (vars) => ({
@@ -287,7 +287,7 @@ Consider seating arrangements, temperature control, and accessibility for all at
 
 ---
 
-*Need professional help? VibeLink Events offers affordable decoration packages for any budget.*`
+*Need professional help? VibeLink Event offers affordable decoration packages for any budget.*`
   }),
 
   trends: (vars) => ({
@@ -333,11 +333,11 @@ Moving beyond pastels:
 
 ---
 
-*Stay trendy with VibeLink Events - your partner for modern, stylish events.*`
+*Stay trendy with VibeLink Event - your partner for modern, stylish events.*`
   }),
 
   behind_scenes: (vars) => ({
-    title: `Behind the Scenes: How VibeLink Events Creates Magical Events`,
+    title: `Behind the Scenes: How VibeLink Event Creates Magical Events`,
     content: `Ever wondered what goes into creating those stunning event setups? Here's a peek behind the curtain.
 
 ## Our Process
@@ -372,7 +372,7 @@ There's nothing quite like seeing our clients' faces light up when they see thei
   }),
 
   testimonial: (vars) => ({
-    title: `Client Spotlight: ${vars.clientName || 'A Beautiful'} ${vars.eventType || 'Celebration'} with VibeLink Events`,
+    title: `Client Spotlight: ${vars.clientName || 'A Beautiful'} ${vars.eventType || 'Celebration'} with VibeLink Event`,
     content: `We're thrilled to share another successful event story with you!
 
 ## The Vision
@@ -385,7 +385,7 @@ ${vars.challenge || 'Creating a unique and personalized experience within budget
 We worked closely with ${vars.clientName || 'our client'} to understand every detail of their vision. From color schemes to flower choices, no detail was too small.
 
 ## The Result
-The event was a stunning success! ${vars.quote || '"VibeLink Events exceeded our expectations. The decorations were absolutely beautiful and our guests couldn\'t stop talking about them."'}
+The event was a stunning success! ${vars.quote || '"VibeLink Event exceeded our expectations. The decorations were absolutely beautiful and our guests couldn\'t stop talking about them."'}
 
 ## Highlights
 - Custom ${vars.highlight1 || 'backdrop design'}
@@ -394,7 +394,7 @@ The event was a stunning success! ${vars.quote || '"VibeLink Events exceeded our
 
 ---
 
-*Your story could be next! Contact VibeLink Events to start planning your perfect event.*`
+*Your story could be next! Contact VibeLink Event to start planning your perfect event.*`
   })
 };
 

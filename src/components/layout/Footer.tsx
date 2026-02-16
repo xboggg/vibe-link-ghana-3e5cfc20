@@ -63,7 +63,7 @@ const socialLinks = [{
 }, {
   name: "Facebook",
   icon: Facebook,
-  href: "https://facebook.com/VibeLink Events"
+  href: "https://facebook.com/VibeLink Event"
 }, {
   name: "Twitter",
   icon: Twitter,
@@ -247,7 +247,7 @@ export function Footer() {
 
             {/* Center - Copyright */}
             <div className="text-primary-foreground/60 text-sm">
-              © {new Date().getFullYear()} VibeLink Events
+              © {new Date().getFullYear()} VibeLink Event
             </div>
 
             {/* Right - Policy links */}

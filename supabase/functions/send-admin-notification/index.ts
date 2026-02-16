@@ -284,10 +284,10 @@ const handler = async (req: Request): Promise<Response> => {
     `;
 
     // Send to admin email
-    const adminEmail = "info@vibelinkgh.com";
+    const adminEmail = "info@vibelinkevent.com";
     
     const emailResponse = await resend.emails.send({
-      from: "VibeLink Ghana <orders@vibelinkgh.com>",
+      from: "VibeLink Ghana <orders@vibelinkevent.com>",
       to: [adminEmail],
       subject: `🔔 NEW ORDER: ${data.eventTitle} - GHS ${data.totalPrice.toLocaleString()} | ${data.clientName}`,
       html: emailHtml,

@@ -24,7 +24,9 @@ const signupSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
-type AuthStep = 'login' | 'signup' | '2fa-verify' | '2fa-setup';
+import { supabase } from "@/integrations/supabase/client";
+
+type AuthStep = 'login' | 'signup' | '2fa-verify' | '2fa-setup' | 'forgot-password';
 
 const AdminAuth = () => {
   const navigate = useNavigate();
@@ -39,6 +41,8 @@ const AdminAuth = () => {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [pendingNavigation, setPendingNavigation] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotEmailSent, setForgotEmailSent] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -149,6 +153,28 @@ const AdminAuth = () => {
     setStep('login');
   };
 
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+
+      if (error) {
+        toast.error(error.message);
+      } else {
+        setForgotEmailSent(true);
+        toast.success("Password reset link sent to your email!");
+      }
+    } catch (error) {
+      toast.error("An unexpected error occurred");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   if (loading) {
     return (
       <Layout>
@@ -184,6 +210,92 @@ const AdminAuth = () => {
                   onComplete={handle2FASetupComplete}
                   onSkip={handle2FASkip}
                 />
+              )}
+
+              {/* Forgot Password Form */}
+              {step === 'forgot-password' && (
+                <>
+                  <div className="text-center mb-8">
+                    <div className="w-16 h-16 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                      <Mail className="h-8 w-8 text-primary" />
+                    </div>
+                    <h1 className="text-2xl font-bold text-foreground">
+                      {forgotEmailSent ? "Check Your Email" : "Forgot Password"}
+                    </h1>
+                    <p className="text-muted-foreground mt-2">
+                      {forgotEmailSent
+                        ? "We've sent a password reset link to your email address."
+                        : "Enter your email and we'll send you a reset link"}
+                    </p>
+                  </div>
+
+                  {!forgotEmailSent ? (
+                    <form onSubmit={handleForgotPassword} className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="forgotEmail">Email</Label>
+                        <div className="relative">
+                          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                          <Input
+                            id="forgotEmail"
+                            name="forgotEmail"
+                            type="email"
+                            placeholder="you@example.com"
+                            value={forgotEmail}
+                            onChange={(e) => setForgotEmail(e.target.value)}
+                            className="pl-10"
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      <Button
+                        type="submit"
+                        className="w-full"
+                        size="lg"
+                        disabled={isSubmitting}
+                      >
+                        {isSubmitting ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Sending...
+                          </>
+                        ) : (
+                          "Send Reset Link"
+                        )}
+                      </Button>
+                    </form>
+                  ) : (
+                    <div className="text-center">
+                      <p className="text-sm text-muted-foreground mb-4">
+                        Didn't receive the email? Check your spam folder or try again.
+                      </p>
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          setForgotEmailSent(false);
+                          setForgotEmail("");
+                        }}
+                        className="w-full"
+                      >
+                        Try Again
+                      </Button>
+                    </div>
+                  )}
+
+                  <div className="mt-6 text-center">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setStep('login');
+                        setForgotEmailSent(false);
+                        setForgotEmail("");
+                      }}
+                      className="text-sm text-primary hover:underline"
+                    >
+                      Back to Sign In
+                    </button>
+                  </div>
+                </>
               )}
 
               {/* Login/Signup Forms */}
@@ -282,7 +394,16 @@ const AdminAuth = () => {
                     </Button>
                   </form>
 
-                  <div className="mt-6 text-center">
+                  <div className="mt-6 text-center space-y-2">
+                    {step === 'login' && (
+                      <button
+                        type="button"
+                        onClick={() => setStep('forgot-password')}
+                        className="block w-full text-sm text-muted-foreground hover:text-primary hover:underline"
+                      >
+                        Forgot your password?
+                      </button>
+                    )}
                     <button
                       type="button"
                       onClick={() => {

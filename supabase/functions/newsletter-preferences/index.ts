@@ -156,7 +156,7 @@ function generateHtmlResponse(status: string, subscriber: Subscriber | null, mes
     content = `
       <div class="icon error">✕</div>
       <p class="message">${message}</p>
-      <a href="https://vibelinkgh.com" class="button">Visit Our Website</a>
+      <a href="https://vibelinkevent.com" class="button">Visit Our Website</a>
     `;
   } else if (status === "success") {
     content = `
@@ -203,7 +203,7 @@ function generateHtmlResponse(status: string, subscriber: Subscriber | null, mes
           <input type="hidden" name="action" value="resubscribe">
           <button type="submit" class="button">Re-subscribe to Newsletter</button>
         </form>
-        <a href="https://vibelinkgh.com" class="link">Return to website</a>
+        <a href="https://vibelinkevent.com" class="link">Return to website</a>
       `;
     } else {
       content = `

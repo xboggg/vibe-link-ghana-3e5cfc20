@@ -276,7 +276,7 @@ const handler = async (req: Request): Promise<Response> => {
                     <table width="100%" cellpadding="0" cellspacing="0" style="margin: 30px 0;">
                       <tr>
                         <td align="center">
-                          <a href="https://vibelinkgh.com/track-order" 
+                          <a href="https://vibelinkevent.com/track-order" 
                              style="display: inline-block; background: linear-gradient(135deg, #6B46C1 0%, #D4AF37 100%); color: #ffffff; text-decoration: none; padding: 16px 36px; border-radius: 10px; font-weight: 600; font-size: 16px; margin-right: 10px;">
                             Track Your Order
                           </a>
@@ -327,7 +327,7 @@ const handler = async (req: Request): Promise<Response> => {
     const emailSubject = `${subjectEmoji} Order Update: ${statusLabel} - ${eventTitle}`;
 
     const emailResponse = await resend.emails.send({
-      from: "VibeLink Ghana <orders@vibelinkgh.com>",
+      from: "VibeLink Ghana <orders@vibelinkevent.com>",
       to: [clientEmail],
       subject: emailSubject,
       html: emailHtml,

@@ -16,7 +16,7 @@ const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
   "@id": "https://vibelinkevent.com/#organization",
-  name: "VibeLink Events",
+  name: "VibeLink Event",
   alternateName: "VibeLink",
   description: "Ghana's premier digital invitation service for weddings, funerals, naming ceremonies, graduations & corporate events.",
   url: "https://vibelinkevent.com",
@@ -58,7 +58,7 @@ const websiteSchema = {
   "@type": "WebSite",
   "@id": "https://vibelinkevent.com/#website",
   url: "https://vibelinkevent.com",
-  name: "VibeLink Events",
+  name: "VibeLink Event",
   description: "Ghana's premier digital invitation service",
   publisher: {
     "@id": "https://vibelinkevent.com/#organization",
@@ -74,7 +74,7 @@ const websiteSchema = {
 };
 
 const SEO = ({
-  title = "VibeLink Events | Digital Event Invitations",
+  title = "VibeLink Event | Digital Event Invitations",
   description = "Ghana's premier digital invitation service. Create stunning interactive invitations for weddings, funerals, naming ceremonies, graduations & corporate events.",
   keywords = "digital invitations Ghana, wedding invitations Ghana, funeral programs Ghana, naming ceremony invitations, event invitations Accra",
   canonical,
@@ -83,7 +83,7 @@ const SEO = ({
   noindex = false,
   jsonLd,
 }: SEOProps) => {
-  const fullTitle = title.includes("VibeLink") ? title : `${title} | VibeLink Events`;
+  const fullTitle = title.includes("VibeLink") ? title : `${title} | VibeLink Event`;
   const siteUrl = "https://vibelinkevent.com";
   const canonicalUrl = canonical ? `${siteUrl}${canonical}` : undefined;
 
@@ -107,7 +107,7 @@ const SEO = ({
       <meta property="og:description" content={description} />
       <meta property="og:type" content={ogType} />
       <meta property="og:image" content={ogImage} />
-      <meta property="og:site_name" content="VibeLink Events" />
+      <meta property="og:site_name" content="VibeLink Event" />
       {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
       
       {/* Twitter */}
@@ -195,7 +195,7 @@ export const createArticleSchema = (article: {
   dateModified: article.dateModified || article.datePublished,
   author: {
     "@type": "Organization",
-    name: article.author || "VibeLink Events",
+    name: article.author || "VibeLink Event",
     url: "https://vibelinkevent.com",
   },
   publisher: {

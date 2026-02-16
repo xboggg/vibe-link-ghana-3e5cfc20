@@ -18,7 +18,7 @@ const pricingSchema = {
   description: "Digital event invitations for weddings, funerals, naming ceremonies in Ghana",
   brand: {
     "@type": "Brand",
-    name: "VibeLink Events",
+    name: "VibeLink Event",
   },
   offers: [
     {

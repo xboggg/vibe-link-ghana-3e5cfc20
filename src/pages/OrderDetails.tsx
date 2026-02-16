@@ -219,7 +219,7 @@ export default function OrderDetails() {
       <!DOCTYPE html>
       <html>
       <head>
-        <title>Order #${order?.id.slice(0, 8).toUpperCase()} - VibeLink Events</title>
+        <title>Order #${order?.id.slice(0, 8).toUpperCase()} - VibeLink Event</title>
         <style>
           * { box-sizing: border-box; margin: 0; padding: 0; }
           body {
@@ -299,7 +299,7 @@ export default function OrderDetails() {
       </head>
       <body>
         <div class="header">
-          <div class="logo">✨ VibeLink Events</div>
+          <div class="logo">✨ VibeLink Event</div>
           <h1>Order Confirmation</h1>
           <div class="order-id">Order #${order?.id.slice(0, 8).toUpperCase()}</div>
         </div>
@@ -401,8 +401,8 @@ export default function OrderDetails() {
 
         <div class="footer">
           <p>Questions? Contact us on WhatsApp: +233 24 581 7973</p>
-          <p style="margin-top: 8px;">Thank you for choosing VibeLink Events!</p>
-          <p>www.vibelinkgh.com</p>
+          <p style="margin-top: 8px;">Thank you for choosing VibeLink Event!</p>
+          <p>www.vibelinkevent.com</p>
         </div>
       </body>
       </html>
@@ -472,7 +472,7 @@ export default function OrderDetails() {
   return (
     <Layout>
       <SEO
-        title={`Order #${order.id.slice(0, 8).toUpperCase()} - VibeLink Events`}
+        title={`Order #${order.id.slice(0, 8).toUpperCase()} - VibeLink Event`}
         description="View your order details, payment status, and event information."
         noindex={true}
       />
@@ -515,7 +515,7 @@ export default function OrderDetails() {
               <div className="flex items-center justify-center gap-2 mb-4">
                 <Sparkles className="h-6 w-6 text-purple-500" />
                 <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">
-                  VibeLink Events
+                  VibeLink Event
                 </span>
               </div>
               <h1 className="text-2xl md:text-3xl font-bold mb-2">Order Confirmation</h1>
@@ -765,8 +765,8 @@ export default function OrderDetails() {
               transition={{ delay: 0.6 }}
               className="text-center mt-8 text-sm text-muted-foreground"
             >
-              <p>Thank you for choosing VibeLink Events!</p>
-              <p className="mt-1">www.vibelinkgh.com</p>
+              <p>Thank you for choosing VibeLink Event!</p>
+              <p className="mt-1">www.vibelinkevent.com</p>
             </motion.div>
           </div>
         </div>

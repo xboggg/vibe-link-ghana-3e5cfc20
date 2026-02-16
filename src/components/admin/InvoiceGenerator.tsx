@@ -308,7 +308,7 @@ export function InvoiceGenerator() {
   };
 
   const getInvoiceUrl = (invoiceNumber: string) => {
-    return `https://vibelinkgh.com/invoice/${invoiceNumber}`;
+    return `https://vibelinkevent.com/invoice/${invoiceNumber}`;
   };
 
   const copyInvoiceLink = async (invoice: Invoice) => {
@@ -332,12 +332,12 @@ export function InvoiceGenerator() {
     const url = getInvoiceUrl(invoice.invoice_number);
     const message = encodeURIComponent(
       `Hi ${invoice.customer_name.split(" ")[0]},\n\n` +
-      `Here is your invoice from VibeLink Events:\n\n` +
+      `Here is your invoice from VibeLink Event:\n\n` +
       `Invoice: ${invoice.invoice_number}\n` +
       `Amount: GH₵${invoice.total.toLocaleString()}\n` +
       `Due: ${invoice.due_date ? format(new Date(invoice.due_date), "MMM d, yyyy") : "Upon receipt"}\n\n` +
       `View & pay here:\n${url}\n\n` +
-      `Thank you for choosing VibeLink Events!`
+      `Thank you for choosing VibeLink Event!`
     );
     window.open(`https://wa.me/?text=${message}`, "_blank");
 
@@ -681,7 +681,7 @@ export function InvoiceGenerator() {
             <div className="space-y-6 print:p-8" id="invoice-print">
               <div className="flex justify-between">
                 <div>
-                  <h3 className="font-bold text-lg">VibeLink Events</h3>
+                  <h3 className="font-bold text-lg">VibeLink Event</h3>
                   <p className="text-sm text-muted-foreground">Premium Event Services</p>
                 </div>
                 <div className="text-right">

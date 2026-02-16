@@ -131,7 +131,7 @@ ${formData.eventType ? `Event Type: ${formData.eventType.trim()}` : ""}
 Message:
 ${formData.message.trim()}`;
 
-    const mailtoUrl = `mailto:hello@vibelinkgh.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const mailtoUrl = `mailto:hello@vibelinkevent.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     window.location.href = mailtoUrl;
     
     toast({
@@ -147,8 +147,8 @@ ${formData.message.trim()}`;
     <Layout>
       <SEO 
         title="Contact Us"
-        description="Get in touch with VibeLink Events. Reach us via WhatsApp for quick responses or send us an email. We're here to help with your digital invitation needs."
-        keywords="contact VibeLink Events, digital invitations help, WhatsApp support Ghana"
+        description="Get in touch with VibeLink Event. Reach us via WhatsApp for quick responses or send us an email. We're here to help with your digital invitation needs."
+        keywords="contact VibeLink Event, digital invitations help, WhatsApp support Ghana"
         canonical="/contact"
       />
       {/* Hero */}

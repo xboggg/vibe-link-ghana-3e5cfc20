@@ -92,7 +92,7 @@ const handler = async (req: Request): Promise<Response> => {
                 <p style="margin: 0 0 20px; color: #555; font-size: 15px; line-height: 1.6;">
                   Browse our services and start designing your perfect digital invitation today!
                 </p>
-                <a href="https://vibelinkgh.com/services" style="color: #f5a623; text-decoration: none; font-weight: 600;">
+                <a href="https://vibelinkevent.com/services" style="color: #f5a623; text-decoration: none; font-weight: 600;">
                   Explore Our Services →
                 </a>
               </div>

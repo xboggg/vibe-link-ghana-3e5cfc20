@@ -104,7 +104,7 @@ const wrapInEmailTemplate = (content: string, subject: string, order: Order): st
                     VibeLink Ghana
                   </p>
                   <p style="margin: 0 0 10px 0; color: rgba(255,255,255,0.7); font-size: 13px;">
-                    Accra, Ghana | info@vibelinkgh.com
+                    Accra, Ghana | info@vibelinkevent.com
                   </p>
                   <p style="margin: 0; color: rgba(255,255,255,0.5); font-size: 12px;">
                     © ${new Date().getFullYear()} VibeLink Ghana. All rights reserved.
@@ -218,7 +218,7 @@ const handler = async (req: Request): Promise<Response> => {
             const fullHtml = wrapInEmailTemplate(emailContent, emailSubject, order);
 
             await resend.emails.send({
-              from: "VibeLink Ghana <orders@vibelinkgh.com>",
+              from: "VibeLink Ghana <orders@vibelinkevent.com>",
               to: [order.client_email],
               subject: emailSubject,
               html: fullHtml,

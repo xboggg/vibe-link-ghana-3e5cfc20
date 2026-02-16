@@ -267,7 +267,7 @@ const Survey = () => {
               </motion.div>
               <h1 className="text-3xl font-bold mb-2">We'd Love Your Feedback!</h1>
               <p className="text-muted-foreground">
-                Hi {survey?.customer_name?.split(" ")[0]}, thank you for choosing VibeLink Events!
+                Hi {survey?.customer_name?.split(" ")[0]}, thank you for choosing VibeLink Event!
                 Please take a moment to rate your experience.
               </p>
             </div>

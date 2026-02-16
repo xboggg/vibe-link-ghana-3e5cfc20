@@ -24,7 +24,7 @@ const TikTokIcon = () => (
 
 const socialLinks = [
   { name: "Instagram", icon: Instagram, href: "https://instagram.com/vibelink_ghana" },
-  { name: "Facebook", icon: Facebook, href: "https://facebook.com/VibeLink Events" },
+  { name: "Facebook", icon: Facebook, href: "https://facebook.com/VibeLink Event" },
   { name: "Twitter", icon: Twitter, href: "https://twitter.com/VibeLink_GH" },
   { name: "TikTok", icon: TikTokIcon, href: "https://tiktok.com/@vibelink.ghana" },
 ];

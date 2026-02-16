@@ -21,7 +21,7 @@ interface AdminPaymentNotificationRequest {
   paymentMethod?: string;
 }
 
-const ADMIN_EMAIL = "hello@vibelinkgh.com";
+const ADMIN_EMAIL = "hello@vibelinkevent.com";
 
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
@@ -137,7 +137,7 @@ const handler = async (req: Request): Promise<Response> => {
             `}
 
             <div style="text-align: center; margin-top: 25px;">
-              <a href="https://vibelinkgh.com/admin" style="display: inline-block; background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: #ffffff; text-decoration: none; padding: 12px 25px; border-radius: 8px; font-weight: 600; font-size: 14px;">
+              <a href="https://vibelinkevent.com/admin" style="display: inline-block; background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: #ffffff; text-decoration: none; padding: 12px 25px; border-radius: 8px; font-weight: 600; font-size: 14px;">
                 View in Admin Dashboard
               </a>
             </div>
@@ -154,7 +154,7 @@ const handler = async (req: Request): Promise<Response> => {
     `;
 
     const emailResponse = await resend.emails.send({
-      from: "VibeLink Notifications <notifications@vibelinkgh.com>",
+      from: "VibeLink Notifications <notifications@vibelinkevent.com>",
       to: [ADMIN_EMAIL],
       subject: `💰 ${isDeposit ? 'Deposit' : 'Balance'} Received: GHS ${data.amountPaid.toLocaleString()} - ${data.eventTitle}`,
       html: emailHtml,

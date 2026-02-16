@@ -6,7 +6,7 @@ const PrivacyPolicy = () => {
     <Layout>
       <SEO 
         title="Privacy Policy"
-        description="Learn how VibeLink Events collects, uses, and protects your personal information when you use our digital invitation services."
+        description="Learn how VibeLink Event collects, uses, and protects your personal information when you use our digital invitation services."
         canonical="/privacy-policy"
         noindex={true}
       />
@@ -17,7 +17,7 @@ const PrivacyPolicy = () => {
 
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-foreground mb-4">1. Information We Collect</h2>
-            <p className="text-muted-foreground mb-4">When you use VibeLink Events's services, we collect the following information:</p>
+            <p className="text-muted-foreground mb-4">When you use VibeLink Event's services, we collect the following information:</p>
             <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
               <li><strong>Personal Information:</strong> Name, email address, phone number, WhatsApp number</li>
               <li><strong>Event Details:</strong> Event type, date, venue, names of celebrants</li>
@@ -82,7 +82,7 @@ const PrivacyPolicy = () => {
               For any privacy-related inquiries or to exercise your rights, please contact us at:
             </p>
             <ul className="list-none space-y-2 text-muted-foreground mt-4">
-              <li><strong>Email:</strong> privacy@vibelinkgh.com</li>
+              <li><strong>Email:</strong> privacy@vibelinkevent.com</li>
               <li><strong>WhatsApp:</strong> +49 157 5717 8561</li>
               <li><strong>Address:</strong> Accra, Ghana</li>
             </ul>

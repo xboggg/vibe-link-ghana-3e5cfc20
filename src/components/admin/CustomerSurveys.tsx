@@ -223,7 +223,7 @@ export function CustomerSurveys() {
       if (sendNow) {
         const surveyUrl = `${window.location.origin}/survey/${token}`;
         const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(
-          `Hi ${formData.customer_name}, thank you for choosing VibeLink Events! We'd love your feedback. Please take a moment to complete our survey: ${surveyUrl}`
+          `Hi ${formData.customer_name}, thank you for choosing VibeLink Event! We'd love your feedback. Please take a moment to complete our survey: ${surveyUrl}`
         )}`;
         window.open(whatsappUrl, "_blank");
         toast.success("Survey created! Share the link via WhatsApp.");
@@ -251,7 +251,7 @@ export function CustomerSurveys() {
 
       const surveyUrl = `${window.location.origin}/survey/${survey.token}`;
       const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(
-        `Hi ${survey.customer_name}, thank you for choosing VibeLink Events! We'd love your feedback. Please take a moment to complete our survey: ${surveyUrl}`
+        `Hi ${survey.customer_name}, thank you for choosing VibeLink Event! We'd love your feedback. Please take a moment to complete our survey: ${surveyUrl}`
       )}`;
       window.open(whatsappUrl, "_blank");
 

@@ -38,14 +38,14 @@ const EMAIL_TEMPLATES: EmailTemplate[] = [
     id: "announcement",
     name: "Announcement",
     icon: <Megaphone className="h-4 w-4" />,
-    subject: "Exciting News from VibeLink Events!",
+    subject: "Exciting News from VibeLink Event!",
     content: `<h2>Big News! 🎉</h2>
 <p>Dear Valued Subscriber,</p>
 <p>We have some exciting news to share with you!</p>
 <p>[Your announcement here]</p>
 <p>We're thrilled to bring you this update and can't wait for you to experience what's coming.</p>
 <p>Stay tuned for more updates!</p>
-<p>Best regards,<br/>The VibeLink Events Team</p>`,
+<p>Best regards,<br/>The VibeLink Event Team</p>`,
   },
   {
     id: "promotion",
@@ -64,7 +64,7 @@ const EMAIL_TEMPLATES: EmailTemplate[] = [
 </ul>
 <p>Don't miss out on this amazing opportunity!</p>
 <p><a href="#">Shop Now</a></p>
-<p>Best regards,<br/>The VibeLink Events Team</p>`,
+<p>Best regards,<br/>The VibeLink Event Team</p>`,
   },
   {
     id: "event-update",
@@ -83,16 +83,16 @@ const EMAIL_TEMPLATES: EmailTemplate[] = [
 <p>[Additional event description]</p>
 <p>We'd love to see you there!</p>
 <p><a href="#">Register Now</a></p>
-<p>Best regards,<br/>The VibeLink Events Team</p>`,
+<p>Best regards,<br/>The VibeLink Event Team</p>`,
   },
   {
     id: "newsletter",
     name: "Monthly Newsletter",
     icon: <Mail className="h-4 w-4" />,
-    subject: "Your Monthly Update from VibeLink Events 📬",
+    subject: "Your Monthly Update from VibeLink Event 📬",
     content: `<h2>Monthly Newsletter 📬</h2>
 <p>Dear Subscriber,</p>
-<p>Here's what's been happening at VibeLink Events this month!</p>
+<p>Here's what's been happening at VibeLink Event this month!</p>
 <h3>Highlights</h3>
 <ul>
 <li>[Highlight 1]</li>
@@ -104,7 +104,7 @@ const EMAIL_TEMPLATES: EmailTemplate[] = [
 <h3>What's Coming</h3>
 <p>[Tease upcoming features or events]</p>
 <p>Thank you for being part of our community!</p>
-<p>Best regards,<br/>The VibeLink Events Team</p>`,
+<p>Best regards,<br/>The VibeLink Event Team</p>`,
   },
 ];
 
@@ -537,7 +537,7 @@ export function NewsletterManager() {
                   <div className="space-y-2 text-sm">
                     <div className="flex gap-2">
                       <span className="font-medium text-muted-foreground w-16">From:</span>
-                      <span>VibeLink Events &lt;newsletter@vibelinkgh.com&gt;</span>
+                      <span>VibeLink Event &lt;newsletter@vibelinkevent.com&gt;</span>
                     </div>
                     <div className="flex gap-2">
                       <span className="font-medium text-muted-foreground w-16">To:</span>
@@ -567,7 +567,7 @@ export function NewsletterManager() {
                     />
                   </div>
                   <div className="bg-muted/50 p-4 text-center text-xs text-muted-foreground border-t">
-                    <p className="mb-2">© {new Date().getFullYear()} VibeLink Events. Made with ❤️ in Ghana</p>
+                    <p className="mb-2">© {new Date().getFullYear()} VibeLink Event. Made with ❤️ in Ghana</p>
                     <div className="flex justify-center gap-2">
                       <span className="underline cursor-pointer">Manage preferences</span>
                       <span>|</span>

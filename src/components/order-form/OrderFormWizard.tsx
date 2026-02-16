@@ -149,7 +149,7 @@ export const OrderFormWizard = ({ onComplete, initialReferralCode = "" }: OrderF
     // Use simple text formatting instead of emojis for better WhatsApp compatibility
     const depositAmount = Math.round(total / 2);
 
-    const message = `*NEW ORDER - VibeLink Events*
+    const message = `*NEW ORDER - VibeLink Event*
 
 *Order ID:* #${orderId.substring(0, 8).toUpperCase()}
 

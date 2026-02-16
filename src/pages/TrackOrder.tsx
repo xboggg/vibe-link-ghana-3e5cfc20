@@ -251,7 +251,7 @@ export default function TrackOrder() {
     <Layout>
       <SEO
         title="Track Your Order"
-        description="Check the status of your VibeLink Events digital invitation order. Enter your order ID to see progress updates."
+        description="Check the status of your VibeLink Event digital invitation order. Enter your order ID to see progress updates."
         canonical="/track-order"
         noindex={true}
       />

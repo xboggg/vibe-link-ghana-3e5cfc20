@@ -197,7 +197,7 @@ function generateHtmlResponse(status: string, email: string | null, token: strin
           <div class="icon">${icon}</div>
           <p class="message">${message}</p>
           ${extraContent}
-          <a href="https://vibelinkgh.com" class="button${extraContent ? ' secondary' : ''}">Visit Our Website</a>
+          <a href="https://vibelinkevent.com" class="button${extraContent ? ' secondary' : ''}">Visit Our Website</a>
         </div>
         <div class="footer">
           <p>© ${new Date().getFullYear()} VibeLink Ghana. All rights reserved.</p>

@@ -138,8 +138,8 @@ export function ReferralProgram({ customerEmail, customerName }: ReferralProgram
     return `${prefix}-${suffix}`;
   };
 
-  const referralLink = `https://vibelinkgh.com/get-started?ref=${referralCode}`;
-  const shareMessage = `I got my beautiful digital invitation from VibeLink Events! Check them out for stunning event invitations: ${referralLink}`;
+  const referralLink = `https://vibelinkevent.com/get-started?ref=${referralCode}`;
+  const shareMessage = `I got my beautiful digital invitation from VibeLink Event! Check them out for stunning event invitations: ${referralLink}`;
 
   const copyReferralLink = () => {
     navigator.clipboard.writeText(referralLink);
@@ -150,7 +150,7 @@ export function ReferralProgram({ customerEmail, customerName }: ReferralProgram
     if (navigator.share) {
       try {
         await navigator.share({
-          title: "VibeLink Events",
+          title: "VibeLink Event",
           text: shareMessage,
           url: referralLink
         });

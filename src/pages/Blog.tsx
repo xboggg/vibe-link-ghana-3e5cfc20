@@ -152,7 +152,7 @@ const Blog = () => {
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm text-secondary text-sm font-medium mb-6">
               <Sparkles className="h-4 w-4" />
-              <span>VibeLink Events Blog</span>
+              <span>VibeLink Event Blog</span>
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
               Event Planning <span className="text-secondary">Resources</span> & Inspiration
@@ -473,7 +473,7 @@ const Blog = () => {
                 Follow on Instagram
               </a>
               <a
-                href="https://facebook.com/VibeLink Events"
+                href="https://facebook.com/VibeLink Event"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-blue-600 text-white font-medium hover:opacity-90 transition-opacity"

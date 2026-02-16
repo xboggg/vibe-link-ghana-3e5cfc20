@@ -208,7 +208,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const emailResponse = await resend.emails.send({
-      from: "VibeLink Ghana <orders@vibelinkgh.com>",
+      from: "VibeLink Ghana <orders@vibelinkevent.com>",
       to: [clientEmail],
       subject: `💳 Payment Reminder - ${eventTitle} | VibeLink Ghana`,
       html: emailHtml,

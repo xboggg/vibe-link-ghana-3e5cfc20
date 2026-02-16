@@ -77,7 +77,7 @@ const emptyPost: Partial<BlogPost> = {
   read_time: '5 min read',
   featured: false,
   published: false,
-  author_name: 'VibeLink Events',
+  author_name: 'VibeLink Event',
   meta_description: '',
   focus_keyword: '',
   tags: [],
@@ -201,7 +201,7 @@ export function BlogManager() {
         read_time: editingPost.read_time || '5 min read',
         featured: editingPost.featured || false,
         published: editingPost.published || false,
-        author_name: editingPost.author_name || 'VibeLink Events',
+        author_name: editingPost.author_name || 'VibeLink Event',
         slug: editingPost.slug || generateSlug(editingPost.title!),
         published_at: editingPost.published ? (editingPost.published_at || new Date().toISOString()) : null,
         meta_description: editingPost.meta_description || null,
@@ -670,9 +670,9 @@ Planning an event in Ghana requires understanding local traditions and modern tr
 
 ## VibeLink Can Help
 
-At VibeLink Events, we specialize in creating beautiful digital invitations that capture the essence of your celebration. Contact us today!
+At VibeLink Event, we specialize in creating beautiful digital invitations that capture the essence of your celebration. Contact us today!
 
-*Ready to start planning? Get your digital invitation at [vibelinkgh.com](https://vibelinkgh.com)*`;                    setTimeout(() => {                      setAIGenerating(false);                      setIsAIDialogOpen(false);                      setEditingPost({                        ...emptyPost,                        title: generatedTitle,                        content: generatedContent,                        category: topic?.value === "wedding" ? "Wedding" : topic?.value === "funeral" ? "Funeral \& Memorial" : "Tips \& Guides",                        excerpt: `A comprehensive guide to planning the perfect ${topic?.label?.toLowerCase() || "event"} in Ghana.`,                      });                      setIsDialogOpen(true);                      toast.success("AI content generated! Review and edit before publishing.");                    }, 1500);                  }}                  disabled={aiGenerating}                >                  {aiGenerating ? (                    <>                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />                      Generating...                    </>                  ) : (                    <>                      <Wand2 className="h-4 w-4 mr-2" />                      Generate Post                    </>                  )}                </Button>              </div>            </div>          </DialogContent>        </Dialog>
+*Ready to start planning? Get your digital invitation at [vibelinkevent.com](https://vibelinkevent.com)*`;                    setTimeout(() => {                      setAIGenerating(false);                      setIsAIDialogOpen(false);                      setEditingPost({                        ...emptyPost,                        title: generatedTitle,                        content: generatedContent,                        category: topic?.value === "wedding" ? "Wedding" : topic?.value === "funeral" ? "Funeral \& Memorial" : "Tips \& Guides",                        excerpt: `A comprehensive guide to planning the perfect ${topic?.label?.toLowerCase() || "event"} in Ghana.`,                      });                      setIsDialogOpen(true);                      toast.success("AI content generated! Review and edit before publishing.");                    }, 1500);                  }}                  disabled={aiGenerating}                >                  {aiGenerating ? (                    <>                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />                      Generating...                    </>                  ) : (                    <>                      <Wand2 className="h-4 w-4 mr-2" />                      Generate Post                    </>                  )}                </Button>              </div>            </div>          </DialogContent>        </Dialog>
       </div>
 
       {/* Stats */}

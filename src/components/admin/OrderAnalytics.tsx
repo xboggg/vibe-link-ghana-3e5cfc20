@@ -299,7 +299,7 @@ export const OrderAnalytics = () => {
         </style>
       </head>
       <body>
-        <h1>VibeLink Events - Order Analytics Report</h1>
+        <h1>VibeLink Event - Order Analytics Report</h1>
         <p><strong>Date Range:</strong> ${dateRange === 'all' ? 'All Time' : `Last ${dateRange.replace('d', ' Days')}`}</p>
         
         <h2>Key Metrics</h2>

@@ -1527,7 +1527,7 @@ const Admin = () => {
                   </p>
                   <div className="flex flex-col sm:flex-row gap-3">
                     <Input
-                      placeholder="e.g., amawedding.vibelinkgh.com"
+                      placeholder="e.g., amawedding.vibelinkevent.com"
                       value={finalLink}
                       onChange={(e) => setFinalLink(e.target.value)}
                       className="flex-1"

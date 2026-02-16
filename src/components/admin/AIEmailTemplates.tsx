@@ -85,7 +85,7 @@ const emailTemplates: Record<EmailType, (vars: any) => string> = {
 
 Dear ${vars.customerName},
 
-Thank you for choosing VibeLink Events for your ${vars.eventType}! We're excited to work with you.
+Thank you for choosing VibeLink Event for your ${vars.eventType}! We're excited to work with you.
 
 Order Details:
 - Order Number: ${vars.orderNumber}
@@ -107,7 +107,7 @@ WhatsApp: ${vars.businessWhatsApp || '+233 XX XXX XXXX'}
 Email: ${vars.businessEmail || 'hello@vibelinkevents.com'}
 
 Best regards,
-The VibeLink Events Team`,
+The VibeLink Event Team`,
 
   payment_reminder: (vars) => `Subject: Friendly Reminder: Payment Due for Order #${vars.orderNumber}
 
@@ -130,7 +130,7 @@ If you've already made the payment, please disregard this message and kindly sen
 Thank you for your business!
 
 Best regards,
-VibeLink Events`,
+VibeLink Event`,
 
   delivery_notification: (vars) => `Subject: Your Order #${vars.orderNumber} is Ready!
 
@@ -150,7 +150,7 @@ Please have your order number ready: ${vars.orderNumber}
 
 If you have any questions, don't hesitate to reach out!
 
-Thank you for choosing VibeLink Events.
+Thank you for choosing VibeLink Event.
 
 Best regards,
 The VibeLink Team`,
@@ -170,16 +170,16 @@ Quick Questions:
 
 Simply reply to this email with your thoughts, or click here to leave a quick review: ${vars.reviewLink || '[Review Link]'}
 
-Thank you for trusting VibeLink Events with your special occasion!
+Thank you for trusting VibeLink Event with your special occasion!
 
 Warm regards,
 The VibeLink Team`,
 
-  thank_you: (vars) => `Subject: Thank You for Choosing VibeLink Events!
+  thank_you: (vars) => `Subject: Thank You for Choosing VibeLink Event!
 
 Dear ${vars.customerName},
 
-We wanted to take a moment to express our heartfelt gratitude for choosing VibeLink Events for your ${vars.eventType}.
+We wanted to take a moment to express our heartfelt gratitude for choosing VibeLink Event for your ${vars.eventType}.
 
 It was truly a pleasure working with you, and we hope our designs made your occasion even more special.
 
@@ -188,10 +188,10 @@ Use code THANKYOU15 for 15% off your next purchase!
 
 We'd be honored to serve you again. Follow us on social media for inspiration and updates:
 - Instagram: @vibelinkevents
-- Facebook: VibeLink Events
+- Facebook: VibeLink Event
 
 With gratitude,
-The VibeLink Events Family`,
+The VibeLink Event Family`,
 
   promotional: (vars) => `Subject: Special Offer Just for You!
 
@@ -212,13 +212,13 @@ Browse our latest designs and packages at vibelinkevents.com
 Don't miss out!
 
 Best,
-VibeLink Events`,
+VibeLink Event`,
 
   survey_request: (vars) => `Subject: We Value Your Feedback!
 
 Dear ${vars.customerName},
 
-Thank you for your recent order with VibeLink Events! We're constantly striving to improve, and your feedback is invaluable.
+Thank you for your recent order with VibeLink Event! We're constantly striving to improve, and your feedback is invaluable.
 
 Would you take 2 minutes to share your experience?
 
@@ -229,7 +229,7 @@ Your responses help us serve you better!
 As a thank you, you'll receive a 10% discount code for your next order upon completion.
 
 Best regards,
-The VibeLink Events Team`
+The VibeLink Event Team`
 };
 
 export function AIEmailTemplates() {

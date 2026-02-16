@@ -215,8 +215,8 @@ const About = () => {
     <Layout>
       <SEO
         title="About Us"
-        description="Learn about VibeLink Events - Ghana's premier digital invitation service. Discover our journey from paper to the future of event invitations."
-        keywords="VibeLink Events, digital invitations, Ghana event services, about VibeLink"
+        description="Learn about VibeLink Event - Ghana's premier digital invitation service. Discover our journey from paper to the future of event invitations."
+        keywords="VibeLink Event, digital invitations, Ghana event services, about VibeLink"
         canonical="/about"
         jsonLd={aboutBreadcrumb}
       />
@@ -231,7 +231,7 @@ const About = () => {
             className="text-center max-w-3xl mx-auto"
           >
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
-              About VibeLink Events
+              About VibeLink Event
             </h1>
             <p className="text-white/80 text-lg lg:text-xl">
               Ghana's premier digital invitation service, celebrating life's precious moments
@@ -467,7 +467,7 @@ const About = () => {
                   What if an invitation could do <span className="text-primary">more</span>?
                 </h3>
                 <p className="text-muted-foreground text-base sm:text-lg mb-6">
-                  VibeLink Events was born from this question. We don't just design invitations -
+                  VibeLink Event was born from this question. We don't just design invitations -
                   we create <strong>living, breathing event experiences</strong>. One simple link that does everything.
                 </p>
 
@@ -478,7 +478,7 @@ const About = () => {
                   transition={{ duration: 0.5, delay: 0.3 }}
                   className="text-muted-foreground text-base sm:text-lg leading-relaxed"
                 >
-                  VibeLink Events solves the limitations of traditional printed invitations and static digital flyers by creating interactive, shareable event pages with one link that lets you <strong className="text-foreground">update</strong> details instantly, <strong className="text-foreground">track</strong> RSVPs, <strong className="text-foreground">share</strong> venue directions, and <strong className="text-foreground">reach</strong> loved ones anywhere in the world.
+                  VibeLink Event solves the limitations of traditional printed invitations and static digital flyers by creating interactive, shareable event pages with one link that lets you <strong className="text-foreground">update</strong> details instantly, <strong className="text-foreground">track</strong> RSVPs, <strong className="text-foreground">share</strong> venue directions, and <strong className="text-foreground">reach</strong> loved ones anywhere in the world.
                 </motion.p>
               </div>
             </motion.div>
@@ -1044,7 +1044,7 @@ const About = () => {
               Meet The Vibers
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              The passionate people behind VibeLink Events
+              The passionate people behind VibeLink Event
             </p>
           </motion.div>
 

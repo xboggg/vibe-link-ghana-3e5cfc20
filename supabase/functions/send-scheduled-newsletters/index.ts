@@ -136,13 +136,13 @@ const handler = async (req: Request): Promise<Response> => {
                   </div>
                   
                   <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0; text-align: center;">
-                    <a href="https://vibelinkgh.com/get-started" style="display: inline-block; background: linear-gradient(135deg, #7C3AED 0%, #F59E0B 100%); color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600;">Create Your Invitation</a>
+                    <a href="https://vibelinkevent.com/get-started" style="display: inline-block; background: linear-gradient(135deg, #7C3AED 0%, #F59E0B 100%); color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600;">Create Your Invitation</a>
                   </div>
                 </div>
                 
                 <div style="text-align: center; padding: 20px; color: #94a3b8; font-size: 12px;">
                   <p style="margin: 0;">© ${new Date().getFullYear()} VibeLink Ghana. All rights reserved.</p>
-                  <p style="margin: 8px 0 0 0;">Accra, Ghana | <a href="mailto:info@vibelinkgh.com" style="color: #7C3AED;">info@vibelinkgh.com</a></p>
+                  <p style="margin: 8px 0 0 0;">Accra, Ghana | <a href="mailto:info@vibelinkevent.com" style="color: #7C3AED;">info@vibelinkevent.com</a></p>
                   <p style="margin: 12px 0 0 0;">
                     <a href="${preferencesUrl}" style="color: #94a3b8; text-decoration: underline;">Manage preferences</a>
                     &nbsp;|&nbsp;
@@ -159,7 +159,7 @@ const handler = async (req: Request): Promise<Response> => {
           emailHtml = addTrackingPixel(emailHtml, campaign.id, subscriber.email, baseUrl);
 
           const { error: sendError } = await resend.emails.send({
-            from: "VibeLink Ghana <orders@vibelinkgh.com>",
+            from: "VibeLink Ghana <orders@vibelinkevent.com>",
             to: subscriber.email,
             subject: campaign.subject,
             html: emailHtml,

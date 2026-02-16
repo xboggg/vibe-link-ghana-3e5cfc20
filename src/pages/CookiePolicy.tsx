@@ -6,7 +6,7 @@ const CookiePolicy = () => {
     <Layout>
       <SEO 
         title="Cookie Policy"
-        description="Learn about the cookies VibeLink Events uses on our website and how to manage your cookie preferences."
+        description="Learn about the cookies VibeLink Event uses on our website and how to manage your cookie preferences."
         canonical="/cookie-policy"
         noindex={true}
       />
@@ -110,7 +110,7 @@ const CookiePolicy = () => {
               If you have questions about our use of cookies:
             </p>
             <ul className="list-none space-y-2 text-muted-foreground mt-4">
-              <li><strong>Email:</strong> privacy@vibelinkgh.com</li>
+              <li><strong>Email:</strong> privacy@vibelinkevent.com</li>
               <li><strong>WhatsApp:</strong> +49 157 5717 8561</li>
             </ul>
           </section>

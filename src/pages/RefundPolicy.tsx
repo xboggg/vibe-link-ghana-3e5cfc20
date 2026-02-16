@@ -6,7 +6,7 @@ const RefundPolicy = () => {
     <Layout>
       <SEO 
         title="Refund Policy"
-        description="Understand VibeLink Events's refund policy for digital invitation orders, including full and partial refund conditions."
+        description="Understand VibeLink Event's refund policy for digital invitation orders, including full and partial refund conditions."
         canonical="/refund-policy"
         noindex={true}
       />
@@ -91,7 +91,7 @@ const RefundPolicy = () => {
               For refund requests or questions:
             </p>
             <ul className="list-none space-y-2 text-muted-foreground mt-4">
-              <li><strong>Email:</strong> refunds@vibelinkgh.com</li>
+              <li><strong>Email:</strong> refunds@vibelinkevent.com</li>
               <li><strong>WhatsApp:</strong> +49 157 5717 8561</li>
             </ul>
           </section>
