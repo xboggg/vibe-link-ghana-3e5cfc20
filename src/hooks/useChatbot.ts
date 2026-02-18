@@ -9,11 +9,11 @@ export type ChatMessage = {
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/customer-chat`;
 
-// Generate a unique session ID for analytics
+// Generate a unique session ID for analytics using cryptographically secure random
 function getSessionId(): string {
   let sessionId = sessionStorage.getItem("chat_session_id");
   if (!sessionId) {
-    sessionId = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+    sessionId = crypto.randomUUID();
     sessionStorage.setItem("chat_session_id", sessionId);
   }
   return sessionId;

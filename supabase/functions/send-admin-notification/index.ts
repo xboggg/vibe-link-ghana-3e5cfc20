@@ -115,7 +115,7 @@ const handler = async (req: Request): Promise<Response> => {
         <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); border-radius: 16px 16px 0 0; padding: 40px 30px; text-align: center;">
             <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 700;">🔔 NEW ORDER ALERT!</h1>
-            <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0; font-size: 16px;">A new order has been placed on VibeLink Ghana</p>
+            <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0; font-size: 16px;">A new order has been placed on VibeLink Event</p>
           </div>
           
           <div style="background-color: #ffffff; padding: 30px; border-radius: 0 0 16px 16px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
@@ -275,7 +275,7 @@ const handler = async (req: Request): Promise<Response> => {
 
           <div style="text-align: center; padding: 25px 20px;">
             <p style="color: #888; font-size: 13px; margin: 0;">
-              This is an automated notification from VibeLink Ghana
+              This is an automated notification from VibeLink Event
             </p>
           </div>
         </div>
@@ -287,7 +287,7 @@ const handler = async (req: Request): Promise<Response> => {
     const adminEmail = "info@vibelinkevent.com";
     
     const emailResponse = await resend.emails.send({
-      from: "VibeLink Ghana <orders@vibelinkevent.com>",
+      from: "VibeLink Event <orders@vibelinkevent.com>",
       to: [adminEmail],
       subject: `🔔 NEW ORDER: ${data.eventTitle} - GHS ${data.totalPrice.toLocaleString()} | ${data.clientName}`,
       html: emailHtml,

@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baby Adjoa's Naming Ceremony | Welcome Little One</title>
+    <meta name="description" content="Join us in celebrating the naming ceremony of our precious Baby Adjoa - a joyous Ghanaian tradition welcoming our little princess.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --pink-light: #FFF0F5;
+            --pink-primary: #FFB6C1;
+            --pink-dark: #DB7093;
+            --gold: #D4AF37;
+            --gold-light: #F4E4BC;
+            --cream: #FFFAF0;
+            --text-dark: #4A4A4A;
+            --white: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--cream);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        /* Floating Elements */
+        .floating-elements {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .floating-icon {
+            position: absolute;
+            opacity: 0.15;
+            animation: floatAround 20s infinite ease-in-out;
+            color: var(--pink-dark);
+        }
+
+        .floating-icon:nth-child(1) { top: 10%; left: 5%; animation-delay: 0s; font-size: 2rem; }
+        .floating-icon:nth-child(2) { top: 20%; right: 10%; animation-delay: -3s; font-size: 1.5rem; }
+        .floating-icon:nth-child(3) { top: 40%; left: 15%; animation-delay: -6s; font-size: 2.5rem; }
+        .floating-icon:nth-child(4) { top: 60%; right: 5%; animation-delay: -9s; font-size: 1.8rem; }
+        .floating-icon:nth-child(5) { top: 80%; left: 10%; animation-delay: -12s; font-size: 2rem; }
+        .floating-icon:nth-child(6) { top: 30%; right: 20%; animation-delay: -15s; font-size: 1.6rem; }
+        .floating-icon:nth-child(7) { top: 70%; right: 15%; animation-delay: -18s; font-size: 2.2rem; }
+        .floating-icon:nth-child(8) { top: 50%; left: 8%; animation-delay: -21s; font-size: 1.4rem; }
+
+        @keyframes floatAround {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(20px, -30px) rotate(10deg); }
+            50% { transform: translate(-10px, 20px) rotate(-5deg); }
+            75% { transform: translate(30px, 10px) rotate(15deg); }
+        }
+
+        /* Adinkra Pattern Overlay */
+        .adinkra-overlay {
+            position: relative;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5 L35 15 L30 25 L25 15 Z M30 35 L35 45 L30 55 L25 45 Z M5 30 L15 25 L25 30 L15 35 Z M35 30 L45 25 L55 30 L45 35 Z' fill='%23DB7093' fill-opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            background: linear-gradient(135deg, var(--pink-light) 0%, var(--cream) 50%, var(--gold-light) 100%);
+            padding: 2rem;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,182,193,0.3) 0%, transparent 50%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .stork-animation {
+            position: absolute;
+            top: 10%;
+            right: 10%;
+            font-size: 4rem;
+            color: var(--pink-dark);
+            animation: flyStork 15s infinite linear;
+            opacity: 0.6;
+        }
+
+        @keyframes flyStork {
+            0% { transform: translateX(-100vw) translateY(0) rotate(-10deg); }
+            50% { transform: translateX(0) translateY(-30px) rotate(0deg); }
+            100% { transform: translateX(100vw) translateY(0) rotate(10deg); }
+        }
+
+        .welcome-text {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2rem;
+            color: var(--pink-dark);
+            margin-bottom: 1rem;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .baby-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 4.5rem;
+            font-weight: 700;
+            color: var(--pink-dark);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 0.5rem;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        .ceremony-type {
+            font-size: 1.5rem;
+            color: var(--gold);
+            font-weight: 500;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s ease-out 0.5s both;
+        }
+
+        .hero-image {
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            border: 8px solid var(--gold);
+            box-shadow: 0 20px 60px rgba(219,112,147,0.3);
+            object-fit: cover;
+            margin: 2rem 0;
+            animation: scaleIn 1s ease-out 0.7s both;
+            position: relative;
+        }
+
+        .hero-image-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .hero-image-container::before,
+        .hero-image-container::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            border: 2px dashed var(--gold);
+            animation: rotateBorder 20s linear infinite;
+        }
+
+        .hero-image-container::before {
+            top: -15px;
+            left: -15px;
+            right: -15px;
+            bottom: -15px;
+        }
+
+        .hero-image-container::after {
+            top: -30px;
+            left: -30px;
+            right: -30px;
+            bottom: -30px;
+            animation-direction: reverse;
+        }
+
+        @keyframes rotateBorder {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Countdown Section */
+        .countdown-section {
+            padding: 5rem 2rem;
+            background: linear-gradient(180deg, var(--white) 0%, var(--pink-light) 100%);
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--pink-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .section-subtitle {
+            font-size: 1rem;
+            color: var(--text-dark);
+            opacity: 0.7;
+            margin-bottom: 3rem;
+        }
+
+        .countdown-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .countdown-item {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 2rem 2.5rem;
+            box-shadow: 0 15px 40px rgba(219,112,147,0.2);
+            min-width: 120px;
+            transition: transform 0.3s ease;
+            border: 2px solid var(--pink-primary);
+        }
+
+        .countdown-item:hover {
+            transform: translateY(-10px);
+        }
+
+        .countdown-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--pink-dark);
+            line-height: 1;
+        }
+
+        .countdown-label {
+            font-size: 0.9rem;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 0.5rem;
+        }
+
+        .ceremony-date {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--pink-dark);
+            margin-top: 2rem;
+        }
+
+        /* Event Details */
+        .details-section {
+            padding: 5rem 2rem;
+            background: var(--white);
+            position: relative;
+            z-index: 2;
+        }
+
+        .details-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .detail-card {
+            background: linear-gradient(135deg, var(--pink-light) 0%, var(--cream) 100%);
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            transition: all 0.4s ease;
+            border: 1px solid var(--pink-primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .detail-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .detail-card:hover::before {
+            left: 100%;
+        }
+
+        .detail-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(219,112,147,0.2);
+        }
+
+        .detail-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            color: var(--pink-dark);
+            box-shadow: 0 10px 30px rgba(219,112,147,0.2);
+        }
+
+        .detail-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--pink-dark);
+            margin-bottom: 1rem;
+        }
+
+        .detail-text {
+            color: var(--text-dark);
+            line-height: 1.8;
+        }
+
+        /* Baby Gallery */
+        .gallery-section {
+            padding: 5rem 2rem;
+            background: linear-gradient(180deg, var(--pink-light) 0%, var(--cream) 100%);
+            position: relative;
+            z-index: 2;
+        }
+
+        .gallery-container {
+            max-width: 100%;
+            position: relative;
+            overflow-x: auto;
+            overflow-y: hidden;
+            margin: 0 auto;
+            padding: 0 2rem;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .gallery-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .gallery-scroll-hint {
+            position: absolute;
+            top: 50%;
+            width: 40px;
+            height: 40px;
+            transform: translateY(-50%);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.55);
+            border: 1px solid rgba(219,112,147,0.35);
+            box-shadow: 0 6px 18px rgba(219,112,147,0.15);
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .gallery-scroll-hint-left {
+            left: 10px;
+            background-image: linear-gradient(135deg, rgba(219,112,147,0.55) 0%, rgba(255,255,255,0) 60%),
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23db7093" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 18px 18px;
+        }
+
+        .gallery-scroll-hint-right {
+            right: 10px;
+            background-image: linear-gradient(225deg, rgba(219,112,147,0.55) 0%, rgba(255,255,255,0) 60%),
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23db7093" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 18px 18px;
+        }
+
+        @media (hover: hover) {
+            .gallery-scroll-hint {
+                opacity: 0.45;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .gallery-scroll-hint {
+                width: 34px;
+                height: 34px;
+                opacity: 0.65;
+            }
+        }
+
+        .gallery-slider {
+            animation: scrollGallery 20s linear infinite;
+            display: inline-flex;
+            flex-wrap: nowrap;
+            gap: 1.5rem;
+            overflow: hidden;
+            will-change: transform;
+            scrollbar-width: none;
+            width: max-content;
+        }
+
+        .gallery-slider::-webkit-scrollbar {
+            display: none;
+        }
+
+        .gallery-item {
+            flex: 0 0 300px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(219,112,147,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+        }
+
+        @keyframes scrollGallery {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .gallery-slider:hover {
+            animation-play-state: paused;
+        }
+
+        @media (max-width: 600px) {
+            .gallery-slider {
+                animation-play-state: paused;
+            }
+        }
+
+        /* Family Tree */
+        .family-section {
+            padding: 5rem 2rem;
+            background: var(--white);
+            position: relative;
+            z-index: 2;
+        }
+
+        .family-tree {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .family-generation {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .family-member {
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .family-member:hover {
+            transform: scale(1.1);
+        }
+
+        .family-photo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .family-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            color: var(--pink-dark);
+        }
+
+        .family-role {
+            font-size: 0.8rem;
+            color: var(--text-dark);
+            opacity: 0.7;
+        }
+
+        .family-connector {
+            width: 2px;
+            height: 40px;
+            background: linear-gradient(to bottom, var(--gold), var(--pink-dark));
+            margin: 1rem 0;
+        }
+
+        .baby-highlight {
+            background: linear-gradient(135deg, var(--pink-light), var(--gold-light));
+            padding: 2rem 3rem;
+            border-radius: 100px;
+            box-shadow: 0 20px 60px rgba(219,112,147,0.3);
+        }
+
+        .baby-highlight .family-photo {
+            width: 150px;
+            height: 150px;
+            border-width: 6px;
+        }
+
+        .baby-highlight .family-name {
+            font-size: 1.5rem;
+        }
+
+        /* Gift Registry */
+        .gift-section {
+            padding: 5rem 2rem;
+            background: linear-gradient(135deg, var(--pink-light) 0%, var(--gold-light) 100%);
+            position: relative;
+            z-index: 2;
+        }
+
+        .gift-grid {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .gift-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            transition: all 0.4s ease;
+        }
+
+        .gift-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .gift-icon {
+            font-size: 3rem;
+            color: var(--pink-dark);
+            margin-bottom: 1rem;
+        }
+
+        .gift-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: var(--pink-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .gift-description {
+            color: var(--text-dark);
+            opacity: 0.7;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .gift-btn {
+            background: linear-gradient(135deg, var(--pink-dark), var(--pink-primary));
+            color: var(--white);
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .gift-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(219,112,147,0.4);
+        }
+
+        /* RSVP Section */
+        .rsvp-section {
+            padding: 5rem 2rem;
+            background: var(--white);
+            position: relative;
+            z-index: 2;
+        }
+
+        .rsvp-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .rsvp-form {
+            background: linear-gradient(135deg, var(--pink-light) 0%, var(--cream) 100%);
+            padding: 3rem;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(219,112,147,0.2);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            color: var(--pink-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border: 2px solid var(--pink-primary);
+            border-radius: 15px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+            background: var(--white);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--pink-dark);
+            box-shadow: 0 0 20px rgba(219,112,147,0.2);
+        }
+
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23DB7093' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6,9 12,15 18,9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1.2rem;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--pink-dark), var(--gold));
+            color: var(--white);
+            border: none;
+            padding: 1.2rem;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(219,112,147,0.4);
+        }
+
+        /* Location Section */
+        .location-section {
+            padding: 5rem 2rem;
+            background: linear-gradient(180deg, var(--cream) 0%, var(--pink-light) 100%);
+            position: relative;
+            z-index: 2;
+        }
+
+        .location-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .location-info {
+            padding: 2rem;
+        }
+
+        .location-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--pink-dark);
+            margin-bottom: 1rem;
+        }
+
+        .location-address {
+            color: var(--text-dark);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .location-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--pink-dark);
+            color: var(--white);
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .location-btn:hover {
+            background: var(--gold);
+            transform: translateX(5px);
+        }
+
+        .location-map {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+
+        .location-map iframe {
+            width: 100%;
+            height: 350px;
+            border: none;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, var(--pink-dark) 0%, #8B4560 100%);
+            color: var(--white);
+            padding: 4rem 2rem 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .footer-message {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-names {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .music-toggle {
+            position: fixed;
+            right: 20px;
+            bottom: 84px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(219,112,147,0.35);
+            color: var(--pink-dark);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+            box-shadow: 0 8px 20px rgba(219,112,147,0.18);
+            z-index: 999;
+            cursor: pointer;
+            text-decoration: none;
+            user-select: none;
+        }
+
+        .music-toggle i {
+            font-size: 14px;
+        }
+
+        .music-toggle.is-playing {
+            background: rgba(219,112,147,0.12);
+        }
+
+        @keyframes musicPulse {
+            0% { transform: translateY(0) scale(1); box-shadow: 0 8px 20px rgba(219,112,147,0.18); }
+            50% { transform: translateY(-2px) scale(1.02); box-shadow: 0 12px 24px rgba(219,112,147,0.25); }
+            100% { transform: translateY(0) scale(1); box-shadow: 0 8px 20px rgba(219,112,147,0.18); }
+        }
+
+        .music-toggle:not(.is-playing) {
+            animation: musicPulse 1.8s ease-in-out infinite;
+        }
+
+        .music-toggle.is-playing {
+            animation: none;
+        }
+
+        @media (max-width: 768px) {
+            .music-toggle {
+                right: 14px;
+                bottom: 72px;
+                padding: 7px 10px;
+                font-size: 11px;
+            }
+        }
+
+        .whatsapp-share {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: #25D366;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+            z-index: 999;
+            text-decoration: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .whatsapp-share:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.22);
+        }
+
+        .whatsapp-share i {
+            font-size: 26px;
+        }
+
+        @media (max-width: 768px) {
+            .whatsapp-share {
+                right: 14px;
+                bottom: 14px;
+                width: 46px;
+                height: 46px;
+            }
+
+            .whatsapp-share i {
+                font-size: 22px;
+            }
+        }
+
+        .social-link {
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 1.3rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: var(--gold);
+            transform: translateY(-5px);
+        }
+
+        .footer-divider {
+            width: 100px;
+            height: 2px;
+            background: var(--gold);
+            margin: 2rem auto;
+        }
+
+        .vibelink-credit {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .vibelink-credit a {
+            color: var(--gold);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .vibelink-credit a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .baby-name {
+                font-size: 3rem;
+            }
+
+            .countdown-container {
+                gap: 1rem;
+            }
+
+            .countdown-item {
+                padding: 1.5rem;
+                min-width: 100px;
+            }
+
+            .countdown-number {
+                font-size: 2.5rem;
+            }
+
+            .location-container {
+                grid-template-columns: 1fr;
+            }
+
+            .family-generation {
+                gap: 1.5rem;
+            }
+
+            .hero-image {
+                width: 220px;
+                height: 220px;
+            }
+        }
+
+        /* Scroll Animations */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .animate-on-scroll.animated {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    
+50% { transform: scale(1.05); }
+}
+
+</style>
+</head>
+<body>
+    <!-- Floating Elements -->
+    <div class="floating-elements">
+        <i class="fas fa-baby floating-icon"></i>
+        <i class="fas fa-heart floating-icon"></i>
+        <i class="fas fa-star floating-icon"></i>
+        <i class="fas fa-baby-carriage floating-icon"></i>
+        <i class="fas fa-ribbon floating-icon"></i>
+        <i class="fas fa-heart floating-icon"></i>
+        <i class="fas fa-star floating-icon"></i>
+        <i class="fas fa-baby floating-icon"></i>
+    </div>
+
+    <!-- Adinkra Pattern Overlay -->
+    <div class="adinkra-overlay"></div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="stork-animation">
+            <i class="fas fa-dove"></i>
+        </div>
+        <div class="hero-content">
+            <p class="welcome-text">Welcome to the World</p>
+            <h1 class="baby-name">Baby Adjoa</h1>
+            <p class="ceremony-type">Naming Ceremony</p>
+            <div class="hero-image-container">
+                <img src="vibelink-baby1.webp" alt="Baby Adjoa" class="hero-image">
+            </div>
+        </div>
+    </section>
+
+    <!-- Countdown Section -->
+    <section class="countdown-section">
+        <h2 class="section-title">The Big Day Approaches</h2>
+        <p class="section-subtitle">Join us in welcoming our little princess</p>
+        <div class="countdown-container">
+            <div class="countdown-item">
+                <div class="countdown-number" id="days">00</div>
+                <div class="countdown-label">Days</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-number" id="hours">00</div>
+                <div class="countdown-label">Hours</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-number" id="minutes">00</div>
+                <div class="countdown-label">Minutes</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-number" id="seconds">00</div>
+                <div class="countdown-label">Seconds</div>
+            </div>
+        </div>
+        <p class="ceremony-date"><i class="fas fa-calendar-alt"></i> Saturday, September 27th, 2026</p>
+    </section>
+
+    <!-- Event Details -->
+    <section class="details-section">
+        <div class="details-grid">
+            <div class="detail-card animate-on-scroll">
+                <div class="detail-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h3 class="detail-title">Ceremony Time</h3>
+                <p class="detail-text">
+                    Traditional Naming: 9:00 AM<br>
+                    Reception: 12:00 PM<br>
+                    Celebration continues till evening
+                </p>
+            </div>
+            <div class="detail-card animate-on-scroll">
+                <div class="detail-icon">
+                    <i class="fas fa-church"></i>
+                </div>
+                <h3 class="detail-title">Venue</h3>
+                <p class="detail-text">
+                    The Mensah Family Residence<br>
+                    Plot 15, Palm Avenue<br>
+                    East Legon, Accra
+                </p>
+            </div>
+            <div class="detail-card animate-on-scroll">
+                <div class="detail-icon">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <h3 class="detail-title">Refreshments</h3>
+                <p class="detail-text">
+                    Traditional Ghanaian Cuisine<br>
+                    Jollof Rice, Banku & Tilapia<br>
+                    Assorted Drinks & Pastries
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Baby Gallery -->
+    <section class="gallery-section">
+        <h2 class="section-title" style="text-align: center; margin-bottom: 0.5rem;">Our Little Princess</h2>
+        <p class="section-subtitle" style="text-align: center;">First moments of joy</p>
+        <div class="gallery-container">
+            <div class="gallery-scroll-hint gallery-scroll-hint-left"></div>
+            <div class="gallery-scroll-hint gallery-scroll-hint-right"></div>
+            <div class="gallery-slider">
+                <div class="gallery-item">
+                    <img src="vibelink-baby1.webp" alt="Baby moment 1">
+                </div>
+                <div class="gallery-item">
+                    <img src="vibelink-baby5.webp" alt="Baby moment 2">
+                </div>
+                <div class="gallery-item">
+                    <img src="vibelink-baby2.webp" alt="Baby moment 3">
+                </div>
+                <div class="gallery-item">
+                    <img src="vibelink-baby3.webp" alt="Baby moment 4">
+                </div>
+                <div class="gallery-item">
+                    <img src="vibelink-baby4.webp" alt="Baby moment 5">
+                </div>
+                <div class="gallery-item">
+                    <img src="vibelink-baby1.webp" alt="Baby moment 6">
+                </div>
+                <div class="gallery-item">
+                    <img src="vibelink-baby5.webp" alt="Baby moment 7">
+                </div>
+                <div class="gallery-item">
+                    <img src="vibelink-baby2.webp" alt="Baby moment 8">
+                </div>
+                <div class="gallery-item">
+                    <img src="vibelink-baby3.webp" alt="Baby moment 9">
+                </div>
+                <div class="gallery-item">
+                    <img src="vibelink-baby4.webp" alt="Baby moment 10">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Family Tree -->
+    <section class="family-section">
+        <h2 class="section-title" style="text-align: center; margin-bottom: 3rem;">The Family</h2>
+        <div class="family-tree">
+            <div class="family-generation">
+                <div class="family-member">
+                    <img src="vibelink-grandpa.webp" alt="Grandfather" class="family-photo">
+                    <p class="family-name">Nana Kwame</p>
+                    <p class="family-role">Grandfather</p>
+                </div>
+                <div class="family-member">
+                    <img src="vibelinkgrandma.webp" alt="Grandmother" class="family-photo">
+                    <p class="family-name">Nana Ama</p>
+                    <p class="family-role">Grandmother</p>
+                </div>
+            </div>
+            <div class="family-connector"></div>
+            <div class="family-generation">
+                <div class="family-member">
+                    <img src="vibelink-father.webp" alt="Father" class="family-photo">
+                    <p class="family-name">Kofi Mensah</p>
+                    <p class="family-role">Father</p>
+                </div>
+                <div class="family-member">
+                    <img src="vibelink-mother.webp" alt="Mother" class="family-photo">
+                    <p class="family-name">Akosua Mensah</p>
+                    <p class="family-role">Mother</p>
+                </div>
+            </div>
+            <div class="family-connector"></div>
+            <div class="baby-highlight">
+                <img src="vibelink-baby1.webp" alt="Baby Adjoa" class="family-photo">
+                <p class="family-name">Baby Adjoa</p>
+                <p class="family-role">Our Little Princess</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gift Registry -->
+    <section class="gift-section">
+        <h2 class="section-title" style="text-align: center; margin-bottom: 0.5rem;">Gift Registry</h2>
+        <p class="section-subtitle" style="text-align: center;">Bless our little one with your love</p>
+        <div class="gift-grid">
+            <div class="gift-card animate-on-scroll">
+                <div class="gift-icon"><i class="fas fa-baby-carriage"></i></div>
+                <h3 class="gift-name">Baby Essentials</h3>
+                <p class="gift-description">Diapers, wipes, and baby care products</p>
+                <button class="gift-btn">View Items</button>
+            </div>
+            <div class="gift-card animate-on-scroll">
+                <div class="gift-icon"><i class="fas fa-tshirt"></i></div>
+                <h3 class="gift-name">Baby Clothing</h3>
+                <p class="gift-description">Adorable outfits for our princess</p>
+                <button class="gift-btn">View Items</button>
+            </div>
+            <div class="gift-card animate-on-scroll">
+                <div class="gift-icon"><i class="fas fa-mobile-alt"></i></div>
+                <h3 class="gift-name">Mobile Money</h3>
+                <p class="gift-description">MTN MoMo: 024-XXX-XXXX</p>
+                <button class="gift-btn">Send Gift</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- RSVP Section -->
+    <section class="rsvp-section">
+        <h2 class="section-title" style="text-align: center; margin-bottom: 0.5rem;">RSVP</h2>
+        <p class="section-subtitle" style="text-align: center;">Let us know you're coming</p>
+        <div class="rsvp-container">
+            <form class="rsvp-form">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-input" placeholder="Enter your full name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phone Number</label>
+                    <input type="tel" class="form-input" placeholder="024-XXX-XXXX" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Number of Guests</label>
+                    <select class="form-input form-select" required>
+                        <option value="">Select number of guests</option>
+                        <option value="1">1 Guest</option>
+                        <option value="2">2 Guests</option>
+                        <option value="3">3 Guests</option>
+                        <option value="4">4+ Guests</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Special Message for Baby Adjoa</label>
+                    <textarea class="form-input" rows="3" placeholder="Write a blessing or message..."></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Confirm Attendance</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Location Section -->
+    <section class="location-section">
+        <h2 class="section-title" style="text-align: center; margin-bottom: 3rem;">Find Us</h2>
+        <div class="location-container">
+            <div class="location-info">
+                <h3 class="location-name">The Mensah Family Residence</h3>
+                <p class="location-address">
+                    <i class="fas fa-map-marker-alt" style="color: var(--pink-dark);"></i> Plot 15, Palm Avenue<br>
+                    East Legon, Accra<br>
+                    Greater Accra Region, Ghana
+                </p>
+                <a href="https://maps.google.com/?q=East+Legon+Accra+Ghana" target="_blank" class="location-btn">
+                    <i class="fas fa-directions"></i> Get Directions
+                </a>
+            </div>
+            <div class="location-map">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3970.4975025075776!2d-0.15259!3d5.6359!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNcKwMzgnMDkuMiJOIDDCsDA5JzA5LjMiVw!5e0!3m2!1sen!2sgh!4v1234567890" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p class="footer-message">With Love & Blessings</p>
+        <p class="footer-names">The Mensah Family</p>
+        <div class="social-links">
+            <a href="#" class="social-link"><i class="fab fa-whatsapp"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+        </div>
+        <div class="footer-divider"></div>
+        <p class="vibelink-credit">
+            Event website crafted by
+            <a href="https://vibelinkevent.com" target="_blank">VibeLink</a>
+        </p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+        // Music toggle
+        const music = document.getElementById('bg-music');
+        const musicBtn = document.querySelector('.music-toggle');
+        if (music && musicBtn) {
+            musicBtn.addEventListener('click', async () => {
+                try {
+                    if (music.paused) {
+                        await music.play();
+                        musicBtn.classList.add('is-playing');
+                        musicBtn.setAttribute('aria-pressed', 'true');
+                        musicBtn.querySelector('span').textContent = 'Pause music';
+                    } else {
+                        music.pause();
+                        musicBtn.classList.remove('is-playing');
+                        musicBtn.setAttribute('aria-pressed', 'false');
+                        musicBtn.querySelector('span').textContent = 'Play music';
+                    }
+                } catch (err) {
+                    // Autoplay blocked or other error; keep button state as play
+                    musicBtn.classList.remove('is-playing');
+                    musicBtn.setAttribute('aria-pressed', 'false');
+                    musicBtn.querySelector('span').textContent = 'Play music';
+                }
+            });
+        }
+
+        // WhatsApp share
+        const shareBtn = document.querySelector('.whatsapp-share');
+        if (shareBtn) {
+            const shareText = encodeURIComponent('Join us in celebrating Baby Adjoa!');
+            const shareUrl = encodeURIComponent(window.location.href);
+            shareBtn.href = `https://wa.me/?text=${shareText}%20${shareUrl}`;
+        }
+
+        // Countdown Timer
+        function updateCountdown() {
+            const eventDate = new Date('September 27, 2026 09:00:00').getTime();
+            const now = new Date().getTime();
+            const distance = eventDate - now;
+
+            if (distance > 0) {
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                document.getElementById('days').textContent = days.toString().padStart(2, '0');
+                document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+                document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+                document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+            }
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // Scroll Animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Form submission
+
+        document.querySelector('.rsvp-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thank you for your RSVP! We look forward to celebrating with you.');
+            this.reset();
+        });
+        });
+    </script>
+    <a class="whatsapp-share" href="#" aria-label="Share on WhatsApp" title="Share on WhatsApp"><i class="fab fa-whatsapp"></i></a>
+    <audio id="bg-music" src="vibelink-baby.mp3" preload="none" loop></audio>
+    <button class="music-toggle" type="button" aria-pressed="false" aria-label="Play background music"><i class="fas fa-music"></i><span>Play music</span></button>
+
+</body>
+</html>

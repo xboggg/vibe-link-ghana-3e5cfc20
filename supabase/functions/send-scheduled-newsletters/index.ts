@@ -125,7 +125,7 @@ const handler = async (req: Request): Promise<Response> => {
             <body style="margin: 0; padding: 0; background-color: #f8fafc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
               <div style="max-width: 600px; margin: 0 auto; padding: 40px 20px;">
                 <div style="background: linear-gradient(135deg, #7C3AED 0%, #F59E0B 100%); padding: 30px; border-radius: 16px 16px 0 0; text-align: center;">
-                  <h1 style="color: white; margin: 0; font-size: 28px;">✨ VibeLink Ghana</h1>
+                  <h1 style="color: white; margin: 0; font-size: 28px;">✨ VibeLink Event</h1>
                   <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0 0; font-size: 14px;">Your Event. Our Vibe.</p>
                 </div>
                 
@@ -141,7 +141,7 @@ const handler = async (req: Request): Promise<Response> => {
                 </div>
                 
                 <div style="text-align: center; padding: 20px; color: #94a3b8; font-size: 12px;">
-                  <p style="margin: 0;">© ${new Date().getFullYear()} VibeLink Ghana. All rights reserved.</p>
+                  <p style="margin: 0;">© ${new Date().getFullYear()} VibeLink Event. All rights reserved.</p>
                   <p style="margin: 8px 0 0 0;">Accra, Ghana | <a href="mailto:info@vibelinkevent.com" style="color: #7C3AED;">info@vibelinkevent.com</a></p>
                   <p style="margin: 12px 0 0 0;">
                     <a href="${preferencesUrl}" style="color: #94a3b8; text-decoration: underline;">Manage preferences</a>
@@ -159,7 +159,7 @@ const handler = async (req: Request): Promise<Response> => {
           emailHtml = addTrackingPixel(emailHtml, campaign.id, subscriber.email, baseUrl);
 
           const { error: sendError } = await resend.emails.send({
-            from: "VibeLink Ghana <orders@vibelinkevent.com>",
+            from: "VibeLink Event <orders@vibelinkevent.com>",
             to: subscriber.email,
             subject: campaign.subject,
             html: emailHtml,

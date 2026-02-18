@@ -1,11 +1,15 @@
-import { useState } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useTOTP } from '@/hooks/useTOTP';
 import { toast } from 'sonner';
-import { Shield, Loader2, Key } from 'lucide-react';
+import { Shield, Loader2, Key, AlertTriangle } from 'lucide-react';
 import { motion } from 'framer-motion';
+
+// Rate limiting constants
+const MAX_ATTEMPTS = 3;
+const LOCKOUT_DURATION_MS = 60000; // 1 minute
 
 interface TwoFactorVerifyProps {
   onSuccess: () => void;
@@ -16,8 +20,37 @@ export const TwoFactorVerify = ({ onSuccess, onCancel }: TwoFactorVerifyProps) =
   const { verify, verifyBackup, loading, error } = useTOTP();
   const [code, setCode] = useState('');
   const [useBackup, setUseBackup] = useState(false);
+  const [attempts, setAttempts] = useState(0);
+  const [lockedUntil, setLockedUntil] = useState<number | null>(null);
+  const [lockoutRemaining, setLockoutRemaining] = useState(0);
+  const lockoutTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const startLockoutTimer = useCallback(() => {
+    const endTime = Date.now() + LOCKOUT_DURATION_MS;
+    setLockedUntil(endTime);
+
+    const updateRemaining = () => {
+      const remaining = Math.max(0, Math.ceil((endTime - Date.now()) / 1000));
+      setLockoutRemaining(remaining);
+      if (remaining > 0) {
+        lockoutTimerRef.current = setTimeout(updateRemaining, 1000);
+      } else {
+        setLockedUntil(null);
+        setAttempts(0);
+      }
+    };
+    updateRemaining();
+  }, []);
+
+  const isLocked = lockedUntil !== null && Date.now() < lockedUntil;
 
   const handleVerify = async () => {
+    // Check if locked out
+    if (isLocked) {
+      toast.error(`Too many attempts. Please wait ${lockoutRemaining} seconds.`);
+      return;
+    }
+
     if (useBackup) {
       if (code.length < 9) {
         toast.error('Please enter a valid backup code');
@@ -25,10 +58,18 @@ export const TwoFactorVerify = ({ onSuccess, onCancel }: TwoFactorVerifyProps) =
       }
       const result = await verifyBackup(code);
       if (result.valid) {
+        setAttempts(0);
         toast.success(`Verified! ${result.remainingCodes} backup codes remaining.`);
         onSuccess();
       } else {
-        toast.error('Invalid backup code');
+        const newAttempts = attempts + 1;
+        setAttempts(newAttempts);
+        if (newAttempts >= MAX_ATTEMPTS) {
+          startLockoutTimer();
+          toast.error(`Too many failed attempts. Please wait 60 seconds.`);
+        } else {
+          toast.error(`Invalid backup code. ${MAX_ATTEMPTS - newAttempts} attempts remaining.`);
+        }
       }
     } else {
       if (code.length !== 6) {
@@ -37,12 +78,21 @@ export const TwoFactorVerify = ({ onSuccess, onCancel }: TwoFactorVerifyProps) =
       }
       const valid = await verify(code);
       if (valid) {
+        setAttempts(0);
         toast.success('Verified!');
         onSuccess();
       } else {
-        toast.error('Invalid code. Please try again.');
+        const newAttempts = attempts + 1;
+        setAttempts(newAttempts);
+        if (newAttempts >= MAX_ATTEMPTS) {
+          startLockoutTimer();
+          toast.error(`Too many failed attempts. Please wait 60 seconds.`);
+        } else {
+          toast.error(`Invalid code. ${MAX_ATTEMPTS - newAttempts} attempts remaining.`);
+        }
       }
     }
+    setCode('');
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -98,14 +148,25 @@ export const TwoFactorVerify = ({ onSuccess, onCancel }: TwoFactorVerifyProps) =
         <p className="text-sm text-destructive text-center">{error}</p>
       )}
 
+      {isLocked && (
+        <div className="flex items-center gap-2 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
+          <AlertTriangle className="h-4 w-4 text-destructive flex-shrink-0" />
+          <p className="text-sm text-destructive">
+            Too many failed attempts. Please wait {lockoutRemaining} seconds.
+          </p>
+        </div>
+      )}
+
       <div className="space-y-2">
-        <Button 
-          onClick={handleVerify} 
-          disabled={loading || (useBackup ? code.length < 9 : code.length !== 6)}
+        <Button
+          onClick={handleVerify}
+          disabled={loading || isLocked || (useBackup ? code.length < 9 : code.length !== 6)}
           className="w-full"
         >
           {loading ? (
             <Loader2 className="h-4 w-4 animate-spin" />
+          ) : isLocked ? (
+            `Locked (${lockoutRemaining}s)`
           ) : (
             'Verify'
           )}

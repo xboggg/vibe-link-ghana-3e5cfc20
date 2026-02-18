@@ -322,7 +322,7 @@ const InvoiceView = () => {
 
         {/* Powered by footer - Hidden on print */}
         <div className="text-center mt-6 text-sm text-muted-foreground print:hidden">
-          <p>Powered by <Link to="/" className="text-primary hover:underline">VibeLink Ghana</Link></p>
+          <p>Powered by <Link to="/" className="text-primary hover:underline">VibeLink Event</Link></p>
         </div>
       </div>
     </div>

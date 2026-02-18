@@ -1,0 +1,16 @@
+[
+    {
+        "id": "697d00eccc908",
+        "name": "Test User",
+        "relation": "Friend",
+        "message": "Test message",
+        "timestamp": "2026-01-30 19:05:16"
+    },
+    {
+        "id": "697d02e6df1fa",
+        "name": "Edmund Adjekum ",
+        "relation": "Friend",
+        "message": "My condolences",
+        "timestamp": "2026-01-30 19:13:42"
+    }
+]

@@ -17,6 +17,7 @@ import { format, addHours, setHours, setMinutes } from "date-fns";
 import { RichTextEditor } from "./RichTextEditor";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import DOMPurify from "dompurify";
 
 interface EmailTemplate {
   id: string;
@@ -557,13 +558,13 @@ export function NewsletterManager() {
                 <div className="border rounded-lg overflow-hidden">
                   <div className="bg-gradient-to-r from-navy to-primary p-4 text-center">
                     <h2 className="text-xl font-bold text-white">
-                      ✨ <span className="text-secondary">VibeLink</span> Ghana Newsletter
+                      ✨ <span className="text-secondary">VibeLink</span> Event Newsletter
                     </h2>
                   </div>
                   <div className="p-6 bg-white">
-                    <div 
+                    <div
                       className="prose prose-sm max-w-none"
-                      dangerouslySetInnerHTML={{ __html: content || "<p class='text-muted-foreground italic'>No content yet...</p>" }}
+                      dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content || "<p class='text-muted-foreground italic'>No content yet...</p>") }}
                     />
                   </div>
                   <div className="bg-muted/50 p-4 text-center text-xs text-muted-foreground border-t">

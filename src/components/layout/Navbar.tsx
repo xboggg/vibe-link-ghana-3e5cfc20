@@ -23,10 +23,10 @@ const TikTokIcon = () => (
 );
 
 const socialLinks = [
-  { name: "Instagram", icon: Instagram, href: "https://instagram.com/vibelink_ghana" },
-  { name: "Facebook", icon: Facebook, href: "https://facebook.com/VibeLink Event" },
-  { name: "Twitter", icon: Twitter, href: "https://twitter.com/VibeLink_GH" },
-  { name: "TikTok", icon: TikTokIcon, href: "https://tiktok.com/@vibelink.ghana" },
+  { name: "Instagram", icon: Instagram, href: "https://instagram.com/vibelinkevent" },
+  { name: "Facebook", icon: Facebook, href: "https://facebook.com/vibelinkevent" },
+  { name: "Twitter", icon: Twitter, href: "https://twitter.com/vibelinkevent" },
+  { name: "TikTok", icon: TikTokIcon, href: "https://tiktok.com/@vibelinkevent" },
 ];
 
 export function Navbar() {

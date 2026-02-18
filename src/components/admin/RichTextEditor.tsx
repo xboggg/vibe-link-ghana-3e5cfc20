@@ -55,16 +55,35 @@ export function RichTextEditor({ content, onChange, onImageUpload }: RichTextEdi
     return null;
   }
 
+  // Validate URL to prevent javascript: protocol and other attacks
+  const isValidUrl = (url: string): boolean => {
+    try {
+      const parsed = new URL(url);
+      // Only allow http and https protocols
+      return ['http:', 'https:'].includes(parsed.protocol);
+    } catch {
+      return false;
+    }
+  };
+
   const addLink = () => {
-    const url = window.prompt('Enter URL:');
+    const url = window.prompt('Enter URL (must start with http:// or https://):');
     if (url) {
+      if (!isValidUrl(url)) {
+        alert('Invalid URL. Please enter a valid URL starting with http:// or https://');
+        return;
+      }
       editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
     }
   };
 
   const addImage = () => {
-    const url = window.prompt('Enter image URL:');
+    const url = window.prompt('Enter image URL (must start with http:// or https://):');
     if (url) {
+      if (!isValidUrl(url)) {
+        alert('Invalid URL. Please enter a valid image URL starting with http:// or https://');
+        return;
+      }
       editor.chain().focus().setImage({ src: url }).run();
     }
   };

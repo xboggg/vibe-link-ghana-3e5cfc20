@@ -10,6 +10,7 @@ import SEO, { createArticleSchema, createBreadcrumbSchema } from "@/components/S
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { ReadingProgressBar } from "@/components/ReadingProgressBar";
+import DOMPurify from "dompurify";
 
 interface BlogPost {
   id: string;
@@ -267,8 +268,8 @@ const BlogDetail = () => {
               className="prose prose-lg max-w-none dark:prose-invert"
             >
               {post.content ? (
-                <div 
-                  dangerouslySetInnerHTML={{ __html: post.content }}
+                <div
+                  dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}
                   className="[&>h1]:text-3xl [&>h1]:font-bold [&>h1]:text-foreground [&>h1]:mt-8 [&>h1]:mb-4 [&>h2]:text-2xl [&>h2]:font-bold [&>h2]:text-foreground [&>h2]:mt-8 [&>h2]:mb-4 [&>h3]:text-xl [&>h3]:font-semibold [&>h3]:text-foreground [&>h3]:mt-6 [&>h3]:mb-3 [&>p]:text-muted-foreground [&>p]:leading-relaxed [&>p]:mb-4 [&>ul]:list-disc [&>ul]:ml-6 [&>ul]:mb-4 [&>ul>li]:text-muted-foreground [&>ol]:list-decimal [&>ol]:ml-6 [&>ol]:mb-4 [&>ol>li]:text-muted-foreground [&>blockquote]:border-l-4 [&>blockquote]:border-primary/30 [&>blockquote]:pl-4 [&>blockquote]:italic [&>blockquote]:text-muted-foreground [&>a]:text-primary [&>a]:underline [&>img]:rounded-lg [&>img]:max-w-full"
                 />
               ) : (

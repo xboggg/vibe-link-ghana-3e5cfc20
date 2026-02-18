@@ -145,7 +145,7 @@ const handler = async (req: Request): Promise<Response> => {
 
           <div style="text-align: center; padding: 20px;">
             <p style="color: #888; font-size: 12px; margin: 0;">
-              This is an automated notification from VibeLink Ghana
+              This is an automated notification from VibeLink Event
             </p>
           </div>
         </div>

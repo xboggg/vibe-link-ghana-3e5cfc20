@@ -1,0 +1,1789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kweku & Efua | Traditional Engagement Ceremony</title>
+    <meta name="description" content="Join us as Kweku and Efua celebrate their traditional Akan engagement ceremony - A beautiful union of two families.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600&family=Lora:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --kente-gold: #D4AF37;
+            --kente-orange: #E07C24;
+            --kente-red: #8B0000;
+            --kente-green: #2D5A27;
+            --kente-brown: #8B4513;
+            --cream: #FDF8F0;
+            --white: #FFFFFF;
+            --text-dark: #2C2C2C;
+            --black: #1A1A1A;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Lora', serif;
+            background: var(--cream);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        /* Kente Pattern Background */
+        .kente-pattern {
+            position: relative;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                repeating-linear-gradient(
+                    45deg,
+                    transparent,
+                    transparent 10px,
+                    rgba(212,175,55,0.03) 10px,
+                    rgba(212,175,55,0.03) 20px
+                ),
+                repeating-linear-gradient(
+                    -45deg,
+                    transparent,
+                    transparent 10px,
+                    rgba(224,124,36,0.03) 10px,
+                    rgba(224,124,36,0.03) 20px
+                );
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Floating Adinkra Symbols */
+        .floating-adinkra {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .adinkra-symbol {
+            position: absolute;
+            font-size: 2rem;
+            color: var(--kente-gold);
+            opacity: 0.1;
+            animation: floatSymbol 20s infinite ease-in-out;
+        }
+
+        @keyframes floatSymbol {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-20px) rotate(5deg); }
+            75% { transform: translateY(20px) rotate(-5deg); }
+        }
+
+        .adinkra-symbol:nth-child(1) { top: 5%; left: 5%; animation-delay: 0s; }
+        .adinkra-symbol:nth-child(2) { top: 15%; right: 10%; animation-delay: -3s; }
+        .adinkra-symbol:nth-child(3) { top: 35%; left: 8%; animation-delay: -6s; }
+        .adinkra-symbol:nth-child(4) { top: 55%; right: 5%; animation-delay: -9s; }
+        .adinkra-symbol:nth-child(5) { top: 75%; left: 12%; animation-delay: -12s; }
+        .adinkra-symbol:nth-child(6) { top: 85%; right: 15%; animation-delay: -15s; }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--kente-brown) 0%, var(--kente-red) 50%, var(--black) 100%);
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='10' y='10' width='20' height='20' fill='%23D4AF37' fill-opacity='0.05'/%3E%3Crect x='50' y='10' width='20' height='20' fill='%23E07C24' fill-opacity='0.05'/%3E%3Crect x='10' y='50' width='20' height='20' fill='%23E07C24' fill-opacity='0.05'/%3E%3Crect x='50' y='50' width='20' height='20' fill='%23D4AF37' fill-opacity='0.05'/%3E%3C/svg%3E");
+            pointer-events: none;
+        }
+
+        .hero-content {
+            text-align: center;
+            color: var(--white);
+            padding: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .akan-greeting {
+            font-size: 1.2rem;
+            color: var(--kente-gold);
+            letter-spacing: 4px;
+            margin-bottom: 1rem;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .couple-photos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .couple-photo {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid var(--kente-gold);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.4);
+            animation: scaleIn 1s ease-out both;
+        }
+
+        .couple-photo:first-child { animation-delay: 0.3s; }
+        .couple-photo:last-child { animation-delay: 0.5s; }
+
+        .heart-connector {
+            font-size: 3rem;
+            color: var(--kente-gold);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .couple-names {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            font-weight: 700;
+            margin: 1rem 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: fadeInUp 1s ease-out 0.7s both;
+        }
+
+        .couple-names .ampersand {
+            font-family: 'Cormorant Garamond', serif;
+            color: var(--kente-gold);
+            font-style: italic;
+        }
+
+        .ceremony-type {
+            font-size: 1.3rem;
+            color: var(--kente-gold);
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease-out 0.9s both;
+        }
+
+        .ceremony-date {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-style: italic;
+            animation: fadeInUp 1s ease-out 1.1s both;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.5); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Countdown Section */
+        .countdown-section {
+            padding: 5rem 2rem;
+            background: var(--white);
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .kente-border {
+            width: 100%;
+            height: 20px;
+            background: repeating-linear-gradient(
+                90deg,
+                var(--kente-gold) 0px,
+                var(--kente-gold) 20px,
+                var(--kente-orange) 20px,
+                var(--kente-orange) 40px,
+                var(--kente-green) 40px,
+                var(--kente-green) 60px,
+                var(--kente-red) 60px,
+                var(--kente-red) 80px
+            );
+        }
+
+        .section-header {
+            margin-bottom: 3rem;
+        }
+
+        .section-label {
+            font-size: 0.9rem;
+            color: var(--kente-orange);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--kente-brown);
+        }
+
+        .countdown-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .countdown-item {
+            background: linear-gradient(135deg, var(--kente-brown), var(--kente-red));
+            padding: 2rem 2.5rem;
+            border-radius: 15px;
+            min-width: 130px;
+            box-shadow: 0 15px 40px rgba(139,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .countdown-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--kente-gold);
+        }
+
+        .countdown-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--kente-gold);
+            line-height: 1;
+        }
+
+        .countdown-label {
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--white);
+            margin-top: 0.5rem;
+        }
+
+        /* Meet The Couple Section */
+        .couple-section {
+            padding: 5rem 2rem;
+            background: linear-gradient(180deg, var(--cream) 0%, var(--white) 100%);
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        .couple-section::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(212,175,55,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .couple-section::after {
+            content: '';
+            position: absolute;
+            bottom: -50px;
+            left: -50px;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(224,124,36,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .couple-grid {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .couple-card {
+            background: var(--white);
+            border-radius: 24px;
+            padding: 2.5rem 2rem;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            border-top: 5px solid var(--kente-gold);
+        }
+
+        .couple-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 60px rgba(139,69,19,0.2);
+        }
+
+        .couple-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, rgba(212,175,55,0.1), transparent);
+            border-radius: 0 0 0 100%;
+        }
+
+        .couple-card-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .couple-role {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--kente-gold), var(--kente-orange));
+            color: var(--white);
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .couple-card-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            color: var(--kente-brown);
+            margin-top: 0.5rem;
+        }
+
+        .couple-facts {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .couple-facts li {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(212,175,55,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .couple-facts li:last-child {
+            border-bottom: none;
+        }
+
+        .couple-facts li:hover {
+            padding-left: 0.5rem;
+            background: linear-gradient(90deg, rgba(212,175,55,0.1), transparent);
+            border-radius: 8px;
+        }
+
+        .fact-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--kente-gold), var(--kente-orange));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: var(--white);
+            flex-shrink: 0;
+        }
+
+        .fact-text {
+            font-size: 0.95rem;
+            color: var(--text-dark);
+        }
+
+        .fact-label {
+            font-size: 0.75rem;
+            color: var(--kente-orange);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Love Quotes Section */
+        .quotes-container {
+            max-width: 1000px;
+            margin: 3rem auto 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .love-quote {
+            background: linear-gradient(135deg, var(--kente-brown), var(--kente-red));
+            border-radius: 24px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .love-quote:hover {
+            transform: scale(1.02);
+            box-shadow: 0 20px 50px rgba(139,0,0,0.3);
+        }
+
+        .love-quote::before {
+            content: '"';
+            position: absolute;
+            top: -20px;
+            left: 20px;
+            font-family: 'Playfair Display', serif;
+            font-size: 8rem;
+            color: rgba(255,255,255,0.1);
+            line-height: 1;
+        }
+
+        .quote-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            font-style: italic;
+            color: var(--white);
+            line-height: 1.8;
+            position: relative;
+            z-index: 1;
+            margin-bottom: 1.5rem;
+        }
+
+        .quote-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .quote-author-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 3px solid var(--kente-gold);
+            object-fit: cover;
+        }
+
+        .quote-author-info {
+            color: var(--white);
+        }
+
+        .quote-author-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            color: var(--kente-gold);
+        }
+
+        .quote-author-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        /* WhatsApp Connect */
+        .whatsapp-connect {
+            max-width: 600px;
+            margin: 3rem auto 0;
+            text-align: center;
+        }
+
+        .whatsapp-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: var(--white);
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 30px rgba(37,211,102,0.3);
+        }
+
+        .whatsapp-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(37,211,102,0.4);
+        }
+
+        .whatsapp-btn i {
+            font-size: 1.5rem;
+        }
+
+        .whatsapp-text {
+            font-size: 0.85rem;
+            color: var(--text-dark);
+            margin-top: 1rem;
+            opacity: 0.7;
+        }
+
+        /* Mobile Responsive for Couple Section */
+        @media (max-width: 768px) {
+            .couple-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quotes-container {
+                grid-template-columns: 1fr;
+            }
+
+            .couple-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .quote-text {
+                font-size: 1.1rem;
+            }
+
+            .love-quote::before {
+                font-size: 5rem;
+            }
+        }
+
+        /* Ceremony Program */
+        .program-section {
+            padding: 5rem 2rem;
+            background: linear-gradient(135deg, var(--kente-brown), var(--black));
+            color: var(--white);
+            position: relative;
+            z-index: 2;
+        }
+
+        .program-section .section-title {
+            color: var(--white);
+        }
+
+        .program-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .program-item {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            border-left: 4px solid var(--kente-gold);
+            transition: all 0.3s ease;
+        }
+
+        .program-item:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateX(10px);
+        }
+
+        .program-time {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            color: var(--kente-gold);
+            min-width: 100px;
+        }
+
+        .program-details h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .program-details p {
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+
+        /* Family Introduction */
+        .family-section {
+            padding: 5rem 2rem;
+            background: var(--white);
+            position: relative;
+            z-index: 2;
+        }
+
+        .family-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+        }
+
+        .family-side {
+            text-align: center;
+        }
+
+        .family-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--kente-brown);
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 3px solid var(--kente-gold);
+        }
+
+        .family-members {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .family-member {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--cream);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .family-member:hover {
+            background: var(--kente-gold);
+            color: var(--white);
+        }
+
+        .member-photo {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--kente-gold);
+        }
+
+        .member-info {
+            text-align: left;
+        }
+
+        .member-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            color: var(--kente-brown);
+        }
+
+        .family-member:hover .member-name {
+            color: var(--white);
+        }
+
+        .member-role {
+            font-size: 0.85rem;
+            color: var(--kente-orange);
+        }
+
+        /* Gallery Section */
+        .gallery-section {
+            padding: 5rem 2rem;
+            background: var(--cream);
+            position: relative;
+            z-index: 2;
+        }
+
+        .gallery-slider-container {
+            max-width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .gallery-slider {
+            display: flex;
+            gap: 1.5rem;
+            animation: slideGallery 25s linear infinite;
+        }
+
+        @keyframes slideGallery {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .gallery-slider:hover {
+            animation-play-state: paused;
+        }
+
+        .gallery-item {
+            flex: 0 0 350px;
+            height: 450px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 2rem;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            color: var(--white);
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            transform: translateY(0);
+        }
+
+        /* Gift Section */
+        .gift-section {
+            padding: 5rem 2rem;
+            background: linear-gradient(135deg, var(--kente-gold), var(--kente-orange));
+            position: relative;
+            z-index: 2;
+        }
+
+        .gift-section .section-title {
+            color: var(--white);
+        }
+
+        .gift-section .section-label {
+            color: var(--white);
+            opacity: 0.9;
+        }
+
+        .gift-container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .gift-card {
+            background: var(--white);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+
+        .gift-icon {
+            font-size: 4rem;
+            color: var(--kente-gold);
+            margin-bottom: 1rem;
+        }
+
+        .gift-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--kente-brown);
+            margin-bottom: 1rem;
+        }
+
+        .gift-message {
+            color: var(--text-dark);
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        .momo-details {
+            background: var(--cream);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        .momo-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--kente-brown);
+            margin: 0.5rem 0;
+        }
+
+        .momo-name {
+            color: var(--kente-orange);
+        }
+
+        .copy-btn {
+            background: var(--kente-gold);
+            color: var(--white);
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 30px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: var(--kente-brown);
+            transform: scale(1.05);
+        }
+
+        /* RSVP Section */
+        .rsvp-section {
+            padding: 5rem 2rem;
+            background: var(--white);
+            position: relative;
+            z-index: 2;
+        }
+
+        .rsvp-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .rsvp-form {
+            background: var(--cream);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.1);
+            border-top: 5px solid var(--kente-gold);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--kente-brown);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border: 2px solid #E0D5C7;
+            border-radius: 10px;
+            font-family: 'Lora', serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: var(--white);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--kente-gold);
+            box-shadow: 0 0 15px rgba(212,175,55,0.3);
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--kente-brown), var(--kente-red));
+            color: var(--white);
+            border: none;
+            padding: 1.2rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(139,0,0,0.4);
+        }
+
+        /* Location Section */
+        .location-section {
+            padding: 5rem 2rem;
+            background: var(--cream);
+            position: relative;
+            z-index: 2;
+        }
+
+        .location-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .location-info h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--kente-brown);
+            margin-bottom: 1rem;
+        }
+
+        .location-info p {
+            color: var(--text-dark);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .location-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--kente-gold);
+            color: var(--white);
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .location-btn:hover {
+            background: var(--kente-brown);
+        }
+
+        .location-map {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+
+        .location-map iframe {
+            width: 100%;
+            height: 350px;
+            border: none;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, var(--kente-brown), var(--black));
+            color: var(--white);
+            padding: 4rem 2rem 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: repeating-linear-gradient(
+                90deg,
+                var(--kente-gold) 0px,
+                var(--kente-gold) 20px,
+                var(--kente-orange) 20px,
+                var(--kente-orange) 40px,
+                var(--kente-green) 40px,
+                var(--kente-green) 60px,
+                var(--kente-red) 60px,
+                var(--kente-red) 80px
+            );
+        }
+
+        .footer-names {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-names span {
+            color: var(--kente-gold);
+        }
+
+        .footer-date {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            color: var(--kente-gold);
+            margin-bottom: 2rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .social-link {
+            width: 50px;
+            height: 50px;
+            background: rgba(212,175,55,0.2);
+            border: 1px solid var(--kente-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--kente-gold);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: var(--kente-gold);
+            color: var(--kente-brown);
+        }
+
+        .footer-hashtag {
+            color: var(--kente-gold);
+            margin-bottom: 2rem;
+        }
+
+        .vibelink-credit {
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .vibelink-credit a {
+            color: var(--kente-gold);
+            text-decoration: none;
+        }
+
+        /* Floating WhatsApp Button */
+        .whatsapp-float {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(37,211,102,0.4);
+            z-index: 999;
+            text-decoration: none;
+            animation: whatsappPulse 2s ease-in-out infinite;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(37,211,102,0.5);
+        }
+
+        .whatsapp-float i {
+            font-size: 28px;
+        }
+
+        @keyframes whatsappPulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 10px 30px rgba(37,211,102,0.4);
+            }
+            50% {
+                transform: scale(1.08);
+                box-shadow: 0 15px 40px rgba(37,211,102,0.6), 0 0 0 10px rgba(37,211,102,0.15);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 10px 30px rgba(37,211,102,0.4);
+            }
+        }
+
+        /* Music Toggle Button */
+        .music-toggle {
+            position: fixed;
+            right: 20px;
+            bottom: 88px;
+            padding: 10px 14px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.92);
+            border: 2px solid rgba(212, 175, 55, 0.5);
+            color: var(--kente-brown);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            box-shadow: 0 8px 25px rgba(139,69,19,0.2);
+            z-index: 999;
+            cursor: pointer;
+            text-decoration: none;
+            user-select: none;
+            transition: all 0.3s ease;
+        }
+
+        .music-toggle i {
+            font-size: 14px;
+            color: var(--kente-gold);
+        }
+
+        .music-toggle.is-playing {
+            background: linear-gradient(135deg, rgba(212,175,55,0.15), rgba(224,124,36,0.15));
+            border-color: var(--kente-gold);
+        }
+
+        .music-toggle.is-playing i {
+            animation: musicBounce 0.6s ease-in-out infinite;
+        }
+
+        @keyframes musicBounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        @keyframes musicPulse {
+            0% { transform: translateY(0) scale(1); box-shadow: 0 8px 25px rgba(139,69,19,0.2); }
+            50% { transform: translateY(-2px) scale(1.02); box-shadow: 0 12px 30px rgba(212,175,55,0.3); }
+            100% { transform: translateY(0) scale(1); box-shadow: 0 8px 25px rgba(139,69,19,0.2); }
+        }
+
+        .music-toggle:not(.is-playing) {
+            animation: musicPulse 2s ease-in-out infinite;
+        }
+
+        .music-toggle.is-playing {
+            animation: none;
+        }
+
+        /* Gallery Navigation Arrows */
+        .gallery-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2px solid var(--kente-gold);
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--kente-brown);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 25px rgba(139,69,19,0.25);
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+
+        .gallery-nav:hover {
+            background: var(--kente-gold);
+            color: var(--white);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .gallery-nav-prev { left: 15px; }
+        .gallery-nav-next { right: 15px; }
+
+        /* Hide arrows on desktop, show on mobile */
+        @media (min-width: 769px) {
+            .gallery-nav { display: none; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .couple-names {
+                font-size: 2.5rem;
+            }
+
+            .couple-photos {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .couple-photo {
+                width: 150px;
+                height: 150px;
+            }
+
+            .family-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .location-container {
+                grid-template-columns: 1fr;
+            }
+
+            .program-item {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .countdown-item {
+                padding: 1.5rem;
+                min-width: 100px;
+            }
+
+            .countdown-number {
+                font-size: 2.5rem;
+            }
+
+            /* Mobile gallery - swipe mode */
+            .gallery-slider-container {
+                overflow-x: auto;
+                scroll-snap-type: x mandatory;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .gallery-slider {
+                animation: none;
+                width: max-content;
+            }
+
+            .gallery-item {
+                scroll-snap-align: center;
+            }
+
+            /* Mobile WhatsApp button */
+            .whatsapp-float {
+                right: 15px;
+                bottom: 15px;
+                width: 50px;
+                height: 50px;
+            }
+
+            .whatsapp-float i {
+                font-size: 24px;
+            }
+
+            /* Mobile music toggle */
+            .music-toggle {
+                right: 15px;
+                bottom: 78px;
+                padding: 8px 12px;
+                font-size: 11px;
+            }
+        }
+    
+50% { transform: scale(1.05); }
+}
+
+</style>
+</head>
+<body>
+    <!-- Kente Pattern Background -->
+    <div class="kente-pattern"></div>
+
+    <!-- Floating Adinkra Symbols -->
+    <div class="floating-adinkra">
+        <span class="adinkra-symbol">&#9829;</span>
+        <span class="adinkra-symbol">&#10022;</span>
+        <span class="adinkra-symbol">&#10038;</span>
+        <span class="adinkra-symbol">&#9830;</span>
+        <span class="adinkra-symbol">&#10023;</span>
+        <span class="adinkra-symbol">&#9827;</span>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <p class="akan-greeting">Akwaaba! Welcome!</p>
+            <div class="couple-photos">
+                <img src="images/groom.png" alt="Kweku" class="couple-photo">
+                <div class="heart-connector"><i class="fas fa-heart"></i></div>
+                <img src="images/bride.png" alt="Efua" class="couple-photo">
+            </div>
+            <h1 class="couple-names">Kweku <span class="ampersand">&</span> Efua</h1>
+            <p class="ceremony-type">Traditional Engagement</p>
+            <p class="ceremony-date">August 22nd, 2026 | Kumasi, Ghana</p>
+        </div>
+    </section>
+
+    <!-- Kente Border -->
+    <div class="kente-border"></div>
+
+    <!-- Countdown Section -->
+    <section class="countdown-section">
+        <div class="section-header">
+            <p class="section-label">The Day Approaches</p>
+            <h2 class="section-title">Countdown to Our Union</h2>
+        </div>
+        <div class="countdown-container">
+            <div class="countdown-item">
+                <div class="countdown-number" id="days">00</div>
+                <div class="countdown-label">Days</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-number" id="hours">00</div>
+                <div class="countdown-label">Hours</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-number" id="minutes">00</div>
+                <div class="countdown-label">Minutes</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-number" id="seconds">00</div>
+                <div class="countdown-label">Seconds</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Meet The Couple -->
+    <section class="couple-section">
+        <div class="section-header" style="text-align: center; margin-bottom: 3rem;">
+            <p class="section-label">Getting To Know Us</p>
+            <h2 class="section-title">Meet The Couple</h2>
+        </div>
+
+        <div class="couple-grid">
+            <!-- Groom Card -->
+            <div class="couple-card">
+                <div class="couple-card-header">
+                    <span class="couple-role">The Groom</span>
+                    <h3 class="couple-card-name">Kweku Boateng</h3>
+                </div>
+                <ul class="couple-facts">
+                    <li>
+                        <span class="fact-icon"><i class="fas fa-briefcase"></i></span>
+                        <div>
+                            <span class="fact-label">Profession</span>
+                            <p class="fact-text">Software Engineer</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="fact-icon"><i class="fas fa-futbol"></i></span>
+                        <div>
+                            <span class="fact-label">Passion</span>
+                            <p class="fact-text">Football & Fitness</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="fact-icon"><i class="fas fa-utensils"></i></span>
+                        <div>
+                            <span class="fact-label">Favorite Food</span>
+                            <p class="fact-text">Jollof Rice (Team Ghana!)</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="fact-icon"><i class="fas fa-music"></i></span>
+                        <div>
+                            <span class="fact-label">Music</span>
+                            <p class="fact-text">Gospel & Highlife</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Bride Card -->
+            <div class="couple-card">
+                <div class="couple-card-header">
+                    <span class="couple-role">The Bride</span>
+                    <h3 class="couple-card-name">Efua Asante</h3>
+                </div>
+                <ul class="couple-facts">
+                    <li>
+                        <span class="fact-icon"><i class="fas fa-heartbeat"></i></span>
+                        <div>
+                            <span class="fact-label">Profession</span>
+                            <p class="fact-text">Registered Nurse</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="fact-icon"><i class="fas fa-plane"></i></span>
+                        <div>
+                            <span class="fact-label">Passion</span>
+                            <p class="fact-text">Travel & Adventure</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="fact-icon"><i class="fas fa-book"></i></span>
+                        <div>
+                            <span class="fact-label">Hobby</span>
+                            <p class="fact-text">Reading & Journaling</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="fact-icon"><i class="fas fa-camera"></i></span>
+                        <div>
+                            <span class="fact-label">Secret Talent</span>
+                            <p class="fact-text">Photography</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Love Quotes -->
+        <div class="quotes-container">
+            <div class="love-quote">
+                <p class="quote-text">"She walked into the room and I knew my life was about to change forever. Her smile lights up my world every single day."</p>
+                <div class="quote-author">
+                    <img src="images/groom.png" alt="Kweku" class="quote-author-img">
+                    <div class="quote-author-info">
+                        <p class="quote-author-name">Kweku</p>
+                        <p class="quote-author-label">About Efua</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="love-quote">
+                <p class="quote-text">"He makes me laugh every single day and loves me unconditionally. That's how I knew he was the one God chose for me."</p>
+                <div class="quote-author">
+                    <img src="images/bride.png" alt="Efua" class="quote-author-img">
+                    <div class="quote-author-info">
+                        <p class="quote-author-name">Efua</p>
+                        <p class="quote-author-label">About Kweku</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- WhatsApp Connect -->
+        <div class="whatsapp-connect">
+            <a href="https://wa.me/233XXXXXXXXX?text=Hello%20Kweku%20and%20Efua!%20Congratulations%20on%20your%20engagement!" class="whatsapp-btn" target="_blank">
+                <i class="fab fa-whatsapp"></i>
+                Send Us a Message
+            </a>
+            <p class="whatsapp-text">We'd love to hear from you! Tap to send your wishes.</p>
+        </div>
+    </section>
+
+    <!-- Ceremony Program -->
+    <section class="program-section">
+        <div class="section-header" style="text-align: center; margin-bottom: 3rem;">
+            <p class="section-label" style="color: var(--kente-gold);">The Ceremony</p>
+            <h2 class="section-title">Program Outline</h2>
+        </div>
+        <div class="program-container">
+            <div class="program-item">
+                <div class="program-time">8:00 AM</div>
+                <div class="program-details">
+                    <h4>Arrival of Guests</h4>
+                    <p>Welcome drinks and traditional music entertainment</p>
+                </div>
+            </div>
+            <div class="program-item">
+                <div class="program-time">9:00 AM</div>
+                <div class="program-details">
+                    <h4>Knocking Ceremony</h4>
+                    <p>Groom's family formally requests the bride's hand</p>
+                </div>
+            </div>
+            <div class="program-item">
+                <div class="program-time">10:30 AM</div>
+                <div class="program-details">
+                    <h4>Presentation of Items</h4>
+                    <p>Traditional engagement items presented to bride's family</p>
+                </div>
+            </div>
+            <div class="program-item">
+                <div class="program-time">12:00 PM</div>
+                <div class="program-details">
+                    <h4>Ring Exchange & Blessings</h4>
+                    <p>Exchange of rings and prayers from elders</p>
+                </div>
+            </div>
+            <div class="program-item">
+                <div class="program-time">1:00 PM</div>
+                <div class="program-details">
+                    <h4>Reception & Feast</h4>
+                    <p>Traditional Ghanaian cuisine and celebration</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Family Introduction -->
+    <section class="family-section">
+        <div class="section-header" style="text-align: center; margin-bottom: 3rem;">
+            <p class="section-label">Two Families Unite</p>
+            <h2 class="section-title">Meet The Families</h2>
+        </div>
+        <div class="family-grid">
+            <div class="family-side">
+                <h3 class="family-title">Groom's Family</h3>
+                <div class="family-members">
+                    <div class="family-member">
+                        <img src="images/father-groom.png" alt="Father" class="member-photo">
+                        <div class="member-info">
+                            <p class="member-name">Nana Kwame Boateng</p>
+                            <p class="member-role">Father of the Groom</p>
+                        </div>
+                    </div>
+                    <div class="family-member">
+                        <img src="images/mother-groom.png" alt="Mother" class="member-photo">
+                        <div class="member-info">
+                            <p class="member-name">Maame Akua Boateng</p>
+                            <p class="member-role">Mother of the Groom</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="family-side">
+                <h3 class="family-title">Bride's Family</h3>
+                <div class="family-members">
+                    <div class="family-member">
+                        <img src="images/father-bride.png" alt="Father" class="member-photo">
+                        <div class="member-info">
+                            <p class="member-name">Opanin Kofi Asante</p>
+                            <p class="member-role">Father of the Bride</p>
+                        </div>
+                    </div>
+                    <div class="family-member">
+                        <img src="images/mother-bride.png" alt="Mother" class="member-photo">
+                        <div class="member-info">
+                            <p class="member-name">Obaapanin Ama Asante</p>
+                            <p class="member-role">Mother of the Bride</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery-section">
+        <div class="section-header" style="text-align: center; margin-bottom: 3rem;">
+            <p class="section-label">Our Journey</p>
+            <h2 class="section-title">Photo Gallery</h2>
+        </div>
+        <div class="gallery-slider-container">
+            <button class="gallery-nav gallery-nav-prev" type="button" aria-label="Previous images"><i class="fas fa-chevron-left"></i></button>
+            <button class="gallery-nav gallery-nav-next" type="button" aria-label="Next images"><i class="fas fa-chevron-right"></i></button>
+            <div class="gallery-slider">
+                <div class="gallery-item">
+                    <img src="images/gallery-1.png" alt="Couple in garden">
+                    <div class="gallery-overlay"><p>Our Love Story</p></div>
+                </div>
+                <div class="gallery-item">
+                    <img src="images/gallery-2.png" alt="Couple intimate moment">
+                    <div class="gallery-overlay"><p>Forever Together</p></div>
+                </div>
+                <div class="gallery-item">
+                    <img src="images/gallery-3.png" alt="Couple dancing">
+                    <div class="gallery-overlay"><p>Joy & Laughter</p></div>
+                </div>
+                <div class="gallery-item">
+                    <img src="images/gallery-4.png" alt="Efua on beach">
+                    <div class="gallery-overlay"><p>Beautiful Bride</p></div>
+                </div>
+                <div class="gallery-item">
+                    <img src="images/gallery-5.png" alt="Kweku in garden">
+                    <div class="gallery-overlay"><p>Handsome Groom</p></div>
+                </div>
+                <!-- Duplicates for infinite scroll -->
+                <div class="gallery-item">
+                    <img src="images/gallery-1.png" alt="Couple in garden">
+                    <div class="gallery-overlay"><p>Our Love Story</p></div>
+                </div>
+                <div class="gallery-item">
+                    <img src="images/gallery-2.png" alt="Couple intimate moment">
+                    <div class="gallery-overlay"><p>Forever Together</p></div>
+                </div>
+                <div class="gallery-item">
+                    <img src="images/gallery-3.png" alt="Couple dancing">
+                    <div class="gallery-overlay"><p>Joy & Laughter</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gift Section -->
+    <section class="gift-section">
+        <div class="section-header" style="text-align: center; margin-bottom: 3rem;">
+            <p class="section-label">Your Blessings</p>
+            <h2 class="section-title">Gift The Couple</h2>
+        </div>
+        <div class="gift-container">
+            <div class="gift-card">
+                <div class="gift-icon"><i class="fas fa-gift"></i></div>
+                <h3 class="gift-title">Bless Our Union</h3>
+                <p class="gift-message">Your presence at our engagement is the greatest gift. However, if you wish to bless us further, we humbly accept your generous contributions via Mobile Money.</p>
+                <div class="momo-details">
+                    <p><strong>MTN Mobile Money</strong></p>
+                    <p class="momo-number">024-XXX-XXXX</p>
+                    <p class="momo-name">Kweku Boateng</p>
+                </div>
+                <button class="copy-btn" onclick="copyNumber()">
+                    <i class="fas fa-copy"></i> Copy Number
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- RSVP Section -->
+    <section class="rsvp-section">
+        <div class="section-header" style="text-align: center; margin-bottom: 2rem;">
+            <p class="section-label">Will You Join Us?</p>
+            <h2 class="section-title">RSVP</h2>
+        </div>
+        <div class="rsvp-container">
+            <form class="rsvp-form">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-input" placeholder="Enter your full name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phone Number</label>
+                    <input type="tel" class="form-input" placeholder="024-XXX-XXXX" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Number of Guests</label>
+                    <select class="form-input" required>
+                        <option value="">Select</option>
+                        <option value="1">1 Guest</option>
+                        <option value="2">2 Guests</option>
+                        <option value="3">3 Guests</option>
+                        <option value="4">4+ Guests</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Message to the Couple</label>
+                    <textarea class="form-input" rows="3" placeholder="Send your blessings..."></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Confirm Attendance</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Location Section -->
+    <section class="location-section">
+        <div class="section-header" style="text-align: center; margin-bottom: 3rem;">
+            <p class="section-label">Venue</p>
+            <h2 class="section-title">Find Us</h2>
+        </div>
+        <div class="location-container">
+            <div class="location-info">
+                <h3>The Asante Family Residence</h3>
+                <p>
+                    <i class="fas fa-map-marker-alt" style="color: var(--kente-gold);"></i>
+                    House No. 25, Adum Road<br>
+                    Near Kejetia Market<br>
+                    Kumasi, Ashanti Region<br>
+                    Ghana
+                </p>
+                <a href="https://maps.google.com/?q=Kumasi+Ghana" target="_blank" class="location-btn">
+                    <i class="fas fa-directions"></i> Get Directions
+                </a>
+            </div>
+            <div class="location-map">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126915.2537!2d-1.6579!3d6.6885!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwNDEnMTguNiJOIDHCsDM5JzI4LjQiVw!5e0!3m2!1sen!2sgh!4v1234567890" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <h2 class="footer-names">Kweku <span>&</span> Efua</h2>
+        <p class="footer-date">August 22, 2026 | Kumasi, Ghana</p>
+        <div class="social-links">
+            <a href="#" class="social-link"><i class="fab fa-whatsapp"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+        </div>
+        <p class="footer-hashtag">#KwekuMeetsEfua #AkanLove #Engagement2026</p>
+        <div class="vibelink-credit">
+            <p>Event website crafted by <a href="https://vibelinkevent.com">VibeLink</a></p>
+        </div>
+    </footer>
+
+    <script>
+        // Countdown Timer
+        function updateCountdown() {
+            const eventDate = new Date('August 22, 2026 08:00:00').getTime();
+            const now = new Date().getTime();
+            const distance = eventDate - now;
+
+            if (distance > 0) {
+                document.getElementById('days').textContent = Math.floor(distance / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+                document.getElementById('hours').textContent = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+                document.getElementById('minutes').textContent = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+                document.getElementById('seconds').textContent = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
+            }
+        }
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // Copy MoMo Number
+        function copyNumber() {
+            navigator.clipboard.writeText('024-XXX-XXXX');
+            alert('Number copied to clipboard!');
+        }
+
+        // Form submission
+        document.querySelector('.rsvp-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thank you for your RSVP! We look forward to celebrating with you.');
+            this.reset();
+        });
+
+        // Gallery arrow controls (mobile)
+        const galleryContainer = document.querySelector('.gallery-slider-container');
+        const prevBtn = document.querySelector('.gallery-nav-prev');
+        const nextBtn = document.querySelector('.gallery-nav-next');
+        if (galleryContainer && prevBtn && nextBtn) {
+            const scrollAmount = 370;
+            prevBtn.addEventListener('click', () => {
+                galleryContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            });
+            nextBtn.addEventListener('click', () => {
+                galleryContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            });
+        }
+    </script>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/233XXXXXXXXX?text=Hello%20Kweku%20and%20Efua!%20Congratulations%20on%20your%20engagement!" class="whatsapp-float" target="_blank" aria-label="Send WhatsApp message" title="Send us a message on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Background Music -->
+    <audio id="bg-music" src="vibelink-kwekuefua.mp3" preload="none" loop></audio>
+    <button class="music-toggle" type="button" aria-pressed="false" aria-label="Play background music">
+        <i class="fas fa-music"></i>
+        <span>Play music</span>
+    </button>
+
+    <script>
+        // Music toggle functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            const music = document.getElementById('bg-music');
+            const musicBtn = document.querySelector('.music-toggle');
+            if (music && musicBtn) {
+                musicBtn.addEventListener('click', async () => {
+                    try {
+                        if (music.paused) {
+                            await music.play();
+                            musicBtn.classList.add('is-playing');
+                            musicBtn.setAttribute('aria-pressed', 'true');
+                            musicBtn.querySelector('span').textContent = 'Pause';
+                        } else {
+                            music.pause();
+                            musicBtn.classList.remove('is-playing');
+                            musicBtn.setAttribute('aria-pressed', 'false');
+                            musicBtn.querySelector('span').textContent = 'Play music';
+                        }
+                    } catch (err) {
+                        musicBtn.classList.remove('is-playing');
+                        musicBtn.setAttribute('aria-pressed', 'false');
+                        musicBtn.querySelector('span').textContent = 'Play music';
+                    }
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>

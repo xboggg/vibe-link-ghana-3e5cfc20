@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baby Kwame's Outdooring | Welcome Little King</title>
+    <meta name="description" content="Celebrating the naming ceremony of our prince Baby Kwame - A joyous Ghanaian outdooring celebration.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Quicksand:wght@300;400;500;600&family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --royal-blue: #1E3A5F;
+            --baby-blue: #6BB3D9;
+            --light-blue: #E8F4F8;
+            --gold: #D4AF37;
+            --gold-light: #F5E6C8;
+            --cream: #FDF8F0;
+            --white: #FFFFFF;
+            --text-dark: #2C2C2C;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: var(--light-blue);
+            color: var(--text-dark);
+            overflow-x: hidden;
+            max-width: 100vw;
+        }
+
+        /* Floating Stars Animation */
+        .stars-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .star {
+            position: absolute;
+            color: var(--gold);
+            opacity: 0.3;
+            animation: twinkle 3s infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.2); }
+        }
+
+        .star:nth-child(1) { top: 10%; left: 5%; font-size: 1rem; animation-delay: 0s; }
+        .star:nth-child(2) { top: 15%; right: 10%; font-size: 1.5rem; animation-delay: 0.5s; }
+        .star:nth-child(3) { top: 30%; left: 15%; font-size: 0.8rem; animation-delay: 1s; }
+        .star:nth-child(4) { top: 45%; right: 8%; font-size: 1.2rem; animation-delay: 1.5s; }
+        .star:nth-child(5) { top: 60%; left: 8%; font-size: 1rem; animation-delay: 2s; }
+        .star:nth-child(6) { top: 75%; right: 15%; font-size: 1.3rem; animation-delay: 2.5s; }
+        .star:nth-child(7) { top: 85%; left: 12%; font-size: 0.9rem; animation-delay: 0.3s; }
+        .star:nth-child(8) { top: 25%; right: 20%; font-size: 1.1rem; animation-delay: 0.8s; }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--royal-blue) 0%, var(--baby-blue) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='3' fill='%23FFFFFF' fill-opacity='0.1'/%3E%3C/svg%3E");
+            pointer-events: none;
+        }
+
+        .clouds {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .cloud {
+            position: absolute;
+            background: rgba(255,255,255,0.2);
+            border-radius: 100px;
+            animation: floatCloud 20s infinite linear;
+        }
+
+        .cloud::before, .cloud::after {
+            content: '';
+            position: absolute;
+            background: inherit;
+            border-radius: inherit;
+        }
+
+        .cloud-1 { width: 150px; height: 50px; top: 10%; animation-duration: 25s; }
+        .cloud-1::before { width: 60px; height: 60px; top: -25px; left: 20px; }
+        .cloud-1::after { width: 80px; height: 80px; top: -40px; left: 60px; }
+
+        .cloud-2 { width: 120px; height: 40px; top: 30%; animation-duration: 30s; animation-delay: -10s; }
+        .cloud-2::before { width: 50px; height: 50px; top: -20px; left: 15px; }
+        .cloud-2::after { width: 60px; height: 60px; top: -30px; left: 50px; }
+
+        @keyframes floatCloud {
+            0% { transform: translateX(-200px); }
+            100% { transform: translateX(calc(100vw + 200px)); }
+        }
+
+        .hero-content {
+            text-align: center;
+            color: var(--white);
+            padding: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .crown-icon {
+            font-size: 3rem;
+            color: var(--gold);
+            margin-bottom: 1rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .welcome-text {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2rem;
+            color: var(--gold);
+            margin-bottom: 1rem;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .baby-photo-container {
+            position: relative;
+            display: inline-block;
+            margin: 2rem 0;
+        }
+
+        .baby-photo {
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 8px solid var(--gold);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: scaleIn 1s ease-out 0.3s both;
+        }
+
+        .photo-ring {
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -20px;
+            border: 3px dashed var(--gold);
+            border-radius: 50%;
+            animation: rotate 30s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .baby-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            font-weight: 700;
+            margin: 1rem 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            animation: fadeInUp 1s ease-out 0.5s both;
+        }
+
+        .ceremony-type {
+            font-size: 1.2rem;
+            color: var(--gold-light);
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease-out 0.7s both;
+        }
+
+        .proverb {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.5rem;
+            font-style: italic;
+            max-width: 500px;
+            margin: 0 auto;
+            line-height: 1.6;
+            animation: fadeInUp 1s ease-out 0.9s both;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Countdown Section */
+        .countdown-section {
+            padding: 5rem 2rem;
+            background: var(--white);
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .section-header {
+            margin-bottom: 3rem;
+        }
+
+        .section-label {
+            font-size: 0.9rem;
+            color: var(--baby-blue);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--royal-blue);
+        }
+
+        .countdown-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .countdown-item {
+            background: linear-gradient(135deg, var(--royal-blue), var(--baby-blue));
+            padding: 2rem 2.5rem;
+            border-radius: 20px;
+            min-width: 130px;
+            box-shadow: 0 15px 40px rgba(30,58,95,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .countdown-item::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 50%);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .countdown-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--white);
+            line-height: 1;
+            position: relative;
+        }
+
+        .countdown-label {
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--gold-light);
+            margin-top: 0.5rem;
+        }
+
+        .ceremony-date {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--royal-blue);
+            margin-top: 2rem;
+        }
+
+        /* Baby Info Section */
+        .info-section {
+            padding: 5rem 2rem;
+            background: linear-gradient(180deg, var(--light-blue), var(--cream));
+            position: relative;
+            z-index: 2;
+        }
+
+        .info-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .info-card {
+            background: var(--white);
+            border-radius: 25px;
+            padding: 2.5rem;
+            text-align: center;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.08);
+            transition: all 0.4s ease;
+            border-top: 5px solid var(--baby-blue);
+        }
+
+        .info-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 60px rgba(30,58,95,0.15);
+        }
+
+        .info-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--baby-blue), var(--royal-blue));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            color: var(--white);
+        }
+
+        .info-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--royal-blue);
+            margin-bottom: 1rem;
+        }
+
+        .info-text {
+            color: var(--text-dark);
+            line-height: 1.8;
+        }
+
+        /* Gallery Section */
+        .gallery-section {
+            padding: 5rem 2rem;
+            background: var(--white);
+            position: relative;
+            z-index: 2;
+        }
+
+        .gallery-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            aspect-ratio: 4/5;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 2rem;
+            background: linear-gradient(to top, rgba(30,58,95,0.9), transparent);
+            color: var(--white);
+            transform: translateY(100%);
+            transition: transform 0.4s ease;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            transform: translateY(0);
+        }
+
+        .gallery-caption {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.3rem;
+        }
+
+        /* Blessings Section */
+        .blessings-section {
+            padding: 5rem 2rem;
+            background: linear-gradient(135deg, var(--royal-blue), var(--baby-blue));
+            color: var(--white);
+            position: relative;
+            z-index: 2;
+        }
+
+        .blessings-section .section-title {
+            color: var(--white);
+        }
+
+        .blessings-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .blessing-item {
+            background: rgba(255,255,255,0.1);
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 1.5rem;
+            backdrop-filter: blur(10px);
+            border-left: 4px solid var(--gold);
+        }
+
+        .blessing-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            font-style: italic;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .blessing-meaning {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .blessing-source {
+            color: var(--gold);
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        /* RSVP & Gift Section */
+        .rsvp-gift-section {
+            padding: 5rem 2rem;
+            background: var(--cream);
+            position: relative;
+            z-index: 2;
+        }
+
+        .rsvp-gift-grid {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .rsvp-card, .gift-card {
+            background: var(--white);
+            padding: 3rem;
+            border-radius: 25px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.08);
+        }
+
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--royal-blue);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--royal-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border: 2px solid var(--light-blue);
+            border-radius: 15px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: var(--light-blue);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--baby-blue);
+            background: var(--white);
+            box-shadow: 0 0 15px rgba(107,179,217,0.3);
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--royal-blue), var(--baby-blue));
+            color: var(--white);
+            border: none;
+            padding: 1.2rem;
+            border-radius: 15px;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(30,58,95,0.4);
+        }
+
+        .gift-icon {
+            font-size: 4rem;
+            color: var(--gold);
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .gift-text {
+            text-align: center;
+            color: var(--text-dark);
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        .momo-box {
+            background: var(--light-blue);
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .momo-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--royal-blue);
+            margin: 0.5rem 0;
+        }
+
+        .momo-name {
+            color: var(--baby-blue);
+            font-weight: 600;
+        }
+
+        .copy-btn {
+            background: var(--gold);
+            color: var(--white);
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .copy-btn:hover {
+            background: var(--royal-blue);
+            transform: scale(1.05);
+        }
+
+        /* Location Section */
+        .location-section {
+            padding: 5rem 2rem;
+            background: var(--white);
+            position: relative;
+            z-index: 2;
+        }
+
+        .location-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .location-info h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--royal-blue);
+            margin-bottom: 1rem;
+        }
+
+        .location-info p {
+            color: var(--text-dark);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .location-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, var(--royal-blue), var(--baby-blue));
+            color: var(--white);
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .location-btn:hover {
+            transform: translateX(5px);
+            box-shadow: 0 10px 30px rgba(30,58,95,0.3);
+        }
+
+        .location-map {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+
+        .location-map iframe {
+            width: 100%;
+            height: 350px;
+            border: none;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, #0F2540, var(--royal-blue));
+            color: var(--white);
+            padding: 4rem 2rem 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .footer-baby-icon {
+            font-size: 3rem;
+            color: var(--gold);
+            margin-bottom: 1rem;
+        }
+
+        .footer-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--white);
+        }
+
+        .footer-tagline {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.5rem;
+            color: var(--white);
+            margin-bottom: 2rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .social-link {
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.15);
+            border: 2px solid var(--gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gold);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: var(--gold);
+            color: var(--royal-blue);
+        }
+
+        .footer-hashtag {
+            color: var(--gold);
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
+        .footer-divider {
+            width: 100px;
+            height: 2px;
+            background: var(--gold);
+            margin: 2rem auto;
+        }
+
+        .vibelink-credit {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .vibelink-credit a {
+            color: var(--gold);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .baby-name {
+                font-size: 2.8rem;
+            }
+
+            .baby-photo {
+                width: 200px;
+                height: 200px;
+            }
+
+            .rsvp-gift-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .location-container {
+                grid-template-columns: 1fr;
+            }
+
+            .countdown-item {
+                padding: 1.5rem;
+                min-width: 100px;
+            }
+
+            .countdown-number {
+                font-size: 2.5rem;
+            }
+
+            /* Mobile overflow fixes */
+            .hero-content,
+            .info-grid,
+            .gallery-grid,
+            .blessings-container,
+            .rsvp-gift-grid,
+            .location-container {
+                max-width: 100%;
+                padding: 0 1rem;
+            }
+
+            .section-header {
+                padding: 0 1rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+
+            /* Mobile WhatsApp button */
+            .whatsapp-float {
+                right: 15px;
+                bottom: 15px;
+                width: 50px;
+                height: 50px;
+            }
+
+            .whatsapp-float i {
+                font-size: 24px;
+            }
+
+            /* Mobile music toggle */
+            .music-toggle {
+                right: 15px;
+                bottom: 78px;
+                padding: 8px 12px;
+                font-size: 11px;
+            }
+        }
+
+        /* WhatsApp Floating Button */
+        .whatsapp-float {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            text-decoration: none;
+            box-shadow: 0 10px 30px rgba(37, 211, 102, 0.4);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            animation: whatsappPulse 2s ease-in-out infinite;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(37, 211, 102, 0.6);
+        }
+
+        @keyframes whatsappPulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 10px 30px rgba(37, 211, 102, 0.4);
+            }
+            50% {
+                transform: scale(1.08);
+                box-shadow: 0 15px 40px rgba(37, 211, 102, 0.6), 0 0 0 10px rgba(37, 211, 102, 0.15);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 10px 30px rgba(37, 211, 102, 0.4);
+            }
+        }
+
+        /* Music Toggle Button */
+        .music-toggle {
+            position: fixed;
+            right: 20px;
+            bottom: 88px;
+            padding: 10px 14px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.92);
+            border: 2px solid rgba(212, 175, 55, 0.5);
+            color: var(--royal-blue);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            box-shadow: 0 8px 25px rgba(30,58,95,0.2);
+            z-index: 999;
+            cursor: pointer;
+            text-decoration: none;
+            user-select: none;
+            transition: all 0.3s ease;
+        }
+
+        .music-toggle i {
+            font-size: 14px;
+            color: var(--gold);
+        }
+
+        .music-toggle.is-playing {
+            background: linear-gradient(135deg, rgba(212,175,55,0.15), rgba(107,179,217,0.15));
+            border-color: var(--gold);
+        }
+
+        .music-toggle.is-playing i {
+            animation: musicBounce 0.6s ease-in-out infinite;
+        }
+
+        @keyframes musicBounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        @keyframes musicPulse {
+            0% { transform: translateY(0) scale(1); box-shadow: 0 8px 25px rgba(30,58,95,0.2); }
+            50% { transform: translateY(-2px) scale(1.02); box-shadow: 0 12px 30px rgba(212,175,55,0.3); }
+            100% { transform: translateY(0) scale(1); box-shadow: 0 8px 25px rgba(30,58,95,0.2); }
+        }
+
+        .music-toggle:not(.is-playing) {
+            animation: musicPulse 2s ease-in-out infinite;
+        }
+
+        .music-toggle.is-playing {
+            animation: none;
+        }
+    
+50% { transform: scale(1.05); }
+}
+
+</style>
+</head>
+<body>
+    <!-- Floating Stars -->
+    <div class="stars-container">
+        <i class="fas fa-star star"></i>
+        <i class="fas fa-star star"></i>
+        <i class="fas fa-star star"></i>
+        <i class="fas fa-star star"></i>
+        <i class="fas fa-star star"></i>
+        <i class="fas fa-star star"></i>
+        <i class="fas fa-star star"></i>
+        <i class="fas fa-star star"></i>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="clouds">
+            <div class="cloud cloud-1"></div>
+            <div class="cloud cloud-2"></div>
+        </div>
+        <div class="hero-content">
+            <div class="crown-icon"><i class="fas fa-crown"></i></div>
+            <p class="welcome-text">Welcome to the World</p>
+            <div class="baby-photo-container">
+                <div class="photo-ring"></div>
+                <img src="images/hero.png" alt="Baby Kwame" class="baby-photo">
+            </div>
+            <h1 class="baby-name">Baby Kwame</h1>
+            <p class="ceremony-type">Outdooring Ceremony</p>
+            <p class="proverb">"A child is a gift from God, and brings joy to the entire community"</p>
+        </div>
+    </section>
+
+    <!-- Countdown Section -->
+    <section class="countdown-section">
+        <div class="section-header">
+            <p class="section-label">Mark Your Calendars</p>
+            <h2 class="section-title">Countdown to the Celebration</h2>
+        </div>
+        <div class="countdown-container">
+            <div class="countdown-item">
+                <div class="countdown-number" id="days">00</div>
+                <div class="countdown-label">Days</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-number" id="hours">00</div>
+                <div class="countdown-label">Hours</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-number" id="minutes">00</div>
+                <div class="countdown-label">Minutes</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-number" id="seconds">00</div>
+                <div class="countdown-label">Seconds</div>
+            </div>
+        </div>
+        <p class="ceremony-date"><i class="fas fa-calendar-star"></i> Saturday, August 15th, 2026</p>
+    </section>
+
+    <!-- Baby Info Section -->
+    <section class="info-section">
+        <div class="section-header" style="text-align: center; margin-bottom: 3rem;">
+            <p class="section-label">Celebration Details</p>
+            <h2 class="section-title">Join Our Joy</h2>
+        </div>
+        <div class="info-grid">
+            <div class="info-card">
+                <div class="info-icon"><i class="fas fa-clock"></i></div>
+                <h3 class="info-title">Ceremony Time</h3>
+                <p class="info-text">
+                    Traditional Naming: 9:00 AM<br>
+                    Reception & Feast: 12:00 PM<br>
+                    Entertainment till evening
+                </p>
+            </div>
+            <div class="info-card">
+                <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
+                <h3 class="info-title">Venue</h3>
+                <p class="info-text">
+                    The Owusu Family Residence<br>
+                    Adenta Housing Down<br>
+                    Greater Accra, Ghana
+                </p>
+            </div>
+            <div class="info-card">
+                <div class="info-icon"><i class="fas fa-utensils"></i></div>
+                <h3 class="info-title">Refreshments</h3>
+                <p class="info-text">
+                    Traditional Ghanaian delicacies<br>
+                    Assorted drinks & pastries<br>
+                    DJ & Live entertainment
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery-section">
+        <div class="section-header" style="text-align: center; margin-bottom: 3rem;">
+            <p class="section-label">Precious Moments</p>
+            <h2 class="section-title">Our Little Prince</h2>
+        </div>
+        <div class="gallery-grid">
+            <div class="gallery-item">
+                <img src="images/gallery-1.png" alt="Baby Kwame - Close up">
+                <div class="gallery-overlay">
+                    <p class="gallery-caption">First days of wonder</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="images/gallery-2.png" alt="Baby Kwame - Side profile">
+                <div class="gallery-overlay">
+                    <p class="gallery-caption">Peaceful slumber</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="images/gallery-3.png" alt="Baby Kwame - From above">
+                <div class="gallery-overlay">
+                    <p class="gallery-caption">Pure joy</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blessings Section -->
+    <section class="blessings-section">
+        <div class="section-header" style="text-align: center; margin-bottom: 3rem;">
+            <p class="section-label" style="color: var(--gold);">Akan Proverbs</p>
+            <h2 class="section-title">Blessings for Baby Kwame</h2>
+        </div>
+        <div class="blessings-container">
+            <div class="blessing-item">
+                <p class="blessing-text">"Obi nkyere abofra Nyame"</p>
+                <p class="blessing-meaning">No one teaches a child about God - meaning children have a natural connection to the divine.</p>
+                <p class="blessing-source">- Akan Proverb</p>
+            </div>
+            <div class="blessing-item">
+                <p class="blessing-text">"Abofra bunu a, na ote n'agya dan mu"</p>
+                <p class="blessing-meaning">When a child is respectful, he dwells in his father's house - may he always be blessed with good character.</p>
+                <p class="blessing-source">- Akan Proverb</p>
+            </div>
+            <div class="blessing-item">
+                <p class="blessing-text">"Dua baako gye mframa a, ebu"</p>
+                <p class="blessing-meaning">One tree standing alone cannot withstand the wind - may he always have family and community.</p>
+                <p class="blessing-source">- Akan Proverb</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- RSVP & Gift Section -->
+    <section class="rsvp-gift-section">
+        <div class="rsvp-gift-grid">
+            <div class="rsvp-card">
+                <h3 class="card-title"><i class="fas fa-envelope"></i> RSVP</h3>
+                <form id="rsvpForm">
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-input" placeholder="Enter your full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phone Number</label>
+                        <input type="tel" class="form-input" placeholder="024-XXX-XXXX" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Number of Guests</label>
+                        <select class="form-input" required>
+                            <option value="">Select</option>
+                            <option value="1">1 Guest</option>
+                            <option value="2">2 Guests</option>
+                            <option value="3">3 Guests</option>
+                            <option value="4">4+ Guests</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Message for Baby Kwame</label>
+                        <textarea class="form-input" rows="3" placeholder="Write a blessing..."></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">Confirm Attendance</button>
+                </form>
+            </div>
+            <div class="gift-card">
+                <h3 class="card-title"><i class="fas fa-gift"></i> Gift Registry</h3>
+                <div class="gift-icon"><i class="fas fa-baby-carriage"></i></div>
+                <p class="gift-text">Your presence is our greatest gift! However, if you wish to bless our little prince, we gratefully accept contributions via Mobile Money.</p>
+                <div class="momo-box">
+                    <p><strong>MTN Mobile Money</strong></p>
+                    <p class="momo-number">024-XXX-XXXX</p>
+                    <p class="momo-name">Kwame Owusu Snr</p>
+                </div>
+                <button class="copy-btn" onclick="copyNumber()">
+                    <i class="fas fa-copy"></i> Copy Number
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Location Section -->
+    <section class="location-section">
+        <div class="section-header" style="text-align: center; margin-bottom: 3rem;">
+            <p class="section-label">Venue</p>
+            <h2 class="section-title">Find Us</h2>
+        </div>
+        <div class="location-container">
+            <div class="location-info">
+                <h3>The Owusu Family Residence</h3>
+                <p>
+                    <i class="fas fa-map-marker-alt" style="color: var(--baby-blue);"></i>
+                    House No. 45, Adenta Housing Down<br>
+                    Near Adenta Market<br>
+                    Greater Accra, Ghana
+                </p>
+                <a href="https://maps.google.com/?q=Adenta+Accra+Ghana" target="_blank" class="location-btn">
+                    <i class="fas fa-directions"></i> Get Directions
+                </a>
+            </div>
+            <div class="location-map">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31767.7!2d-0.1368!3d5.7072!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNcKwNDInMjYuMCJOIDDCsDA4JzEyLjUiVw!5e0!3m2!1sen!2sgh!4v1234567890" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-baby-icon"><i class="fas fa-baby"></i></div>
+        <h2 class="footer-name">Baby Kwame</h2>
+        <p class="footer-tagline">Our Little Prince</p>
+        <div class="social-links">
+            <a href="#" class="social-link"><i class="fab fa-whatsapp"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+        </div>
+        <p class="footer-hashtag">#BabyKwame2026 #OutdooringCelebration #WelcomeLittlePrince</p>
+        <div class="footer-divider"></div>
+        <p class="vibelink-credit">
+            Event website crafted by
+            <a href="https://vibelinkevent.com">VibeLink</a>
+        </p>
+    </footer>
+
+    <script>
+        // Countdown Timer
+        function updateCountdown() {
+            const eventDate = new Date('August 15, 2026 09:00:00').getTime();
+            const now = new Date().getTime();
+            const distance = eventDate - now;
+
+            if (distance > 0) {
+                document.getElementById('days').textContent = Math.floor(distance / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+                document.getElementById('hours').textContent = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+                document.getElementById('minutes').textContent = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+                document.getElementById('seconds').textContent = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
+            }
+        }
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // Copy MoMo Number
+        function copyNumber() {
+            navigator.clipboard.writeText('024-XXX-XXXX');
+            alert('Number copied to clipboard!');
+        }
+
+        // Form submission
+        document.getElementById('rsvpForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thank you for your RSVP! We look forward to celebrating with you.');
+            this.reset();
+        });
+    </script>
+
+    <!-- WhatsApp Floating Button -->
+    <a href="https://wa.me/233XXXXXXXXX?text=Hello!%20We're%20excited%20about%20Baby%20Kwame's%20outdooring%20ceremony!" target="_blank" class="whatsapp-float" aria-label="Contact on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Background Music -->
+    <audio id="bg-music" src="vibelink-babykwame.mp3" preload="none" loop></audio>
+    <button class="music-toggle" type="button" aria-pressed="false" aria-label="Play background music">
+        <i class="fas fa-music"></i>
+        <span>Play music</span>
+    </button>
+
+    <script>
+        // Music toggle functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            const music = document.getElementById('bg-music');
+            const musicBtn = document.querySelector('.music-toggle');
+            if (music && musicBtn) {
+                musicBtn.addEventListener('click', async () => {
+                    try {
+                        if (music.paused) {
+                            await music.play();
+                            musicBtn.classList.add('is-playing');
+                            musicBtn.setAttribute('aria-pressed', 'true');
+                            musicBtn.querySelector('span').textContent = 'Pause';
+                        } else {
+                            music.pause();
+                            musicBtn.classList.remove('is-playing');
+                            musicBtn.setAttribute('aria-pressed', 'false');
+                            musicBtn.querySelector('span').textContent = 'Play music';
+                        }
+                    } catch (err) {
+                        musicBtn.classList.remove('is-playing');
+                        musicBtn.setAttribute('aria-pressed', 'false');
+                        musicBtn.querySelector('span').textContent = 'Play music';
+                    }
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>

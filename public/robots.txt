@@ -20,4 +20,4 @@ Disallow: /track-order
 Disallow: /thank-you
 
 # Sitemap
-Sitemap: https://vibelink.com.gh/sitemap.xml
+Sitemap: https://vibelinkevent.com/sitemap.xml

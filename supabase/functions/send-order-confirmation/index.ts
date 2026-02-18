@@ -107,7 +107,7 @@ const handler = async (req: Request): Promise<Response> => {
         <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px 16px 0 0; padding: 40px 30px; text-align: center;">
             <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 700;">🎉 Order Confirmed!</h1>
-            <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0; font-size: 16px;">Thank you for choosing VibeLink Ghana</p>
+            <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0; font-size: 16px;">Thank you for choosing VibeLink Event</p>
           </div>
           
           <div style="background-color: #ffffff; padding: 30px; border-radius: 0 0 16px 16px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
@@ -198,7 +198,7 @@ const handler = async (req: Request): Promise<Response> => {
 
           <div style="text-align: center; padding: 25px 20px;">
             <p style="color: #888; font-size: 13px; margin: 0 0 10px 0;">
-              © ${new Date().getFullYear()} VibeLink Ghana. All rights reserved.
+              © ${new Date().getFullYear()} VibeLink Event. All rights reserved.
             </p>
             <p style="color: #aaa; font-size: 12px; margin: 0;">
               Event Stationery & Décor Design
@@ -210,9 +210,9 @@ const handler = async (req: Request): Promise<Response> => {
     `;
 
     const emailResponse = await resend.emails.send({
-      from: "VibeLink Ghana <orders@vibelinkevent.com>",
+      from: "VibeLink Event <orders@vibelinkevent.com>",
       to: [data.clientEmail],
-      subject: `🎉 Order Confirmed - ${data.eventTitle} | VibeLink Ghana`,
+      subject: `🎉 Order Confirmed - ${data.eventTitle} | VibeLink Event`,
       html: emailHtml,
     });
 

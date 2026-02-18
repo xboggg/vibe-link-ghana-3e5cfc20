@@ -69,7 +69,7 @@ const wrapInEmailTemplate = (content: string, subject: string, order: Order): st
               <tr>
                 <td style="background: linear-gradient(135deg, #6B46C1 0%, #D4AF37 100%); padding: 40px 30px; text-align: center;">
                   <h1 style="margin: 0; color: #ffffff; font-size: 32px; font-weight: bold;">
-                    ✨ VibeLink Ghana
+                    ✨ VibeLink Event
                   </h1>
                   <p style="margin: 12px 0 0 0; color: rgba(255,255,255,0.9); font-size: 16px;">
                     Your Event. Our Creativity.
@@ -101,13 +101,13 @@ const wrapInEmailTemplate = (content: string, subject: string, order: Order): st
               <tr>
                 <td style="background-color: #1a1a2e; padding: 30px; text-align: center;">
                   <p style="margin: 0 0 10px 0; color: #D4AF37; font-size: 18px; font-weight: bold;">
-                    VibeLink Ghana
+                    VibeLink Event
                   </p>
                   <p style="margin: 0 0 10px 0; color: rgba(255,255,255,0.7); font-size: 13px;">
                     Accra, Ghana | info@vibelinkevent.com
                   </p>
                   <p style="margin: 0; color: rgba(255,255,255,0.5); font-size: 12px;">
-                    © ${new Date().getFullYear()} VibeLink Ghana. All rights reserved.
+                    © ${new Date().getFullYear()} VibeLink Event. All rights reserved.
                   </p>
                 </td>
               </tr>
@@ -218,7 +218,7 @@ const handler = async (req: Request): Promise<Response> => {
             const fullHtml = wrapInEmailTemplate(emailContent, emailSubject, order);
 
             await resend.emails.send({
-              from: "VibeLink Ghana <orders@vibelinkevent.com>",
+              from: "VibeLink Event <orders@vibelinkevent.com>",
               to: [order.client_email],
               subject: emailSubject,
               html: fullHtml,

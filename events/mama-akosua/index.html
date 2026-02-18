@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Celebration of Life | Mama Akosua Agyapomaa</title>
+    <meta name="description" content="A tribute to a beloved grandmother and community pillar - Mama Akosua Agyapomaa (1945-2026)">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Crimson+Pro:wght@300;400;500;600&family=Cinzel:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --maroon: #4A0E0E;
+            --maroon-deep: #2D0808;
+            --black: #0A0A0A;
+            --gold: #C9A227;
+            --gold-light: #E8D5A3;
+            --cream: #F5F0E6;
+            --white: #FFFFFF;
+            --gray: #666666;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: 'Crimson Pro', serif;
+            background: var(--cream);
+            color: var(--black);
+            overflow-x: hidden;
+            max-width: 100vw;
+        }
+
+        /* Candle Flame Animation */
+        .candles-container {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .candles-container.hidden {
+            display: none;
+        }
+
+        .candle-close {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .candle-close {
+                display: flex;
+                position: absolute;
+                top: -12px;
+                right: -12px;
+                width: 28px;
+                height: 28px;
+                border-radius: 50%;
+                background: rgba(0, 0, 0, 0.7);
+                color: white;
+                font-size: 18px;
+                font-weight: bold;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                border: 2px solid rgba(255, 255, 255, 0.5);
+                line-height: 1;
+            }
+        }
+
+        .candle {
+            width: 20px;
+            height: 60px;
+            background: linear-gradient(to bottom, #FFF8E7, #E8D5A3);
+            border-radius: 3px 3px 0 0;
+            position: relative;
+        }
+
+        .flame {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 15px;
+            height: 25px;
+            background: linear-gradient(to top, #FF6B35, #FFD93D, #FFF8DC);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            animation: flicker 0.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes flicker {
+            0%, 100% { transform: translateX(-50%) scale(1) rotate(-2deg); opacity: 1; }
+            50% { transform: translateX(-50%) scale(0.95) rotate(2deg); opacity: 0.9; }
+        }
+
+        /* Hero Section - Horizontal Scroll Feel */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(180deg, var(--black) 0%, var(--maroon-deep) 50%, var(--maroon) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='2' fill='%23C9A227' fill-opacity='0.05'/%3E%3C/svg%3E");
+            pointer-events: none;
+        }
+
+        .hero-content {
+            text-align: center;
+            color: var(--white);
+            padding: 2rem;
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+        }
+
+        .cross-icon {
+            font-size: 3rem;
+            color: var(--gold);
+            margin-bottom: 2rem;
+            animation: glow 3s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { text-shadow: 0 0 20px rgba(201,162,39,0.5); }
+            50% { text-shadow: 0 0 40px rgba(201,162,39,0.8); }
+        }
+
+        .memorial-label {
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            color: var(--gold);
+            letter-spacing: 6px;
+            margin-bottom: 1rem;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .portrait-frame {
+            position: relative;
+            display: inline-block;
+            margin: 2rem 0;
+        }
+
+        .portrait {
+            width: 280px;
+            height: 340px;
+            object-fit: cover;
+            border: 8px solid var(--gold);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+            animation: scaleIn 1s ease-out 0.3s both;
+        }
+
+        .portrait-frame::before,
+        .portrait-frame::after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border: 3px solid var(--gold);
+        }
+
+        .portrait-frame::before {
+            top: -15px;
+            left: -15px;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .portrait-frame::after {
+            bottom: -15px;
+            right: -15px;
+            border-left: none;
+            border-top: none;
+        }
+
+        .deceased-name {
+            font-family: 'Cinzel', serif;
+            font-size: 3.5rem;
+            font-weight: 600;
+            margin: 1rem 0 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            animation: fadeInUp 1s ease-out 0.5s both;
+        }
+
+        .life-dates {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            color: var(--gold);
+            font-style: italic;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease-out 0.7s both;
+        }
+
+        .epitaph {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            font-style: italic;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.8;
+            animation: fadeInUp 1s ease-out 0.9s both;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Obituary Section */
+        .obituary-section {
+            padding: 5rem 2rem;
+            background: var(--white);
+            position: relative;
+            z-index: 2;
+        }
+
+        .obituary-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            color: var(--gold);
+            letter-spacing: 4px;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-title {
+            font-family: 'Cinzel', serif;
+            font-size: 2.5rem;
+            color: var(--maroon);
+        }
+
+        .obituary-text {
+            font-size: 1.15rem;
+            line-height: 2;
+            color: var(--black);
+            text-align: justify;
+        }
+
+        .obituary-text p {
+            margin-bottom: 1.5rem;
+            text-indent: 2rem;
+        }
+
+        .obituary-text .highlight {
+            color: var(--maroon);
+            font-weight: 500;
+        }
+
+        /* Service Schedule */
+        .schedule-section {
+            padding: 5rem 2rem;
+            background: linear-gradient(135deg, var(--maroon), var(--maroon-deep));
+            color: var(--white);
+            position: relative;
+            z-index: 2;
+        }
+
+        .schedule-section .section-title {
+            color: var(--white);
+        }
+
+        .schedule-grid {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .schedule-card {
+            background: rgba(255,255,255,0.08);
+            border-radius: 15px;
+            padding: 2.5rem;
+            border: 1px solid rgba(201,162,39,0.3);
+            backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
+        }
+
+        .schedule-card:hover {
+            background: rgba(255,255,255,0.12);
+            transform: translateY(-10px);
+            border-color: var(--gold);
+        }
+
+        .schedule-day {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            color: var(--gold);
+            letter-spacing: 3px;
+            margin-bottom: 0.5rem;
+        }
+
+        .schedule-date {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .schedule-event {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .schedule-event:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .event-time {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            min-width: 80px;
+        }
+
+        .event-details h4 {
+            font-family: 'Cinzel', serif;
+            margin-bottom: 0.3rem;
+        }
+
+        .event-details p {
+            opacity: 0.8;
+            font-size: 0.95rem;
+        }
+
+        /* Tribute Wall */
+        .tribute-section {
+            padding: 5rem 2rem;
+            background: var(--cream);
+            position: relative;
+            z-index: 2;
+        }
+
+        .tribute-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            columns: 3;
+            column-gap: 1.5rem;
+        }
+
+        .tribute-card {
+            break-inside: avoid;
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            border-left: 4px solid var(--gold);
+            transition: transform 0.3s ease;
+        }
+
+        .tribute-card:hover {
+            transform: translateX(10px);
+        }
+
+        .tribute-quote {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            font-style: italic;
+            color: var(--black);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .tribute-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .author-photo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--gold);
+        }
+
+        .author-name {
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            color: var(--maroon);
+        }
+
+        .author-relation {
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+
+        /* Photo Memories */
+        .memories-section {
+            padding: 5rem 2rem;
+            background: var(--black);
+            position: relative;
+            z-index: 2;
+        }
+
+        .memories-section .section-title {
+            color: var(--white);
+        }
+
+        .memories-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(2, 250px);
+            gap: 1rem;
+        }
+
+        .memory-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        .memory-item:nth-child(1) {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+
+        .memory-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease, filter 0.5s ease;
+            filter: grayscale(30%);
+        }
+
+        .memory-item:hover img {
+            transform: scale(1.1);
+            filter: grayscale(0%);
+        }
+
+        .memory-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            color: var(--white);
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .memory-item:hover .memory-overlay {
+            transform: translateY(0);
+        }
+
+        .memory-caption {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+        }
+
+        /* Donation Section */
+        .donation-section {
+            padding: 5rem 2rem;
+            background: linear-gradient(135deg, var(--gold), #B8941F);
+            position: relative;
+            z-index: 2;
+        }
+
+        .donation-container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .donation-card {
+            background: var(--white);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.2);
+        }
+
+        .donation-icon {
+            font-size: 4rem;
+            color: var(--gold);
+            margin-bottom: 1rem;
+        }
+
+        .donation-title {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            color: var(--maroon);
+            margin-bottom: 1rem;
+        }
+
+        .donation-message {
+            font-size: 1.1rem;
+            color: var(--black);
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        .momo-box {
+            background: var(--cream);
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+        }
+
+        .momo-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .momo-number {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            color: var(--maroon);
+            margin-bottom: 0.5rem;
+        }
+
+        .momo-name {
+            color: var(--gold);
+            font-weight: 500;
+        }
+
+        .copy-btn {
+            background: var(--maroon);
+            color: var(--white);
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 30px;
+            font-family: 'Crimson Pro', serif;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: var(--gold);
+            transform: scale(1.05);
+        }
+
+        /* RSVP Section */
+        .rsvp-section {
+            padding: 5rem 2rem;
+            background: var(--white);
+            position: relative;
+            z-index: 2;
+        }
+
+        .rsvp-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .rsvp-form {
+            background: var(--cream);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            color: var(--maroon);
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border: 2px solid #DDD;
+            border-radius: 10px;
+            font-family: 'Crimson Pro', serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: var(--white);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 15px rgba(201,162,39,0.3);
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--maroon), var(--maroon-deep));
+            color: var(--white);
+            border: none;
+            padding: 1.2rem;
+            border-radius: 10px;
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(74,14,14,0.4);
+        }
+
+        /* Location Section */
+        .location-section {
+            padding: 5rem 2rem;
+            background: var(--cream);
+            position: relative;
+            z-index: 2;
+        }
+
+        .location-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .location-info h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            color: var(--maroon);
+            margin-bottom: 1rem;
+        }
+
+        .location-info p {
+            color: var(--black);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .location-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--maroon);
+            color: var(--white);
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .location-btn:hover {
+            background: var(--gold);
+            color: var(--maroon);
+        }
+
+        .location-map {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+
+        .location-map iframe {
+            width: 100%;
+            height: 350px;
+            border: none;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, var(--black), var(--maroon-deep));
+            color: var(--white);
+            padding: 4rem 2rem 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .footer-cross {
+            font-size: 3rem;
+            color: var(--gold);
+            margin-bottom: 1rem;
+        }
+
+        .footer-name {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-dates {
+            font-family: 'Cormorant Garamond', serif;
+            color: var(--gold);
+            font-size: 1.2rem;
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+
+        .footer-verse {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            opacity: 0.9;
+            max-width: 500px;
+            margin: 0 auto 2rem;
+            line-height: 1.8;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .social-link {
+            width: 50px;
+            height: 50px;
+            background: rgba(201,162,39,0.2);
+            border: 1px solid var(--gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gold);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: var(--gold);
+            color: var(--maroon);
+        }
+
+        .footer-divider {
+            width: 100px;
+            height: 2px;
+            background: var(--gold);
+            margin: 2rem auto;
+        }
+
+        .vibelink-credit {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .vibelink-credit a {
+            color: var(--gold);
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .deceased-name {
+                font-size: 2.5rem;
+            }
+
+            .portrait {
+                width: 220px;
+                height: 280px;
+            }
+
+            .tribute-grid {
+                columns: 1;
+            }
+
+            .memories-grid {
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: auto;
+            }
+
+            .memory-item:nth-child(1) {
+                grid-column: span 2;
+            }
+
+            .location-container {
+                grid-template-columns: 1fr;
+            }
+
+            /* Mobile overflow fixes */
+            .hero-content,
+            .obituary-container,
+            .schedule-grid,
+            .tribute-grid,
+            .memories-grid,
+            .donation-container,
+            .rsvp-container,
+            .location-container {
+                max-width: 100%;
+                padding: 0 1rem;
+            }
+
+            .section-header {
+                padding: 0 1rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            /* Mobile WhatsApp button */
+            .whatsapp-float {
+                right: 15px;
+                bottom: 15px;
+                width: 50px;
+                height: 50px;
+            }
+
+            .whatsapp-float i {
+                font-size: 24px;
+            }
+
+            /* Keep candles on left on mobile */
+            .candles-container {
+                left: 15px;
+            }
+        }
+
+        /* WhatsApp Floating Button */
+        .whatsapp-float {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            text-decoration: none;
+            box-shadow: 0 10px 30px rgba(37, 211, 102, 0.4);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            animation: whatsappPulse 2s ease-in-out infinite;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(37, 211, 102, 0.6);
+        }
+
+        @keyframes whatsappPulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 10px 30px rgba(37, 211, 102, 0.4);
+            }
+            50% {
+                transform: scale(1.08);
+                box-shadow: 0 15px 40px rgba(37, 211, 102, 0.6), 0 0 0 10px rgba(37, 211, 102, 0.15);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 10px 30px rgba(37, 211, 102, 0.4);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Candles -->
+    <div class="candles-container">
+        <button class="candle-close" onclick="document.querySelector('.candles-container').classList.add('hidden')">&times;</button>
+        <div class="candle"><div class="flame"></div></div>
+        <div class="candle"><div class="flame"></div></div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="cross-icon">
+                <i class="fas fa-cross"></i>
+            </div>
+            <p class="memorial-label">CELEBRATION OF LIFE</p>
+            <div class="portrait-frame">
+                <img src="images/hero.png" alt="Mama Akosua" class="portrait">
+            </div>
+            <h1 class="deceased-name">Mama Akosua Agyapomaa</h1>
+            <p class="life-dates">1945 - 2026</p>
+            <p class="epitaph">"A life of love, a heart of gold, her spirit and legacy will forever be told."</p>
+        </div>
+    </section>
+
+    <!-- Obituary Section -->
+    <section class="obituary-section">
+        <div class="obituary-container">
+            <div class="section-header">
+                <p class="section-label">In Loving Memory</p>
+                <h2 class="section-title">Obituary</h2>
+            </div>
+            <div class="obituary-text">
+                <p><span class="highlight">Mama Akosua Agyapomaa</span>, fondly known as "Nana" by her grandchildren and "Obaatan Pa" by the community, was born on March 15, 1945, in Asante Mampong to the late Opanin Kwaku Dua and Obaapanin Abena Konadu.</p>
+                <p>A devoted Christian, loving mother, and community pillar, Mama Akosua dedicated her life to nurturing her family and serving others. She was a founding member of the Women's Fellowship at Emmanuel Presbyterian Church and mentored countless young women in the community.</p>
+                <p>She is survived by her five children: <span class="highlight">Kofi, Ama, Kwame, Akosua, and Yaw</span>; twelve grandchildren; and three great-grandchildren. Her husband, the late Opanin Kwabena Agyapomaa, preceded her in death in 2018.</p>
+                <p>Mama Akosua peacefully transitioned on January 10, 2026, surrounded by her loved ones. Her warmth, wisdom, and unwavering faith touched everyone who knew her. She will be deeply missed but never forgotten.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Service Schedule -->
+    <section class="schedule-section">
+        <div class="section-header" style="text-align: center; margin-bottom: 3rem;">
+            <p class="section-label" style="color: var(--gold);">Funeral Arrangements</p>
+            <h2 class="section-title">Service Schedule</h2>
+        </div>
+        <div class="schedule-grid">
+            <div class="schedule-card">
+                <p class="schedule-day">FRIDAY</p>
+                <h3 class="schedule-date">October 2nd, 2026</h3>
+                <div class="schedule-event">
+                    <span class="event-time">3:00 PM</span>
+                    <div class="event-details">
+                        <h4>Filing Past</h4>
+                        <p>Family residence, Asante Mampong</p>
+                    </div>
+                </div>
+                <div class="schedule-event">
+                    <span class="event-time">6:00 PM</span>
+                    <div class="event-details">
+                        <h4>Wake Keeping</h4>
+                        <p>Traditional songs and tributes</p>
+                    </div>
+                </div>
+            </div>
+            <div class="schedule-card">
+                <p class="schedule-day">SATURDAY</p>
+                <h3 class="schedule-date">October 3rd, 2026</h3>
+                <div class="schedule-event">
+                    <span class="event-time">7:00 AM</span>
+                    <div class="event-details">
+                        <h4>Funeral Service</h4>
+                        <p>Emmanuel Presbyterian Church</p>
+                    </div>
+                </div>
+                <div class="schedule-event">
+                    <span class="event-time">10:00 AM</span>
+                    <div class="event-details">
+                        <h4>Burial Service</h4>
+                        <p>Family Cemetery, Mampong</p>
+                    </div>
+                </div>
+                <div class="schedule-event">
+                    <span class="event-time">12:00 PM</span>
+                    <div class="event-details">
+                        <h4>Reception</h4>
+                        <p>Family residence</p>
+                    </div>
+                </div>
+            </div>
+            <div class="schedule-card">
+                <p class="schedule-day">SUNDAY</p>
+                <h3 class="schedule-date">October 4th, 2026</h3>
+                <div class="schedule-event">
+                    <span class="event-time">9:00 AM</span>
+                    <div class="event-details">
+                        <h4>Thanksgiving Service</h4>
+                        <p>Emmanuel Presbyterian Church</p>
+                    </div>
+                </div>
+                <div class="schedule-event">
+                    <span class="event-time">12:00 PM</span>
+                    <div class="event-details">
+                        <h4>Final Farewell</h4>
+                        <p>Family gathering</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tribute Wall -->
+    <section class="tribute-section">
+        <div class="section-header" style="text-align: center; margin-bottom: 3rem;">
+            <p class="section-label">Words of Love</p>
+            <h2 class="section-title">Tributes</h2>
+        </div>
+        <div class="tribute-grid">
+            <div class="tribute-card">
+                <p class="tribute-quote">"Mama was the heart of our family. Her love knew no bounds, and her kitchen was always open to anyone who needed a warm meal and warmer words."</p>
+                <div class="tribute-author">
+                    <img src="images/authors/son.png" alt="Kofi Agyapomaa" class="author-photo">
+                    <div>
+                        <p class="author-name">Kofi Agyapomaa</p>
+                        <p class="author-relation">First Son</p>
+                    </div>
+                </div>
+            </div>
+            <div class="tribute-card">
+                <p class="tribute-quote">"Nana taught me everything I know about being a woman of faith. Her prayers carried this family through every storm."</p>
+                <div class="tribute-author">
+                    <img src="images/authors/daughter.png" alt="Ama Serwaa" class="author-photo">
+                    <div>
+                        <p class="author-name">Ama Serwaa</p>
+                        <p class="author-relation">First Daughter</p>
+                    </div>
+                </div>
+            </div>
+            <div class="tribute-card">
+                <p class="tribute-quote">"The Women's Fellowship will never be the same. She led with grace, humility, and a heart that truly loved God."</p>
+                <div class="tribute-author">
+                    <img src="images/authors/elder.png" alt="Mrs. Comfort Asante" class="author-photo">
+                    <div>
+                        <p class="author-name">Mrs. Comfort Asante</p>
+                        <p class="author-relation">Church Elder</p>
+                    </div>
+                </div>
+            </div>
+            <div class="tribute-card">
+                <p class="tribute-quote">"Grandma's stories about the old days were my favorite. She made history come alive. I will tell her stories to my children."</p>
+                <div class="tribute-author">
+                    <img src="images/authors/grandson.png" alt="Kwame Jnr" class="author-photo">
+                    <div>
+                        <p class="author-name">Kwame Jnr</p>
+                        <p class="author-relation">Grandson</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Photo Memories -->
+    <section class="memories-section">
+        <div class="section-header" style="text-align: center; margin-bottom: 3rem;">
+            <p class="section-label" style="color: var(--gold);">Cherished Moments</p>
+            <h2 class="section-title">Photo Memories</h2>
+        </div>
+        <div class="memories-grid">
+            <div class="memory-item">
+                <img src="images/gallery-1.webp" alt="Memory 1">
+                <div class="memory-overlay">
+                    <p class="memory-caption">Her beautiful smile that lit up every room</p>
+                </div>
+            </div>
+            <div class="memory-item">
+                <img src="images/gallery-2.png" alt="Memory 2">
+                <div class="memory-overlay">
+                    <p class="memory-caption">Family gatherings</p>
+                </div>
+            </div>
+            <div class="memory-item">
+                <img src="images/gallery-3.png" alt="Memory 3">
+                <div class="memory-overlay">
+                    <p class="memory-caption">Church celebrations</p>
+                </div>
+            </div>
+            <div class="memory-item">
+                <img src="images/gallery-4.png" alt="Memory 4">
+                <div class="memory-overlay">
+                    <p class="memory-caption">With the grandchildren</p>
+                </div>
+            </div>
+            <div class="memory-item">
+                <img src="images/gallery-5.png" alt="Memory 5">
+                <div class="memory-overlay">
+                    <p class="memory-caption">Community service</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Donation Section -->
+    <section class="donation-section">
+        <div class="donation-container">
+            <div class="donation-card">
+                <div class="donation-icon"><i class="fas fa-heart"></i></div>
+                <h3 class="donation-title">Funeral Contributions</h3>
+                <p class="donation-message">The family humbly appreciates your support during this time. Your generous contributions help us give Mama a befitting farewell.</p>
+                <div class="momo-box">
+                    <p class="momo-label">MTN Mobile Money</p>
+                    <p class="momo-number">024-XXX-XXXX</p>
+                    <p class="momo-name">Kofi Agyapomaa (Family Representative)</p>
+                </div>
+                <button class="copy-btn" onclick="copyNumber()">
+                    <i class="fas fa-copy"></i> Copy Number
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- RSVP Section -->
+    <section class="rsvp-section">
+        <div class="section-header" style="text-align: center; margin-bottom: 2rem;">
+            <p class="section-label">Your Presence Matters</p>
+            <h2 class="section-title">RSVP</h2>
+        </div>
+        <div class="rsvp-container">
+            <form class="rsvp-form">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-input" placeholder="Enter your full name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phone Number</label>
+                    <input type="tel" class="form-input" placeholder="024-XXX-XXXX" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Attending</label>
+                    <select class="form-input" required>
+                        <option value="">Select events</option>
+                        <option value="all">All Events</option>
+                        <option value="funeral">Funeral & Burial Only</option>
+                        <option value="thanksgiving">Thanksgiving Only</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Leave a Tribute</label>
+                    <textarea class="form-input" rows="4" placeholder="Share your memories of Mama Akosua..."></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Submit</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Location Section -->
+    <section class="location-section">
+        <div class="section-header" style="text-align: center; margin-bottom: 3rem;">
+            <p class="section-label">Venue</p>
+            <h2 class="section-title">Service Location</h2>
+        </div>
+        <div class="location-container">
+            <div class="location-info">
+                <h3>Emmanuel Presbyterian Church</h3>
+                <p>
+                    <i class="fas fa-map-marker-alt" style="color: var(--gold);"></i>
+                    Main Street, Asante Mampong<br>
+                    Ashanti Region, Ghana
+                </p>
+                <p>Burial will take place at the Family Cemetery located 5 minutes from the church.</p>
+                <a href="https://maps.google.com/?q=Asante+Mampong+Ghana" target="_blank" class="location-btn">
+                    <i class="fas fa-directions"></i> Get Directions
+                </a>
+            </div>
+            <div class="location-map">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126665.5!2d-1.4!3d7.0!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zN8KwMDAnMDAuMCJOIDHCsDI0JzAwLjAiVw!5e0!3m2!1sen!2sgh!4v1234567890" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-cross"><i class="fas fa-cross"></i></div>
+        <h2 class="footer-name">Mama Akosua Agyapomaa</h2>
+        <p class="footer-dates">March 15, 1945 - January 10, 2026</p>
+        <p class="footer-verse">"Well done, good and faithful servant... Enter into the joy of your Lord." - Matthew 25:21</p>
+        <div class="social-links">
+            <a href="#" class="social-link"><i class="fab fa-whatsapp"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+        </div>
+        <div class="footer-divider"></div>
+        <p class="vibelink-credit">
+            Event website crafted by
+            <a href="https://vibelinkevent.com">VibeLink</a>
+        </p>
+    </footer>
+
+    <script>
+        // Copy MoMo Number
+        function copyNumber() {
+            navigator.clipboard.writeText('024-XXX-XXXX');
+            alert('Number copied to clipboard!');
+        }
+
+        // Form submission
+        document.querySelector('.rsvp-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thank you for your RSVP. The family appreciates your support.');
+            this.reset();
+        });
+    </script>
+
+    <!-- WhatsApp Floating Button -->
+    <a href="https://wa.me/233XXXXXXXXX?text=My%20condolences%20to%20the%20Agyapomaa%20family.%20Rest%20in%20peace%20Mama%20Akosua." target="_blank" class="whatsapp-float" aria-label="Contact on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+</body>
+</html>

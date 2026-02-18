@@ -187,7 +187,7 @@ const handler = async (req: Request): Promise<Response> => {
 
           <div style="text-align: center; padding: 25px 20px;">
             <p style="color: #888; font-size: 13px; margin: 0 0 10px 0;">
-              © ${new Date().getFullYear()} VibeLink Ghana. All rights reserved.
+              © ${new Date().getFullYear()} VibeLink Event. All rights reserved.
             </p>
             <p style="color: #aaa; font-size: 12px; margin: 0;">
               Event Stationery & Décor Design
@@ -208,9 +208,9 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const emailResponse = await resend.emails.send({
-      from: "VibeLink Ghana <orders@vibelinkevent.com>",
+      from: "VibeLink Event <orders@vibelinkevent.com>",
       to: [clientEmail],
-      subject: `💳 Payment Reminder - ${eventTitle} | VibeLink Ghana`,
+      subject: `💳 Payment Reminder - ${eventTitle} | VibeLink Event`,
       html: emailHtml,
     });
 

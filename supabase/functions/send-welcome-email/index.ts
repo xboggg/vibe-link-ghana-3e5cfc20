@@ -37,7 +37,7 @@ const handler = async (req: Request): Promise<Response> => {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Welcome to VibeLink Ghana!</title>
+  <title>Welcome to VibeLink Event!</title>
 </head>
 <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f4;">
   <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #f4f4f4; padding: 40px 0;">
@@ -109,7 +109,7 @@ const handler = async (req: Request): Promise<Response> => {
                 Instagram | Facebook | Twitter | TikTok
               </p>
               <p style="margin: 0; color: #999; font-size: 12px;">
-                © ${new Date().getFullYear()} VibeLink Ghana. Made with ❤️ in Ghana
+                © ${new Date().getFullYear()} VibeLink Event. Made with ❤️ in Ghana
               </p>
             </td>
           </tr>
@@ -122,9 +122,9 @@ const handler = async (req: Request): Promise<Response> => {
     `;
 
     const emailResponse = await resend.emails.send({
-      from: "VibeLink Ghana <onboarding@resend.dev>",
+      from: "VibeLink Event <onboarding@resend.dev>",
       to: [email],
-      subject: "Welcome to VibeLink Ghana! 🎉",
+      subject: "Welcome to VibeLink Event! 🎉",
       html: emailHtml,
     });
 

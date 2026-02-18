@@ -62,7 +62,7 @@ const getStatusMessage = (status: string): string => {
     case "revision":
       return "Thank you for your feedback! Our team is now working on the revisions you requested. We'll have an updated version for you soon.";
     case "completed":
-      return "Congratulations! Your invitation design is complete and has been delivered. Thank you for choosing VibeLink Ghana for your special occasion. We hope you love it!";
+      return "Congratulations! Your invitation design is complete and has been delivered. Thank you for choosing VibeLink Event for your special occasion. We hope you love it!";
     case "cancelled":
       return "Your order has been cancelled. If you have any questions or would like to place a new order, please don't hesitate to contact us.";
     default:
@@ -201,7 +201,7 @@ const handler = async (req: Request): Promise<Response> => {
                 <tr>
                   <td style="background: linear-gradient(135deg, #6B46C1 0%, #D4AF37 100%); padding: 40px 30px; text-align: center;">
                     <h1 style="margin: 0; color: #ffffff; font-size: 32px; font-weight: bold;">
-                      ✨ VibeLink Ghana
+                      ✨ VibeLink Event
                     </h1>
                     <p style="margin: 12px 0 0 0; color: rgba(255,255,255,0.9); font-size: 16px;">
                       Your Event. Our Vibe.
@@ -302,7 +302,7 @@ const handler = async (req: Request): Promise<Response> => {
                 <tr>
                   <td style="background-color: #1a1a2e; padding: 35px 30px; text-align: center;">
                     <p style="margin: 0 0 10px 0; color: #D4AF37; font-size: 18px; font-weight: bold;">
-                      VibeLink Ghana
+                      VibeLink Event
                     </p>
                     <p style="margin: 0 0 15px 0; color: rgba(255,255,255,0.7); font-size: 13px;">
                       Premium Event Stationery & Digital Invitations
@@ -311,7 +311,7 @@ const handler = async (req: Request): Promise<Response> => {
                       Made with ❤️ in Ghana
                     </p>
                     <p style="margin: 15px 0 0 0; color: rgba(255,255,255,0.4); font-size: 11px;">
-                      © ${new Date().getFullYear()} VibeLink Ghana. All rights reserved.
+                      © ${new Date().getFullYear()} VibeLink Event. All rights reserved.
                     </p>
                   </td>
                 </tr>
@@ -327,7 +327,7 @@ const handler = async (req: Request): Promise<Response> => {
     const emailSubject = `${subjectEmoji} Order Update: ${statusLabel} - ${eventTitle}`;
 
     const emailResponse = await resend.emails.send({
-      from: "VibeLink Ghana <orders@vibelinkevent.com>",
+      from: "VibeLink Event <orders@vibelinkevent.com>",
       to: [clientEmail],
       subject: emailSubject,
       html: emailHtml,

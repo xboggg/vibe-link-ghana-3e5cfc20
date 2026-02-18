@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useSessionTimeout } from "@/hooks/useSessionTimeout";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import {
@@ -251,6 +252,10 @@ const navCategories = [
 const Admin = () => {
   const navigate = useNavigate();
   const { user, loading, isAdmin, checkingAdmin, signOut } = useAuth();
+
+  // Session timeout - auto logout after 15 minutes of inactivity
+  useSessionTimeout({ timeoutMinutes: 15, warningMinutes: 2 });
+
   const [orders, setOrders] = useState<Order[]>([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);

@@ -465,7 +465,7 @@ const Blog = () => {
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <a
-                href="https://instagram.com/vibelink_ghana"
+                href="https://instagram.com/vibelinkevent"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium hover:opacity-90 transition-opacity"
@@ -473,7 +473,7 @@ const Blog = () => {
                 Follow on Instagram
               </a>
               <a
-                href="https://facebook.com/VibeLink Event"
+                href="https://facebook.com/vibelinkevent"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-blue-600 text-white font-medium hover:opacity-90 transition-opacity"

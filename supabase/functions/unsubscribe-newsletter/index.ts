@@ -98,7 +98,7 @@ function generateHtmlResponse(status: string, email: string | null, token: strin
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Newsletter Unsubscribe - VibeLink Ghana</title>
+      <title>Newsletter Unsubscribe - VibeLink Event</title>
       <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -190,7 +190,7 @@ function generateHtmlResponse(status: string, email: string | null, token: strin
     <body>
       <div class="container">
         <div class="header">
-          <h1>✨ VibeLink Ghana</h1>
+          <h1>✨ VibeLink Event</h1>
           <p>Your Event. Our Vibe.</p>
         </div>
         <div class="content">
@@ -200,7 +200,7 @@ function generateHtmlResponse(status: string, email: string | null, token: strin
           <a href="https://vibelinkevent.com" class="button${extraContent ? ' secondary' : ''}">Visit Our Website</a>
         </div>
         <div class="footer">
-          <p>© ${new Date().getFullYear()} VibeLink Ghana. All rights reserved.</p>
+          <p>© ${new Date().getFullYear()} VibeLink Event. All rights reserved.</p>
         </div>
       </div>
     </body>
