@@ -31,21 +31,21 @@ const pricingSchema = {
     {
       "@type": "Offer",
       name: "Classic Vibe",
-      price: "2000",
+      price: "1500",
       priceCurrency: "GHS",
       description: "Best for weddings, funerals, most events",
     },
     {
       "@type": "Offer",
       name: "Prestige Vibe",
-      price: "3000",
+      price: "2500",
       priceCurrency: "GHS",
       description: "Best for premium celebrations",
     },
     {
       "@type": "Offer",
       name: "Royal Vibe",
-      price: "5000",
+      price: "4000",
       priceCurrency: "GHS",
       description: "Best for exclusive, luxury events",
     },
@@ -74,7 +74,7 @@ const packages = [
   },
   {
     name: "Classic Vibe",
-    price: "GHS 2,000",
+    price: "GHS 1,500",
     description: "Weddings, funerals & more",
     popular: true,
     color: "border-secondary",
@@ -93,7 +93,7 @@ const packages = [
   },
   {
     name: "Prestige Vibe",
-    price: "GHS 3,000",
+    price: "GHS 2,500",
     description: "Premium celebrations",
     popular: false,
     color: "border-primary/50",
@@ -112,7 +112,7 @@ const packages = [
   },
   {
     name: "Royal Vibe",
-    price: "GHS 5,000+",
+    price: "GHS 4,000+",
     description: "Exclusive, luxury events",
     popular: false,
     color: "border-amber-500/50",
@@ -351,18 +351,18 @@ const Pricing = () => {
                     </span>
                   </div>
                   <div className="text-white font-semibold text-sm mb-1">Classic</div>
-                  <div className="text-secondary font-bold text-lg">GHS 2,000</div>
+                  <div className="text-secondary font-bold text-lg">GHS 1,500</div>
                 </div>
                 <div className="p-4 text-center border-l border-white/10 hover:bg-white/5 transition-colors">
                   <div className="text-white/90 font-semibold text-sm mb-1">Prestige</div>
-                  <div className="text-secondary font-bold text-lg">GHS 3,000</div>
+                  <div className="text-secondary font-bold text-lg">GHS 2,500</div>
                 </div>
                 <div className="p-4 text-center border-l border-white/10 hover:bg-white/5 transition-colors">
                   <div className="flex items-center justify-center gap-1.5 text-white font-semibold text-sm mb-1">
                     <Crown className="h-4 w-4 text-amber-400" />
                     Royal
                   </div>
-                  <div className="text-secondary font-bold text-lg">GHS 5,000+</div>
+                  <div className="text-secondary font-bold text-lg">GHS 4,000+</div>
                 </div>
               </div>
 
@@ -440,18 +440,18 @@ const Pricing = () => {
                           </span>
                         </div>
                         <div className="text-white font-semibold text-xs mt-3">Classic</div>
-                        <div className="text-secondary font-bold text-sm mt-0.5">GHS 2,000</div>
+                        <div className="text-secondary font-bold text-sm mt-0.5">GHS 1,500</div>
                       </th>
                       <th className="p-3 text-center border-l border-white/10 w-[120px]">
                         <div className="text-white/90 font-semibold text-xs">Prestige</div>
-                        <div className="text-secondary font-bold text-sm mt-0.5">GHS 3,000</div>
+                        <div className="text-secondary font-bold text-sm mt-0.5">GHS 2,500</div>
                       </th>
                       <th className="p-3 text-center border-l border-white/10 w-[120px]">
                         <div className="flex items-center justify-center gap-1 text-white font-semibold text-xs">
                           <Crown className="h-3 w-3 text-amber-400" />
                           Royal
                         </div>
-                        <div className="text-secondary font-bold text-sm mt-0.5">GHS 5,000+</div>
+                        <div className="text-secondary font-bold text-sm mt-0.5">GHS 4,000+</div>
                       </th>
                     </tr>
                   </thead>
