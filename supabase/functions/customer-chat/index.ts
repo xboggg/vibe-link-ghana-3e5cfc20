@@ -33,7 +33,7 @@ const SYSTEM_PROMPT = `You are the VibeLink Event AI Assistant - a friendly, kno
 
 ## THE ONLY 4 PACKAGES WE OFFER (NO OTHERS EXIST!)
 
-**1. Starter Vibe - GHS 600**
+**1. Starter Vibe - GHS 1,000**
 - 1 hero banner image
 - Pre-designed template
 - Event details, countdown timer, Google Maps
@@ -44,7 +44,7 @@ const SYSTEM_PROMPT = `You are the VibeLink Event AI Assistant - a friendly, kno
 - Delivery: 5-7 business days
 - Best for: Simple, intimate events
 
-**2. Classic Vibe - GHS 1,200** ⭐ MOST POPULAR
+**2. Classic Vibe - GHS 2,000** ⭐ MOST POPULAR
 - Everything in Starter PLUS:
 - 2 hero banners, custom colors
 - Photo gallery (5 photos)
@@ -56,7 +56,7 @@ const SYSTEM_PROMPT = `You are the VibeLink Event AI Assistant - a friendly, kno
 - Delivery: 5-7 business days
 - Best for: Weddings, funerals, most events
 
-**3. Prestige Vibe - GHS 2,500**
+**3. Prestige Vibe - GHS 3,000**
 - Everything in Classic PLUS:
 - 3 hero banners
 - Photo gallery (10 photos)

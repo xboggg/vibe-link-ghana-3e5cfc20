@@ -24,21 +24,21 @@ const pricingSchema = {
     {
       "@type": "Offer",
       name: "Starter Vibe",
-      price: "600",
+      price: "1000",
       priceCurrency: "GHS",
       description: "Best for simple, intimate events",
     },
     {
       "@type": "Offer",
       name: "Classic Vibe",
-      price: "1200",
+      price: "2000",
       priceCurrency: "GHS",
       description: "Best for weddings, funerals, most events",
     },
     {
       "@type": "Offer",
       name: "Prestige Vibe",
-      price: "2500",
+      price: "3000",
       priceCurrency: "GHS",
       description: "Best for premium celebrations",
     },
@@ -55,7 +55,7 @@ const pricingSchema = {
 const packages = [
   {
     name: "Starter Vibe",
-    price: "GHS 600",
+    price: "GHS 1,000",
     description: "Simple, intimate events",
     popular: false,
     color: "border-border",
@@ -74,7 +74,7 @@ const packages = [
   },
   {
     name: "Classic Vibe",
-    price: "GHS 1,200",
+    price: "GHS 2,000",
     description: "Weddings, funerals & more",
     popular: true,
     color: "border-secondary",
@@ -93,7 +93,7 @@ const packages = [
   },
   {
     name: "Prestige Vibe",
-    price: "GHS 2,500",
+    price: "GHS 3,000",
     description: "Premium celebrations",
     popular: false,
     color: "border-primary/50",
@@ -217,7 +217,7 @@ const Pricing = () => {
     <Layout>
       <SEO
         title="Pricing"
-        description="Affordable digital invitation packages starting from GHS 600. Choose from Starter, Classic, Prestige or Royal packages for your wedding, funeral, or event in Ghana."
+        description="Affordable digital invitation packages starting from GHS 1,000. Choose from Starter, Classic, Prestige or Royal packages for your wedding, funeral, or event in Ghana."
         keywords="digital invitation prices Ghana, wedding invitation cost, event invitation packages Accra"
         canonical="/pricing"
         jsonLd={[pricingSchema, pricingBreadcrumb]}
@@ -341,7 +341,7 @@ const Pricing = () => {
                 </div>
                 <div className="p-4 text-center border-l border-white/10 hover:bg-white/5 transition-colors">
                   <div className="text-white/90 font-semibold text-sm mb-1">Starter</div>
-                  <div className="text-secondary font-bold text-lg">GHS 600</div>
+                  <div className="text-secondary font-bold text-lg">GHS 1,000</div>
                 </div>
                 <div className="p-4 pt-6 text-center border-l border-white/10 bg-white/15 relative">
                   <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
@@ -351,11 +351,11 @@ const Pricing = () => {
                     </span>
                   </div>
                   <div className="text-white font-semibold text-sm mb-1">Classic</div>
-                  <div className="text-secondary font-bold text-lg">GHS 1,200</div>
+                  <div className="text-secondary font-bold text-lg">GHS 2,000</div>
                 </div>
                 <div className="p-4 text-center border-l border-white/10 hover:bg-white/5 transition-colors">
                   <div className="text-white/90 font-semibold text-sm mb-1">Prestige</div>
-                  <div className="text-secondary font-bold text-lg">GHS 2,500</div>
+                  <div className="text-secondary font-bold text-lg">GHS 3,000</div>
                 </div>
                 <div className="p-4 text-center border-l border-white/10 hover:bg-white/5 transition-colors">
                   <div className="flex items-center justify-center gap-1.5 text-white font-semibold text-sm mb-1">
@@ -430,7 +430,7 @@ const Pricing = () => {
                       </th>
                       <th className="p-3 text-center border-l border-white/10 w-[120px]">
                         <div className="text-white/90 font-semibold text-xs">Starter</div>
-                        <div className="text-secondary font-bold text-sm mt-0.5">GHS 600</div>
+                        <div className="text-secondary font-bold text-sm mt-0.5">GHS 1,000</div>
                       </th>
                       <th className="p-3 text-center border-l border-white/10 bg-white/15 w-[120px] relative">
                         <div className="absolute -top-1 left-1/2 -translate-x-1/2">
@@ -440,11 +440,11 @@ const Pricing = () => {
                           </span>
                         </div>
                         <div className="text-white font-semibold text-xs mt-3">Classic</div>
-                        <div className="text-secondary font-bold text-sm mt-0.5">GHS 1,200</div>
+                        <div className="text-secondary font-bold text-sm mt-0.5">GHS 2,000</div>
                       </th>
                       <th className="p-3 text-center border-l border-white/10 w-[120px]">
                         <div className="text-white/90 font-semibold text-xs">Prestige</div>
-                        <div className="text-secondary font-bold text-sm mt-0.5">GHS 2,500</div>
+                        <div className="text-secondary font-bold text-sm mt-0.5">GHS 3,000</div>
                       </th>
                       <th className="p-3 text-center border-l border-white/10 w-[120px]">
                         <div className="flex items-center justify-center gap-1 text-white font-semibold text-xs">

@@ -65,7 +65,7 @@ export const packages: Package[] = [
   {
     id: "starter",
     name: "Starter Vibe",
-    price: 600,
+    price: 1000,
     description: "Best for simple, intimate events",
     popular: false,
     heroImages: 1,
@@ -86,7 +86,7 @@ export const packages: Package[] = [
   {
     id: "classic",
     name: "Classic Vibe",
-    price: 1200,
+    price: 2000,
     description: "Best for weddings, funerals, most events",
     popular: true,
     heroImages: 2,
@@ -107,7 +107,7 @@ export const packages: Package[] = [
   {
     id: "prestige",
     name: "Prestige Vibe",
-    price: 2500,
+    price: 3000,
     description: "Best for premium celebrations",
     popular: false,
     heroImages: 3,
